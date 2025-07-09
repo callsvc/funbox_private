@@ -1,0 +1,9 @@
+[submodule "libraries/libzip"]
+	path = libraries/libzip
+	url = https://github.com/nih-at/libzip.git
+[submodule "libraries/mbedtls"]
+	path = libraries/mbedtls
+	url = https://github.com/Mbed-TLS/mbedtls.git
+[submodule "libraries/raygui"]
+	path = libraries/raygui
+	url = https://github.com/raysan5/raygui.git

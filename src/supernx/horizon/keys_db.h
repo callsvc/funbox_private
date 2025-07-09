@@ -1,0 +1,51 @@
+#pragma once
+#include <regex.h>
+
+#include <fs/types.h>
+#include <algo/list.h>
+#include <algo/set.h>
+#include <algo/ht.h>
+
+
+typedef uint8_t key128_t[0x10];
+typedef uint8_t key256_t[0x20];
+
+typedef enum key_type {
+    key_none,
+    key_area_application,
+    key_area_ocean,
+    key_area_system,
+
+} key_type_e;
+
+typedef struct tagged_key {
+    key_type_e type;
+    uint16_t index;
+
+
+    key256_t value;
+} tagged_key_t;
+
+typedef struct keys_db {
+    list_t * keys_path;
+    list_t * tickets;
+    set_t * titles;
+
+
+    const key256_t *header_key;
+    ht_t *named_keys;
+    ht_t *tag_keys256;
+
+    regex_t prod_regex;
+    regex_t title_regex;
+
+    size_t count;
+} keys_db_t;
+
+keys_db_t *keys_db_create();
+void keys_db_load(keys_db_t*, fsfile_t *);
+
+typedef struct tik tik_t;
+void keys_db_add_ticket(const keys_db_t*, const tik_t*);
+
+void keys_db_destroy(keys_db_t *);

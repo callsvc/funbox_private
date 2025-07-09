@@ -1,0 +1,22 @@
+#pragma once
+#include <stdio.h>
+
+#include <fs/types.h>
+
+typedef struct dir dir_t;
+
+typedef struct file {
+    fsfile_t vfile;
+    FILE *handle;
+    char *buffer;
+
+    const dir_t *parent;
+} file_t;
+
+file_t * file_open(const char*, const char*);
+
+size_t file_getsize(const file_t *file);
+void file_read(const file_t*, void*, size_t, size_t);
+
+const char * file_errorpath(const char*);
+void file_close(file_t*);

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libraries/libzip" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libraries/mbedtls" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libraries/mbedtls/framework" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/libraries/raygui" vcs="Git" />
+  </component>
+</project>
