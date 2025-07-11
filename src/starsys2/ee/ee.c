@@ -3,6 +3,11 @@
 
 #include <string.h>
 
+void ee_skip_cycles(const ee_t *mips) {
+    if (*mips->cycles > 1)
+        *mips->cycles = 1;
+}
+
 ee_t * ee_create(bridge_t *board) {
     ee_t * mips = funbox_malloc(sizeof(ee_t));
     mips->scratchpad = funbox_malloc(16 * 1024);
@@ -98,7 +103,10 @@ void ee_quit(const ee_t * mips, const char *str, const uint32_t opcode, const bo
 
 void sync(const ee_t *mips) {
     fputs("sync\n", mips->decfile);
+
     fflush(mips->decfile);
+
+    ee_skip_cycles(mips);
 }
 
 uint32_t ee_solve_vaddr(const uint32_t addr, uint64_t *s) {
@@ -203,11 +211,12 @@ void cop0_list(ee_t *mips, const uint32_t inst) {
 
 }
 
-void ee_run(ee_t *mips) {
+void ee_run(ee_t *mips, size_t *cycles) {
     if (mips->isinint)
         mips->isinint = mips->pc != 0xBFC00000;
 
-    while (!mips->isinint) {
+    mips->cycles = cycles;
+    for (; !mips->isinint && *cycles ; (*cycles)--) {
         const uint32_t fetched = ee_read32(mips, mips->pc);
 
         const static uint32_t trap_instructions[] = {
@@ -225,7 +234,7 @@ void ee_run(ee_t *mips) {
         const int32_t rs = fetched >> 21 & 0x1F;
         const uint16_t imm = fetched & 0xFFFF;
 
-        fprintf(stdout, "(%x) read from (%x)\n", fetched, mips->pc);
+        fprintf(stdout, "ee, (%x) read from (%x)\n", fetched, mips->pc);
         switch (base) {
             case 0:
                 if (!fetched)

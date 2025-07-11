@@ -41,7 +41,7 @@ typedef struct dmac {
 } dmac_t;
 
 dmac_t *dmac_create(ee_t *);
-void dmac_run(const dmac_t *);
+void dmac_run(const dmac_t *, size_t *cycles);
 
 uint32_t dmac_read32(const dmac_t *, uint32_t);
 void dmac_write32(dmac_t *, uint32_t addr,uint32_t);

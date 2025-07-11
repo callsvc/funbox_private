@@ -21,9 +21,11 @@ dmac_t *dmac_create(ee_t *ee) {
     return dmac;
 }
 
-void dmac_run(const dmac_t *dmac) {
+void dmac_run(const dmac_t *dmac, size_t *cycles) {
     if ((dmac->d_ctrl & 1) == 0)
         return;
+    for (; *cycles; (*cycles)--) {}
+
     oskill("DMAC is required");
 }
 const int32_t dmac_ctrl_addr = 0x1000E000;

@@ -1,19 +1,23 @@
 #include <sony.h>
-
+#include <cycles.h>
 int main() {
-    sony_t *console = sony_create();
+    sony_t *sony = sony_create();
+    cycles_t * ticks_gen = cycles_create(sony);
 
-    sony_reset_cpus(console);
+    sony_reset_cpus(sony);
+    cycles_set_affinity_default(ticks_gen, affinity_default_mips_first);
 
-    int64_t count = 2;
+    const char * affinity_str = cycles_get_affinity_str(ticks_gen);
+    printf("cpu affinity: (%s)\n", affinity_str);
+
+    int64_t count = 10;
     for (;;) {
-        ee_run(console->mips);
-        mips_run(console->iop);
-        dmac_run(console->dmac);
-        sleep_for(ms(500));
+        cycles_step_devs(ticks_gen);
+        sleep_for(ms(50));
         if (!count--)
             break;
     }
 
-    sony_destroy(console);
+    cycles_destroy(ticks_gen);
+    sony_destroy(sony);
 }

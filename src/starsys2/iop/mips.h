@@ -10,5 +10,5 @@ typedef struct mips {
 
 mips_t * mips_create(bridge_t *);
 void mips_reset(mips_t*);
-void mips_run(mips_t*);
+void mips_run(mips_t*, size_t *cycles);
 void mips_destroy(mips_t*);

@@ -1,0 +1,1 @@
+git archive --format=tar.gz -o $HOME/funbox-$(date +"%m%d%g").tar.gz main

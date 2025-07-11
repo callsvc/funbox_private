@@ -12,7 +12,6 @@ typedef struct sony {
     dmac_t *dmac;
 
     bridge_t *bridge;
-    uint8_t *ee_memory;
     vector_t *unkpaddr;
 
     const char *firmpath;

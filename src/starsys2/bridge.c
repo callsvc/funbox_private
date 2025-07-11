@@ -7,7 +7,7 @@ bridge_t * bridge_create(sony_t *sony) {
     bridge_t *board = funbox_malloc(sizeof(bridge_t));
 
     board->pstwo = sony;
-    sony->ee_memory = funbox_malloc(sizeof(uint8_t) * 32 * 1024 * 1024);
+    board->ee_memory = funbox_malloc(sizeof(uint8_t) * 32 * 1024 * 1024);
 
     if (!sony->firmpath)
         oskill("a firmware is needed to continue");
@@ -16,15 +16,15 @@ bridge_t * bridge_create(sony_t *sony) {
     if (!file)
         oskill("can't open the firmware file: %s", file_errorpath(sony->firmpath));
 
-    file_read(file, sony->ee_memory, 0x400000, 0);
+    file_read(file, board->ee_memory, 0x400000, 0);
     file_close(file);
 
     return board;
 }
 void bridge_destroy(bridge_t * board) {
-    funbox_free(board->pstwo->ee_memory);
+    funbox_free(board->ee_memory);
 
-    board->pstwo->ee_memory = NULL;
+    board->ee_memory = NULL;
 
     funbox_free(board);
 }
@@ -50,7 +50,7 @@ bool isfirmwarero(const uint32_t addr) {
 uint32_t bridge_read(const bridge_t *board, const uint32_t addr) {
     uint8_t *place = NULL;
     if (isfirmwarero(addr))
-        place = firmware_program(board->pstwo->ee_memory, addr);
+        place = firmware_program(board->ee_memory, addr);
 
     if (!place && isdmac(addr))
         dmac_read32(board->pstwo->dmac, addr);
@@ -62,5 +62,5 @@ void bridge_write(const bridge_t *board, const uint32_t addr, const uint32_t val
     if (isdmac(addr))
         dmac_write32(board->pstwo->dmac, addr, value);
     else
-        board->pstwo->ee_memory[addr] = value;
+        board->ee_memory[addr] = value;
 }

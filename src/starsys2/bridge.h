@@ -5,6 +5,7 @@ typedef struct sony sony_t;
 
 typedef struct bridge {
     sony_t * pstwo;
+    uint8_t *ee_memory;
 } bridge_t;
 
 bridge_t *bridge_create(sony_t *);

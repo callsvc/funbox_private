@@ -16,6 +16,7 @@ typedef struct ee {
 
     bridge_t * bridge;
     uint8_t * scratchpad;
+    size_t *cycles;
 
     ee_reg_t regs[R5900_REGS_COUNT];
 
@@ -24,7 +25,9 @@ typedef struct ee {
     bool isinint;
 } ee_t;
 
+void ee_skip_cycles(const ee_t*);
+
 ee_t * ee_create(bridge_t*);
 void ee_reset(ee_t*);
-void ee_run(ee_t *);
+void ee_run(ee_t *, size_t *);
 void ee_destroy(ee_t *);

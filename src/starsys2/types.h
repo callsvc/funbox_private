@@ -15,3 +15,8 @@ typedef struct ee_reg {
         ee_reg_half_t lanes[2];
     };
 } ee_reg_t;
+
+typedef struct dev_ticks {
+    size_t gain;
+    size_t acc;
+} dev_ticks_t;
