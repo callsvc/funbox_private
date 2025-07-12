@@ -1,12 +1,11 @@
-#include <stdint.h>
 #include <string.h>
 
 #include <types.h>
 #include <algo/ht.h>
 // https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 uint64_t hash_key_fnv1a(const char *_key) {
-    static const uint64_t FNV_prime = 0x00000100000001B3;
-    static const uint64_t FNV_offset_basis = 0xCBF29CE484222325;
+    static constexpr uint64_t FNV_prime = 0x00000100000001B3;
+    static constexpr uint64_t FNV_offset_basis = 0xCBF29CE484222325;
     uint64_t key = FNV_offset_basis;
     for (const char *k = _key; *k; k++) {
         key ^= (uint8_t)*k;
@@ -24,7 +23,7 @@ ht_t * ht_create(const size_t bucket, const size_t item_size, const char **keys_
     vector_setsize(ht->bucket, bucket);
 
     for (size_t i = 0; i < bucket; i++) {
-        ht_insert(ht, keys_list[i], NULL);
+        ht_insert(ht, keys_list[i], nullptr);
     }
 
     return ht;
@@ -57,12 +56,12 @@ void ht_insert(const ht_t * ht, const char *key, const void *value) {
 void * ht_get(const ht_t *ht, const char *key) {
     const ht_value_t * hv = ht_find(ht, key);
     if (!strlen(hv->key) || strcmp(hv->key, key) != 0)
-        return NULL;
+        return nullptr;
     return hv->value;
 }
 
 bool ht_contains(const ht_t *ht, const char *key) {
-    return ht_get(ht, key) != NULL;
+    return ht_get(ht, key) != nullptr;
 }
 
 void ht_destroy(ht_t *ht) {

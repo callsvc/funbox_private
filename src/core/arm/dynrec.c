@@ -13,6 +13,9 @@ dynrec_t *dynrec_create(const dynrec_cpu_type_e type) {
     dynrec_t *jit = funbox_malloc(sizeof(dynrec_t));
     jit->cores_list = list_create(0);
 
+    uint8_t types[] = {1, 2};
+    jit->flow_cfg_blocks = robin_map_create(types);
+
     if (type == dynrec_aarch64)
         jit->frontend_ctx = (dynrec_frontend_t*)dynrec_frontend_arm64_create(jit);
     return jit;
@@ -22,10 +25,10 @@ dynrec_core_t * dynrec_enablecore(dynrec_t *jit) {
     cpu_set_t cpuset;
     sched_getaffinity(getpid(), sizeof(cpuset), &cpuset);
     if (list_size(jit->cores_list) == CPU_COUNT(&cpuset))
-        return NULL;
+        return nullptr;
 
     if (!jit->frontend_ctx)
-        return NULL;
+        return nullptr;
 
     dynrec_core_t * earlycore = funbox_malloc(sizeof(dynrec_core_t));
     earlycore->gprs_array = funbox_malloc(jit->frontend_ctx->get_sizeof_gprs());
@@ -52,10 +55,11 @@ void dynrec_destroy(dynrec_t *jit) {
     }
 
     list_destroy(jit->cores_list);
+    robin_map_destroy(jit->flow_cfg_blocks);
 
     if (jit->frontend_ctx->get_type(jit->frontend_ctx) == dynrec_aarch64) {
         dynrec_frontend_t * front = jit->frontend_ctx;
-        jit->frontend_ctx = NULL;
+        jit->frontend_ctx = nullptr;
         dynrec_frontend_arm64_destroy((dynrec_frontend_arm64_t*)front);
     }
 

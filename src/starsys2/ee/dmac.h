@@ -1,6 +1,4 @@
 #pragma once
-#include <stdint.h>
-
 #include <algo/vector.h>
 #include <bridge.h>
 typedef struct ee ee_t;

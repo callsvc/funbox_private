@@ -36,7 +36,7 @@ void set_set(const set_t *set, const setval_type_e k_type, const setval_type_e v
     value->first = _key;
 }
 void * set_get(const set_t * set, const setval_type_e type, const void *first) {
-    setval_t *value = NULL;
+    setval_t *value = nullptr;
     for (uint64_t i = 0; i < list_size(set->list) && !value; i++) {
         const setval_t *key = list_get(set->list, i);
         if (key->first || key->type != type)

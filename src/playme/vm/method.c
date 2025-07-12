@@ -31,7 +31,7 @@ void method_setcode(method_t *method, const uint8_t **source, const size_t size)
 method_t * method_create(class_t *class, const uint8_t *begin, const size_t size) {
     method_t * method = funbox_malloc(sizeof(method_t));
     if (size < 8)
-        return NULL;
+        return nullptr;
 
     const uint8_t * method_info = begin;
     method->parent = class;

@@ -1,5 +1,4 @@
 #pragma once
-#include <stdint.h>
 #include <core/types.h>
 
 typedef struct ee_reg_half {

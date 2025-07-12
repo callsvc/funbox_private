@@ -1,14 +1,13 @@
-#include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#include <types.h>
 #include <unistd.h>
+#include <string.h>
+
+#include <fcntl.h>
+#include <types.h>
 
 void * funbox_malloc(const size_t size) {
     if (!size)
-        return NULL;
+        return nullptr;
     void * result = malloc(size);
     memset(result, 0, size);
     return result;
@@ -46,7 +45,7 @@ void * strtobytes(const char *str, void * output, const size_t size) {
     uint8_t *p = output;
     memset(p, 0, size);
     if (strlen(str) > size * 2)
-        return NULL;
+        return nullptr;
 
     for (const char *p_str = str; *p_str; p_str++) {
         if (unlikely(!(p_str - str)))
@@ -58,13 +57,28 @@ void * strtobytes(const char *str, void * output, const size_t size) {
     return output;
 }
 
+#define NS_MAX_VALUE 999999999
 void sleep_for(const size_t ns) {
-    if (ns < 999999999) {
+    if (ns < NS_MAX_VALUE) {
         const struct timespec rtime = { 0, ns };
-        if (nanosleep(&rtime, NULL))
+        if (nanosleep(&rtime, nullptr))
             oskill("can't sleep");
     } else {
         if (usleep(ns / 1000))
             oskill("also can't sleep anyway");
     }
+}
+
+uint64_t funbox_rand() {
+    static _Thread_local uint64_t buffer[0x100];
+    static _Thread_local uint64_t bidx;
+
+    if (unlikely(!bidx)) {
+        const int32_t rfd = open("/dev/random", O_RDONLY);
+        bidx = read(rfd, buffer, sizeof(buffer)) / sizeof(uint64_t);
+        close(rfd);
+    }
+    const uint64_t result = buffer[bidx - 1];
+    bidx -= 1;
+    return result;
 }

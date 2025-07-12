@@ -73,6 +73,8 @@ typedef struct nca_fs_header {
     uint8_t _pad1[0x28 + 0x30 + 0x30];
 } nca_fs_header_t;
 
+_Static_assert(sizeof(nca_fs_header_t) == 0x200);
+
 typedef struct nca_fs_entry {
     uint32_t start_offset;
     uint32_t end_offset;
@@ -104,6 +106,8 @@ typedef struct nca_type_header {
 
     uint8_t _pad1[1024 - 832];
 } nca_type_header_t;
+
+_Static_assert(sizeof(nca_type_header_t) == 1024);
 #pragma pack(pop)
 
 typedef struct content_archive {

@@ -10,7 +10,7 @@ bool aes_file_isxts(const aes_file_t *aes_file) {
     return true;
 }
 
-uint8_t* aes_get_nintendo_teak(const uint64_t sector) {
+uint8_t * aes_get_nintendo_tweak(const uint64_t sector) {
     static _Thread_local uint8_t iv_buffer[0x10] = {};
 
     const uint64_t be_sector = __builtin_bswap64(sector);
@@ -51,7 +51,7 @@ void aes_file_read_xts(aes_file_t *aes_file, void *output, const size_t size, si
 
     size_t tweak = offset ? offset / secsize : 0;
     for (size_t it_offset = 0; it_offset <= sector_end - offset; ) {
-        aes_file_setiv(aes_file, aes_get_nintendo_teak(tweak));
+        aes_file_setiv(aes_file, aes_get_nintendo_tweak(tweak));
         aes_file_update(aes_file, p_out + it_offset, secsize, offset);
         offset += secsize;
         it_offset += secsize;
@@ -60,13 +60,13 @@ void aes_file_read_xts(aes_file_t *aes_file, void *output, const size_t size, si
     }
 }
 
-const static size_t ctr_block_size = 0x10;
+static constexpr size_t ctr_block_size = 0x10;
 void aes_file_read_ctr_misaligned(aes_file_t *aes_file, void *output, const size_t size, size_t offset) {
     const size_t alignoffset = offset % ctr_block_size;
 
     const size_t padding = ctr_block_size - alignoffset;
     if (!alignoffset) {
-        aes_file_setiv(aes_file, aes_get_nintendo_teak(offset / ctr_block_size));
+        aes_file_setiv(aes_file, aes_get_nintendo_tweak(offset / ctr_block_size));
         aes_file_update(aes_file, output, ctr_block_size, offset);
     } else {
         uint8_t start_block[ctr_block_size];
@@ -106,7 +106,7 @@ aes_file_t * aes_file_open(fsfile_t * file, const aes_type_e type, const char *m
     aes_file->vfile.fs_getsize = fs_aes_file_getsize;
 
     mbedtls_cipher_init(&aes_file->context);
-    const mbedtls_cipher_info_t * info = NULL;
+    const mbedtls_cipher_info_t * info = nullptr;
     if (type == aes_type_ctr128)
         info = mbedtls_cipher_info_from_type(MBEDTLS_CIPHER_AES_128_CTR);
     else if (type == aes_type_xts128)

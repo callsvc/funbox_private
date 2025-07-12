@@ -23,7 +23,7 @@ keys_db_t *keys_db_create() {
 
     kdb->named_keys = ht_create(count_of(named_keys), sizeof(key256_t), named_keys);
 
-    kdb->tag_keys256 = ht_create(0, sizeof(tagged_key_t), NULL);
+    kdb->tag_keys256 = ht_create(0, sizeof(tagged_key_t), nullptr);
 
     keys_compile_regex(&kdb->prod_regex, "^\\w+\\s*=\\s*[a-fA-F0-9]+$");
     keys_compile_regex(&kdb->title_regex, "^[a-fA-F0-9]{32}\\s*=\\s*[a-fA-F0-9]{32}$");
@@ -72,7 +72,7 @@ static void insert_prod256(keys_db_t *kdb, const char * key, const char * value)
     const char * index = strrchr(key, '_') + 1;
     if (!index)
         oskill("index not found for indexable key %s", key);
-    keyval.index = strtoul(index, NULL, 16);
+    keyval.index = strtoul(index, nullptr, 16);
     if (!ht_contains(kdb->tag_keys256, key))
         ht_insert(kdb->tag_keys256, key, &keyval);
 }
@@ -105,9 +105,9 @@ void keys_db_load(keys_db_t *kdb, fsfile_t *file) {
         const char *last = strchr(line, '\n');
         strncpy(keypair, line, last ? last - line : strlen(line));
 
-        if (regexec(&kdb->title_regex, keypair, 0, NULL, 0) == 0)
+        if (regexec(&kdb->title_regex, keypair, 0, nullptr, 0) == 0)
             keys_add_title(kdb, keypair);
-        else if (regexec(&kdb->prod_regex, keypair, 0, NULL, 0) == 0)
+        else if (regexec(&kdb->prod_regex, keypair, 0, nullptr, 0) == 0)
             keys_add_prod(kdb, keypair);
         line = strchr(line, '\n');
         if (!line)

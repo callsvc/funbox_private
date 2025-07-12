@@ -31,7 +31,7 @@ cpool_t *cpool_create(const uint8_t *begin, const size_t size) {
     const uint16_t count = read_16(&bytes);
 
     if (size < count * 4)
-        return NULL;
+        return nullptr;
 
     for (uint16_t i = 1; i < count; i++) {
         cp_entry_t *entry = list_emplace(pool->constants);
@@ -66,11 +66,11 @@ const char * cpool_utf8(const cpool_t * pool, const size_t index) {
     const cp_entry_t *entry = list_get(pool->constants, index - 1);
     if (entry && entry->type == cp_type_utf8)
         return entry->utf8;
-    return NULL;
+    return nullptr;
 }
 cp_entry_t * cpool_get(const cpool_t *pool, const size_t index) {
     if (index >= list_size(pool->constants))
-        return NULL;
+        return nullptr;
     return list_get(pool->constants, index - 1);
 }
 

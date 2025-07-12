@@ -31,7 +31,7 @@ submission_package_t * submission_package_create(fsfile_t *file, keys_db_t *keys
     vector_t * files = fs_list_all_files((fsdir_t*)subp->main_pfs);
     for (size_t i = 0; i < vector_size(files); i++) {
         const char * ncapath = vector_get(files, i);
-        if (strchr(ncapath, '.') != NULL)
+        if (strchr(ncapath, '.') != nullptr)
             if (strcmp(ncapath + strlen(ncapath) - 4, ".nca") != 0)
                 continue;
 

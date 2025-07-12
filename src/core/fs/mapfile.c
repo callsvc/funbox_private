@@ -31,7 +31,7 @@ mapfile_t * mapfile_open(const fsfile_t *file) {
     mapfile->fd = open(fs_getpath(file), O_RDONLY);
     const uint64_t len = fs_getsize(file);
 
-    mapfile->buffer = mmap(NULL, len, PROT_READ, MAP_PRIVATE, mapfile->fd, 0);
+    mapfile->buffer = mmap(nullptr, len, PROT_READ, MAP_PRIVATE, mapfile->fd, 0);
     mapfile->vfile.fs_read = fs_mapfile_read;
     mapfile->vfile.fs_getsize = fs_mapfile_getsize;
     return mapfile;

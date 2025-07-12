@@ -24,7 +24,7 @@ vector_t * fs_list_all_files(const fsdir_t *dir) {
 vector_t * fs_filebytes(fsfile_t *file) {
     const size_t size = file->fs_getsize(file);
     if (!size)
-        return NULL;
+        return nullptr;
     vector_t *result = vector_create(size, sizeof(uint8_t));
     vector_setsize(result, size);
     fs_read(file, vector_begin(result), size, 0);
@@ -45,7 +45,7 @@ const char * fs_getpath(const void *fsaddr) {
 
 const char * fs_readline(fsfile_t *file, size_t *offset) {
     if (*offset >= fs_getsize(file))
-        return NULL;
+        return nullptr;
 
     fs_read(file, file->buffer, sizeof(file->buffer), *offset);
 
@@ -84,7 +84,7 @@ vector_t * fs_grep(const fsdir_t *dir, const char *exp) {
 
 vector_t * fs_getbytes(fsfile_t *file, const size_t size, const uint64_t offset) {
     if (size + offset > fs_getsize(file))
-        return NULL;
+        return nullptr;
     vector_t *result = vector_create(size, sizeof(uint8_t));
     vector_setsize(result, size);
     fs_read(file, vector_begin(result), size, offset);

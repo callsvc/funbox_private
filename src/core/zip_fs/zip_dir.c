@@ -1,9 +1,8 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <string.h>
-#include <zip_fs/zip.h>
 
-#include "types.h"
+#include <types.h>
+#include <zip_fs/zip.h>
 
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
 zipfile_t * zipdir_open_file(zipdir_t *dir, const char *name, const char *mode) {
@@ -15,7 +14,7 @@ zipfile_t * zipdir_open_file(zipdir_t *dir, const char *name, const char *mode) 
 
     if (index)
         return zipfile_open(dir->zipfile, index, info.size);
-    return NULL;
+    return nullptr;
 }
 // ReSharper disable once CppParameterNeverUsed
 void zipdir_close_file(zipdir_t *dir, zipfile_t *file) {

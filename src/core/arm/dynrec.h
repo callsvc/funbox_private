@@ -2,8 +2,8 @@
 #include <pthread.h>
 #include <stdint.h>
 
+#include <algo/robin.h>
 #include <algo/list.h>
-
 typedef enum dynrec_cpu_type {
     dynrec_armv8a = 0,
     dynrec_aarch64 = 0,

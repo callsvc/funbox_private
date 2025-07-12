@@ -40,7 +40,7 @@ void cycles_set_affinity(cycles_t *cycles, const char * str) {
 
     char *strdevs = strdup(str);
     char *tok;
-    for (const char * dev = strtok_r(strdevs, ",", &tok); dev; dev = strtok_r(NULL, ",", &tok))
+    for (const char * dev = strtok_r(strdevs, ",", &tok); dev; dev = strtok_r(nullptr, ",", &tok))
         if (!strcmp(dev, "ee"))
             *devs++ = device_type_ee;
         else if (!strcmp(dev, "iop"))
@@ -53,7 +53,7 @@ void cycles_set_affinity(cycles_t *cycles, const char * str) {
 const char * cycles_get_affinity_desc(const affinity_default_type_e type) {
     if (type == affinity_default_mips_first)
         return "mips first, iop 1/4 of ee";
-    return NULL;
+    return nullptr;
 }
 
 const char * cycles_get_affinity_str(const cycles_t *cycles) {
@@ -112,10 +112,10 @@ void cycles_step_devs(cycles_t * cycles) {
     }
     const bool ee_can_execute = cycles->last_executed != device_type_dmac;
 
-    if (rand() % cycles->count / 16 && ee_can_execute)
+    if (funbox_rand() % (cycles->count / 16) && ee_can_execute)
         cycles_step_device(cycles, device_type_ee);
-    if (rand() % cycles->count / 4)
+    if (funbox_rand() % (cycles->count / 4))
         cycles_step_device(cycles, device_type_iop);
-    if (rand() % cycles->count / 16)
+    if (funbox_rand() % (cycles->count / 16))
         cycles_step_device(cycles, device_type_dmac);
 }

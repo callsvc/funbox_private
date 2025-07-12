@@ -24,7 +24,7 @@ bridge_t * bridge_create(sony_t *sony) {
 void bridge_destroy(bridge_t * board) {
     funbox_free(board->ee_memory);
 
-    board->ee_memory = NULL;
+    board->ee_memory = nullptr;
 
     funbox_free(board);
 }
@@ -48,7 +48,7 @@ bool isfirmwarero(const uint32_t addr) {
 }
 
 uint32_t bridge_read(const bridge_t *board, const uint32_t addr) {
-    uint8_t *place = NULL;
+    uint8_t *place = nullptr;
     if (isfirmwarero(addr))
         place = firmware_program(board->ee_memory, addr);
 

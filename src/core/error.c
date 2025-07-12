@@ -6,7 +6,7 @@
 #include <string.h>
 
 void oskill(const char *format, ...) {
-    va_list args;
+    va_list args = {};
     va_start(args, format);
 
     vfprintf(stderr, format, args);

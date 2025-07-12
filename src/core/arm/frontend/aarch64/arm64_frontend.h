@@ -3,7 +3,7 @@
 #include <arm/dynrec.h>
 
 typedef struct dynrec_frontend_arm64 {
-    dynrec_frontend_t funcs64;
+    dynrec_frontend_t funcslist;
     dynrec_t * parent;
 } dynrec_frontend_arm64_t;
 

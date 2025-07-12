@@ -6,7 +6,7 @@
 
 char * strings_concat(const size_t count, ...) {
     size_t size = 0;
-    va_list va, cp;
+    va_list va = {}, cp = {};
     va_start(va, count);
     va_copy(cp, va);
     for (size_t i = 0; i < count; i++)

@@ -5,7 +5,7 @@ int main() {
     cycles_t * ticks_gen = cycles_create(sony);
 
     sony_reset_cpus(sony);
-    cycles_set_affinity_default(ticks_gen, affinity_default_mips_first);
+    // cycles_set_affinity_default(ticks_gen, affinity_default_mips_first);
 
     const char * affinity_str = cycles_get_affinity_str(ticks_gen);
     printf("cpu affinity: (%s)\n", affinity_str);

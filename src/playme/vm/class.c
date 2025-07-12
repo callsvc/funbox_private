@@ -7,12 +7,12 @@
 #include <types.h>
 const char* class_getversion(const uint8_t *src, const size_t len) {
     if (len < 8)
-        return 0;
+        return nullptr;
     if (big32(src) != 0xCAFEBABE)
-        return 0;
+        return nullptr;
     if (big16(src + 6) == 0x2D)
         return "JVM 1.0";
-    return NULL;
+    return nullptr;
 }
 uint32_t class_tover(const char *version) {
     if (version && strcmp(version, "JVM 1.0") == 0)
@@ -21,7 +21,7 @@ uint32_t class_tover(const char *version) {
 }
 
 void class_print(const char *fmt, ...) {
-    va_list ap;
+    va_list ap = {};
     va_start(ap, fmt);
     vfprintf(stderr, fmt, ap);
     va_end(ap);
@@ -40,7 +40,7 @@ class_t * class_create(const uint8_t *begin, const size_t size) {
 
     uint32_t version = 0;
     if ((version = class_tover(class_getversion(begin, size))) == 0)
-        return NULL;
+        return nullptr;
     class->contants = cpool_create(begin + 8, size - 8);
     class->version = version;
 

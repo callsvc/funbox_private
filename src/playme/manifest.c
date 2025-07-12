@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 
 #include <manifest.h>
@@ -9,7 +8,7 @@ manifest_t * manifest_create(fsfile_t *file) {
     manifest->attrs = set_create();
 
     size_t position = 0;
-    for (const char * line = NULL; (line = fs_readline(file, &position)); ) {
+    for (const char * line; (line = fs_readline(file, &position)); ) {
         char key[100], keyval[100];
         const size_t middle = strchr(line, ':') - line;
         funbox_strncpy(key, line, middle);

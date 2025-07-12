@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <algo/vector.h>
 
 #include <stdlib.h>
@@ -18,7 +17,7 @@ vector_t *vector_create(const size_t count, const size_t typesize) {
 
 void * vector_begin(const vector_t *vec) {
     if (!vec->size)
-        return NULL;
+        return nullptr;
     return vec->data;
 }
 
@@ -43,7 +42,7 @@ void * vector_get(const vector_t *vec, size_t index) {
         return vec->data + index * vec->type;
     char *result = vec->data;
     while (index--) {
-        if ((result = strchr(result, '\0')) == NULL)
+        if ((result = strchr(result, '\0')) == nullptr)
             break;
         result++;
     }
@@ -65,9 +64,10 @@ static void vector_realloc(vector_t *vec, const size_t size) {
 
 size_t vector_resize(vector_t *vec, const size_t count) {
     static const size_t minforstrings = PATH_MAX;
-    const size_t newsize = vec->type ? count * vec->type : minforstrings;
-    if (vec->size < newsize)
-        vector_realloc(vec, newsize);
+    const size_t resize = vec->type ? count * vec->type : minforstrings;
+    if (vec->size < resize)
+        vector_realloc(vec, resize);
+    else vec->capacity = resize;
     return count;
 }
 

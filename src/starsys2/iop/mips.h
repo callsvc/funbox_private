@@ -1,5 +1,4 @@
 #pragma once
-#include <stdint.h>
 #include <bridge.h>
 
 // https://www.psdevwiki.com/ps2/IOP/Deckard

@@ -1,5 +1,5 @@
 #include <arm/types.h>
-#include <arm/jitagent.h>
+#include <arm/jit.h>
 
 #include <core/types.h>
 
@@ -14,7 +14,7 @@ uint64_t jit_write_gpr(dynrec_core_t *core, uint64_t index, uint64_t value) {
     return core->jit->frontend_ctx->write_gpr(core->gprs_array, index, value);
 }
 uint64_t jit_write_neon(dynrec_core_t *core, uint64_t index, arm64_neon_t value) {
-    return core->jit->frontend_ctx->write_neon(core->gprs_array, index, value);
+    return core->jit->frontend_ctx->write_vector(core->gprs_array, index, value);
 }
 
 uint8_t jit_read8(const dynrec_core_t *core, const uint64_t index) {
@@ -34,7 +34,7 @@ jit_cfg_block_t * jit_compile(dynrec_core_t *core, const uint64_t start_pc) {
     uint64_t compiled = 0;
     dynrec_t *jit = core->jit;
 
-    jit_cfg_block_t *first = NULL;
+    jit_cfg_block_t *first = nullptr;
     do {
         jit_cfg_block_t *cfg = funbox_malloc(sizeof(jit_cfg_block_t));
 
@@ -68,10 +68,10 @@ void jit_run(dynrec_core_t *core) {
     const dynrec_t *jit = core->jit;
 
     while (!jit->int_enabled) {
-        jit_cfg_block_t *cfg = robin_map_find(jit->flow_cfg_blocks, start_pc);
+        jit_cfg_block_t *cfg = robin_map_get(jit->flow_cfg_blocks, (void*)start_pc);
         if (!cfg) {
             cfg = jit_compile(core, pc);
-            robin_map_emplace(jit->flow_cfg_blocks, cfg);
+            robin_map_emplace(jit->flow_cfg_blocks, (void*)start_pc, cfg);
         }
         jit_execute(cfg);
     }

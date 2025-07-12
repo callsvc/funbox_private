@@ -16,8 +16,8 @@ dynrec_frontend_arm64_t * dynrec_frontend_arm64_create(dynrec_t *jit) {
     dynrec_frontend_arm64_t * arm64front = funbox_malloc(sizeof(dynrec_frontend_arm64_t));
     arm64front->parent = jit;
 
-    arm64front->funcs64.get_sizeof_gprs = arm64_get_sizeof_gprs;
-    arm64front->funcs64.get_type = arm64_get_type;
+    arm64front->funcslist.get_sizeof_gprs = arm64_get_sizeof_gprs;
+    arm64front->funcslist.get_type = arm64_get_type;
 
     return arm64front;
 }

@@ -9,7 +9,7 @@ dmac_t *dmac_create(ee_t *ee) {
     dmac->ee_core = ee;
     dmac->bridge = ee->bridge;
 
-    const int32_t count = dmac_channel_spr_to - dmac_channel_vif0 + 1;
+    constexpr int32_t count = dmac_channel_spr_to - dmac_channel_vif0 + 1;
     dmac->channels_array = vector_create(count, sizeof(dmac_channel_t));
     vector_setsize(dmac->channels_array, count);
     dmac_channel_type_e _chantype = dmac_channel_vif0;
@@ -28,7 +28,8 @@ void dmac_run(const dmac_t *dmac, size_t *cycles) {
 
     oskill("DMAC is required");
 }
-const int32_t dmac_ctrl_addr = 0x1000E000;
+
+constexpr int32_t dmac_ctrl_addr = 0x1000E000;
 uint32_t dmac_read32(const dmac_t *dmac, const uint32_t addr) {
     if (addr == dmac_ctrl_addr)
         return dmac->d_ctrl;

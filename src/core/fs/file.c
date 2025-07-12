@@ -5,7 +5,7 @@
 #include <core/types.h>
 #include <fs/file.h>
 
-#include "dir.h"
+#include <fs/dir.h>
 
 size_t fs_file_get_size(const fsfile_t *file) {
     return file_getsize((const file_t*)file);
@@ -16,10 +16,10 @@ void fs_file_read(fsfile_t *file, void *out, const size_t size, const size_t off
 }
 
 file_t * file_open(const char* path, const char* mode) {
-    const size_t buffer_len = 8 * 1024;
+    constexpr size_t buffer_len = 8 * 1024;
 
     if (access(path, F_OK))
-        return NULL;
+        return nullptr;
 
     file_t *file = funbox_malloc(sizeof(file_t));
     file->buffer = funbox_malloc(sizeof(char) * buffer_len);

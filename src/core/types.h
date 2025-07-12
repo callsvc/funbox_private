@@ -1,5 +1,6 @@
 #pragma once
 #include <limits.h>
+#include <stdint.h>
 #include <time.h>
 
 #define likely(x)   __builtin_expect(!!(x), 1)
@@ -30,6 +31,7 @@ void procinfo_destroy(procinfo_t*);
 
 char * to_binary(const void *, size_t);
 void * strtobytes(const char * str, void*, size_t);
+uint64_t funbox_rand();
 
 #define ms(x) (x * 1000000)
 

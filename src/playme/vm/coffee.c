@@ -22,7 +22,7 @@ method_t * coffee_find_method(const coffee_t *vm, const char * name) {
                 return method;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void coffee_run(coffee_t *vm, const vector_t *all_classes) {

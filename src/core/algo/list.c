@@ -12,14 +12,14 @@ list_t *list_create(const size_t typesize) {
 
 static void insert(list_t *begin, list_t *listnode) {
     for (list_t *node = begin; node; node = node->next)
-        if (node->next == NULL)
+        if (node->next == nullptr)
             if ((node->next = listnode))
                 break;
 }
 
 void * list_emplace(list_t *list) {
     if (!list->size)
-        return NULL;
+        return nullptr;
     list_t *listnode = funbox_malloc(sizeof(list_t));
     listnode->data = funbox_malloc(list->size);
     insert(list, listnode);
@@ -58,7 +58,7 @@ void list_drop(list_t *list, const size_t index) {
     }
     if (node->next)
         prev->next = node->next;
-    else prev->next = NULL;
+    else prev->next = nullptr;
 
     if (allocated && node->data)
         funbox_free(node->data);
@@ -69,7 +69,7 @@ void * list_get(const list_t *list, size_t index) {
     const list_t *node = list->next;
     for (; node && index; index--)
         node = node->next;
-    return node ? node->data : NULL;
+    return node ? node->data : nullptr;
 }
 void list_destroy(list_t *list) {
     list_t *next = list;

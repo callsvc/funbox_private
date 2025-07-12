@@ -36,10 +36,10 @@ file_t *dir_open_file(const dir_t *dir, const char *filepath, const char *mode) 
 
     if (*mode == 'w')
         if (*dir->vdir.mode != 'w')
-            return NULL;
+            return nullptr;
 
     if (!fs_exists(filepath))
-        return NULL;
+        return nullptr;
     file_t *file = file_open(filepath, "r");
     list_push(dir->cached_files, file);
 
@@ -52,7 +52,7 @@ void dir_close_file(const dir_t *dir, file_t *file) {
         if (thisfile != file)
             continue;
 
-        thisfile->parent = NULL;
+        thisfile->parent = nullptr;
         list_drop(dir->cached_files, i);
         break;
     }

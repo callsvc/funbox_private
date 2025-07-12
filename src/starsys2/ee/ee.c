@@ -110,7 +110,8 @@ void sync(const ee_t *mips) {
 }
 
 uint32_t ee_solve_vaddr(const uint32_t addr, uint64_t *s) {
-    const uint64_t segments[] = {*(uint64_t*)"KUSEG", *(uint64_t*)"KSEG0", *(uint64_t*)"KSEG1", *(uint64_t*)"KSSEG", *(uint64_t*)"KSEG3", *(uint64_t*)"SCRATCH"};
+    // ReSharper disable once CppLocalVariableMayBeConst
+    uint64_t segments[] = {*(uint64_t*)"KUSEG", *(uint64_t*)"KSEG0", *(uint64_t*)"KSEG1", *(uint64_t*)"KSSEG", *(uint64_t*)"KSEG3", *(uint64_t*)"SCRATCH"};
 
     uint64_t seg;
     uint64_t *k_seg = s ? s : &seg;
@@ -142,7 +143,7 @@ uint32_t ee_solve_vaddr(const uint32_t addr, uint64_t *s) {
 
 
     // BIOS
-    static const uint32_t bios_mask[] = {0x1FC00000, 0x9FC00000, 0xBFC00000};
+    static constexpr uint32_t bios_mask[] = {0x1FC00000, 0x9FC00000, 0xBFC00000};
     for (size_t i = 0; i < count_of(bios_mask); i++)
         if (addr >= bios_mask[i] && addr < bios_mask[i] + 0x400000)
             return addr & 0x1FFFFFFF;
@@ -219,7 +220,7 @@ void ee_run(ee_t *mips, size_t *cycles) {
     for (; !mips->isinint && *cycles ; (*cycles)--) {
         const uint32_t fetched = ee_read32(mips, mips->pc);
 
-        const static uint32_t trap_instructions[] = {
+        static constexpr uint32_t trap_instructions[] = {
             0x42000002, // tlbwi
         };
         bool bypass = false;
@@ -265,7 +266,7 @@ void ee_run(ee_t *mips, size_t *cycles) {
 }
 
 void ee_reset(ee_t *mips) {
-    const uint32_t boot_entry = 0xBFC00000;
+    constexpr uint32_t boot_entry = 0xBFC00000;
 
     memset(mips->regs, 0, sizeof(mips->regs));
     cop0_reset(&mips->cop0);

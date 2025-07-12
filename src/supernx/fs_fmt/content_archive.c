@@ -7,6 +7,7 @@
 
 
 bool nca_is(const uint32_t magic) {
+    // ReSharper disable once CppVariableCanBeMadeConstexpr
     const uint32_t nca_versions[] = {*(uint32_t*)"NCA0", *(uint32_t*)"NCA1", *(uint32_t*)"NCA2", *(uint32_t*)"NCA3"};
     for (size_t i = 0; i < 3; i++)
         if (magic == nca_versions[i])
@@ -15,7 +16,7 @@ bool nca_is(const uint32_t magic) {
 }
 
 bool is_empty(const uint8_t *p_data, size_t size) {
-    for (const size_t len64 = sizeof(size_t); size > len64; size -= len64) {
+    for (constexpr size_t len64 = sizeof(size_t); size > len64; size -= len64) {
         if (*(uint64_t*)p_data)
             return false;
         p_data += len64;

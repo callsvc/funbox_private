@@ -6,12 +6,12 @@
 #include <fs_fmt/pfs.h>
 #include <fs_fmt/offset_file.h>
 bool pfs_is_pfs(fsfile_t *file) {
-    const char pfsmagic[] = "PFS0";
+    constexpr char pfsmagic[] = "PFS0";
     uint8_t buffer[strlen(pfsmagic) + sizeof(int)];
     fs_read(file, buffer, sizeof(buffer), 0);
 
     if (memcmp(pfsmagic, buffer, strlen(pfsmagic)) == 0)
-        return (int32_t*)(buffer + sizeof(buffer) - 4) > 0;
+        return *(int32_t*)(buffer + sizeof(buffer) - 4) > 0;
     return false;
 }
 
@@ -30,7 +30,7 @@ struct partition_entry {
 };
 
 void pfs_validate(const pfs_t *pfs, const uint64_t file_size) {
-    const uint64_t max_size = 1ULL << 48;
+    constexpr uint64_t max_size = 1ULL << 48;
     assert(file_size < max_size);
 
     size_t files_sizes = 0;
@@ -76,7 +76,7 @@ fsfile_t * fs_pfs_open_file(fsdir_t *dir, const char * path, const char * mode) 
 
         return (fsfile_t*)offset_file_open(pfs->basefio, file->filename, file->size, file->offset);
     }
-    return NULL;
+    return nullptr;
 }
 
 void fs_pfs_close_file(fsdir_t *dir, fsfile_t *file) {
