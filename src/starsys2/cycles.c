@@ -13,7 +13,7 @@ cycles_t * cycles_create(sony_t * sony) {
         [device_type_dmac] ={.target_dev = sony->dmac, .stepdev = (device_step_func_t)dmac_run, &cycles->dmac_cycles}
     };
 
-    const size_t devs_count = count_of(devices_list);
+    constexpr size_t devs_count = count_of(devices_list);
     cycles->devices = funbox_malloc(sizeof(void *) * devs_count);
     cycles->affinity = funbox_malloc(sizeof(device_type_e) * devs_count);
 

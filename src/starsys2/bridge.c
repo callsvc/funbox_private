@@ -30,7 +30,7 @@ void bridge_destroy(bridge_t * board) {
 }
 
 uint8_t * firmware_program(uint8_t * memory, const uint32_t addr) {
-    const uint32_t bios_mask = 0x3FFFFF;
+    constexpr uint32_t bios_mask = 0x3FFFFF;
     return &memory[addr & bios_mask];
 }
 bool isdmac(const uint32_t addr) {
@@ -41,8 +41,8 @@ bool isdmac(const uint32_t addr) {
 }
 
 bool isfirmwarero(const uint32_t addr) {
-    const uint32_t firm_start = 0x1FC00000; // KSEG1
-    const uint32_t firm_end = 0x20000000;
+    constexpr uint32_t firm_start = 0x1FC00000; // KSEG1
+    constexpr uint32_t firm_end = 0x20000000;
 
     return addr >= firm_start && addr < firm_end;
 }

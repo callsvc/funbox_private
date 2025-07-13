@@ -5,12 +5,12 @@ int main() {
     cycles_t * ticks_gen = cycles_create(sony);
 
     sony_reset_cpus(sony);
-    // cycles_set_affinity_default(ticks_gen, affinity_default_mips_first);
+    cycles_set_affinity_default(ticks_gen, affinity_default_mips_first);
 
     const char * affinity_str = cycles_get_affinity_str(ticks_gen);
     printf("cpu affinity: (%s)\n", affinity_str);
 
-    int64_t count = 10;
+    int64_t count = 100;
     for (;;) {
         cycles_step_devs(ticks_gen);
         sleep_for(ms(50));

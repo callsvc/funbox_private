@@ -29,12 +29,14 @@ void setpc(ee_t *mips, const uint32_t pc) {
 void nop(const ee_t *mips) {
     fputs("nop\n", mips->decfile);
 }
-
 #define ee_set_low32(reg, index, value)\
     if (index)\
         reg[index].lanes[0].low = value
+
 #define ee_get_low32(reg, index)\
     reg[index].lanes[0].low
+#define ee_get_low64(reg, index)\
+    reg[index].low
 
 void mfc0(ee_t *mips, const uint32_t dest, const uint32_t cpsrc) {
     ee_set_low32(mips->regs, dest, cop0_mfc0(&mips->cop0, cpsrc));
@@ -109,29 +111,17 @@ void sync(const ee_t *mips) {
     ee_skip_cycles(mips);
 }
 
-uint32_t ee_solve_vaddr(const uint32_t addr, uint64_t *s) {
-    // ReSharper disable once CppLocalVariableMayBeConst
-    uint64_t segments[] = {*(uint64_t*)"KUSEG", *(uint64_t*)"KSEG0", *(uint64_t*)"KSEG1", *(uint64_t*)"KSSEG", *(uint64_t*)"KSEG3", *(uint64_t*)"SCRATCH"};
-
-    uint64_t seg;
-    uint64_t *k_seg = s ? s : &seg;
-    *k_seg = 0;
+uint32_t ee_solve_vaddr(const uint32_t addr, ee_segment_type_e *eeseg) {
     if (addr < 0x7FFFFFFF)
-        *k_seg = segments[0];
+        *eeseg = ee_segment_kuseg;
     else if (addr >= 0x80000000 && addr < 0x9FFFFFFF)
-        *k_seg = segments[1];
+        *eeseg = ee_segment_kseg0;
     else if (addr >= 0xA0000000 && addr < 0xBFFFFFFF)
-        *k_seg = segments[2];
+        *eeseg = ee_segment_kseg1;
     else if (addr >= 0xC0000000 && addr < 0xDFFFFFFF)
-        *k_seg = segments[3];
+        *eeseg = ee_segment_ksseg;
     else if (addr >= 0xE0000000 && addr < 0xFFFFFFFF)
-        *k_seg = segments[4];
-
-    // Scratchpad RAM
-    if (addr >= 0x70000000 && addr < 0x70004000) {
-        *k_seg = segments[5];
-        return addr & 0x3FFF;
-    }
+        *eeseg = ee_segment_kseg3;
 
     // Main RAM
     if (addr < 0x2000000)
@@ -140,7 +130,13 @@ uint32_t ee_solve_vaddr(const uint32_t addr, uint64_t *s) {
         return addr & 0x1FFFFFFF;
     if (addr >= 0x30100000 && addr < 0x32000000)
         return addr & 0x1EFFFFF;
-
+    if (addr >= 0x70000000 && addr < 0x7001FFFF) {
+        if (addr <= 0x70004000) { // Scratchpad RAM
+            *eeseg = ee_segment_scratchpad;
+            return addr & 0x3FFF;
+        }
+        return addr & 0x1FFFF;
+    }
 
     // BIOS
     static constexpr uint32_t bios_mask[] = {0x1FC00000, 0x9FC00000, 0xBFC00000};
@@ -148,26 +144,28 @@ uint32_t ee_solve_vaddr(const uint32_t addr, uint64_t *s) {
         if (addr >= bios_mask[i] && addr < bios_mask[i] + 0x400000)
             return addr & 0x1FFFFFFF;
 
-    if (*k_seg == segments[2] || *k_seg == segments[0])
+    if (*eeseg == ee_segment_kseg1 || *eeseg == ee_segment_kuseg)
         return addr & 0x1FFFFFFF;
 
     return addr;
 }
 
 uint32_t ee_read32(const ee_t * mips, const uint32_t addr) {
-    uint64_t type;
+    ee_segment_type_e type = {};
     const uint32_t paddr = ee_solve_vaddr(addr, &type);
-    if (unlikely(type == *(uint64_t*)"SCRATCH"))
+    if (unlikely(type == ee_segment_scratchpad))
         return *(uint32_t*)&mips->scratchpad[paddr];
 
     return bridge_read(mips->bridge, paddr);
 }
 void ee_write32(const ee_t * mips, const uint32_t addr, const uint32_t value) {
-    uint64_t type;
+    ee_segment_type_e type = {};
     const uint32_t paddr = ee_solve_vaddr(addr, &type);
-    if (unlikely(type == *(uint64_t*)"SCRATCH"))
+
+    if (unlikely(type == ee_segment_scratchpad))
         *(uint32_t*)&mips->scratchpad = value;
-    else bridge_write(mips->bridge, paddr, value);
+    else
+        bridge_write(mips->bridge, paddr, value);
 }
 
 void sw(const ee_t * mips, const uint32_t source, const uint32_t base, const int16_t offset) {
@@ -176,10 +174,24 @@ void sw(const ee_t * mips, const uint32_t source, const uint32_t base, const int
     const uint32_t value = ee_get_low32(mips->regs, source);
     ee_write32(mips, addr, value);
 }
+void sd(const ee_t *mips, const uint32_t source, const uint32_t base, const int16_t offset) {
+    const uint32_t addr = ee_get_low32(mips->regs, base) + offset;
+    const uint64_t value = ee_get_low64(mips->regs, source);
+
+    ee_write32(mips, addr, value >> 32 & 0xFFFFFFFF);
+    ee_write32(mips, addr + 4, value & 0xFFFFFFFF);
+}
+
+void jalr(ee_t *mips, const uint32_t rd, const uint32_t rs) {
+    // rd = 31
+    ee_set_low32(mips->regs, rd, mips->pc + 8);
+    mips->next_pc = ee_get_low32(mips->regs, rs);
+}
 
 void special_list(ee_t *mips, const uint32_t inst) {
     ee_quit(mips, "not a special instruction", inst, inst >> 26 != 0);
 
+    const uint32_t rd = inst >> 11 & 0x1F;
     const uint32_t rs = inst >> 21 & 0x1F;
     const uint16_t imm = inst >> 6 & 0xFFFF;
     switch (inst & 0x3F) {
@@ -187,6 +199,8 @@ void special_list(ee_t *mips, const uint32_t inst) {
             if (!imm)
                 jr(mips, rs);
             break;
+        case 9:
+            jalr(mips, rd, rs); break;
         case 0xF:
             sync(mips); break; // NOP ALMOST
         default:
@@ -258,6 +272,8 @@ void ee_run(ee_t *mips, size_t *cycles) {
                 lui(mips, rt, imm); break;
             case 0x2B:
                 sw(mips, rt, rs, imm); break;
+            case 0x3F:
+                sd(mips, rt, rs, imm); break;
             default:
                 ee_sigill(mips, fetched);
         }

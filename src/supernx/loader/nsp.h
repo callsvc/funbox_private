@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdbool.h>
 #include <fs/types.h>
 #include <fs_fmt/submission_package.h>
 #include <loader/types.h>

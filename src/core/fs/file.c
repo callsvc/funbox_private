@@ -11,15 +11,22 @@ size_t fs_file_get_size(const fsfile_t *file) {
     return file_getsize((const file_t*)file);
 }
 // ReSharper disable once CppParameterMayBeConstPtrOrRef
-void fs_file_read(fsfile_t *file, void *out, const size_t size, const size_t offset) {
-    file_read((const file_t*)file, out, size, offset);
+void fs_file_read(fsfile_t *file, void *output, const size_t size, const size_t offset) {
+    file_read((const file_t*)file, output, size, offset);
+}
+// ReSharper disable once CppParameterMayBeConstPtrOrRef
+void fs_file_write(fsfile_t *file, const void *input, const size_t size, const size_t offset) {
+    file_write((const file_t*)file, input, size, offset);
 }
 
 file_t * file_open(const char* path, const char* mode) {
     constexpr size_t buffer_len = 8 * 1024;
 
-    if (access(path, F_OK))
-        return nullptr;
+    if (access(path, F_OK)) {
+        if (*mode == 'r')
+            return nullptr;
+        touch(path);
+    }
 
     file_t *file = funbox_malloc(sizeof(file_t));
     file->buffer = funbox_malloc(sizeof(char) * buffer_len);
@@ -30,6 +37,7 @@ file_t * file_open(const char* path, const char* mode) {
     setbuffer(file->handle, file->buffer, buffer_len);
 
     file->vfile.fs_getsize = fs_file_get_size;
+    file->vfile.fs_write = fs_file_write;
     file->vfile.fs_read = fs_file_read;
 
     return file;
@@ -43,10 +51,16 @@ size_t file_getsize(const file_t *file) {
     return result;
 }
 
-void file_read(const file_t *file, void *data, const size_t size, const size_t offset) {
+void file_write(const file_t *file, const void *input, const size_t size, const size_t offset) {
     if (ftell(file->handle) != offset)
         fseek(file->handle, (int64_t)offset, SEEK_SET);
-    fread(data, size, 1, file->handle);
+    fwrite(input, size, 1, file->handle);
+}
+
+void file_read(const file_t *file, void *output, const size_t size, const size_t offset) {
+    if (ftell(file->handle) != offset)
+        fseek(file->handle, (int64_t)offset, SEEK_SET);
+    fread(output, size, 1, file->handle);
 }
 
 const char * file_errorpath(const char *path) {

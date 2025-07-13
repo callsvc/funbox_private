@@ -28,7 +28,7 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
     setfile->size = size;
     setfile->start = offset;
 
-    static const size_t min_cache_size = 2 * 1024 * 1024;
+    static constexpr size_t min_cache_size = 2 * 1024 * 1024;
     if (!fs_is_mapfile(setfile->file) && size < min_cache_size) {
         setfile->buffer = funbox_malloc(size);
         fs_read(setfile->file, setfile->buffer, size, setfile->start);

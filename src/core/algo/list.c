@@ -1,5 +1,4 @@
 
-#include <stdbool.h>
 #include <strings.h>
 #include <types.h>
 #include <algo/list.h>

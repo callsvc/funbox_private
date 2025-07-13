@@ -1,7 +1,11 @@
-#include <stdbool.h>
-#include <string.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 #include <fs/types.h>
+#include <sys/stat.h>
+
+#include <types.h>
 
 fsfile_t * fs_open_file(fsdir_t *dir, const char *path, const char *mode) {
     return dir->open_file(dir, path, mode);
@@ -10,8 +14,27 @@ void fs_close_file(fsdir_t *dir, fsfile_t *file) {
     dir->close_file(dir, file);
 }
 
-void fs_read(fsfile_t *file, void *out, const size_t size, const size_t offset) {
-    file->fs_read(file, out, size, offset);
+void fs_read(fsfile_t *file, void *output, const size_t size, const size_t offset) {
+    file->fs_read(file, output, size, offset);
+}
+
+void fs_write(fsfile_t *file, const void *input, const size_t size, const size_t offset) {
+    file->fs_write(file, input, size, offset);
+}
+
+void create_directories(const char *path) {
+    char buffer[0x10 * 3];
+    for (const char *subpath = path; (subpath = strchr(*subpath == '/' ? subpath + 1 : subpath, '/')); ) {
+        funbox_strncpy(buffer, path, subpath - path);
+        mkdir(buffer, 0755);
+        if (subpath == strrchr(path, '/'))
+            break;
+    }
+}
+
+void touch(const char *path) {
+    create_directories(path);
+    close(open(path, O_RDWR | O_CREAT, 0644));
 }
 
 size_t fs_getsize(const fsfile_t *file) {
@@ -39,6 +62,13 @@ int32_t fs_exists(const char *path) {
     return access(path, F_OK) == 0;
 }
 
+bool fs_exists_in_fsdir(const vector_t *files, const char *path) {
+    for (size_t i = 0; i < vector_size(files); i++)
+        if (strcmp(path, vector_get(files, i)) == 0)
+            return true;
+    return false;
+}
+
 const char * fs_getpath(const void *fsaddr) {
     return fsaddr;
 }
@@ -59,6 +89,19 @@ const char * fs_readline(fsfile_t *file, size_t *offset) {
     } while ((isline = strlen(line)) == false);
     *offset += strlen(line) + 1;
     return line;
+}
+
+const char * to_str64(const uint64_t value, const uint8_t base) {
+    static _Thread_local char buffer[sizeof(value) * 2 + 1];
+
+    switch (base) {
+        case 16:
+            sprintf(buffer, "%8lX", value); break;
+        default:
+        case 10:
+            sprintf(buffer, "%lu", value);
+    }
+    return buffer;
 }
 
 vector_t * fs_grep(const fsdir_t *dir, const char *exp) {

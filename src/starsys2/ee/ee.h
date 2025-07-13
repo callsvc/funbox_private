@@ -1,5 +1,4 @@
 #pragma once
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -7,6 +6,14 @@
 #include <bridge.h>
 #include <ee/cop0.h>
 
+typedef enum ee_segment_type {
+    ee_segment_kuseg,
+    ee_segment_kseg0,
+    ee_segment_kseg1,
+    ee_segment_ksseg,
+    ee_segment_kseg3,
+    ee_segment_scratchpad
+} ee_segment_type_e;
 
 #define R5900_REGS_COUNT 32
 typedef struct ee {

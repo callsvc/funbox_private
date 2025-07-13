@@ -16,6 +16,7 @@ typedef struct file {
 file_t * file_open(const char*, const char*);
 
 size_t file_getsize(const file_t *file);
+void file_write(const file_t *, const void *, size_t, size_t offset) ;
 void file_read(const file_t*, void*, size_t, size_t);
 
 const char * file_errorpath(const char*);

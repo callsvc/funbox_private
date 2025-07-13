@@ -12,7 +12,7 @@ vector_t * list_all_files(const char *dirpath) {
     if (!directory)
         return nullptr;
     vector_t * vec = vector_create(10, 0);
-    for (const struct dirent *entry = nullptr; (entry = readdir(directory)); )
+    for (const struct dirent *entry; (entry = readdir(directory)); )
         if (*entry->d_name != '.')
             vector_emplace(vec, entry->d_name);
     closedir(directory);
@@ -21,7 +21,7 @@ vector_t * list_all_files(const char *dirpath) {
 }
 
 char * fs_build_path(const int32_t depth, ...) {
-    va_list ap;
+    va_list ap = {};
     va_start(ap, depth);
 
     char * buffer = funbox_malloc(PATH_MAX);

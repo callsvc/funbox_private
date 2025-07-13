@@ -56,6 +56,7 @@ typedef enum encryption_type : uint8_t {
     encryption_type_aes_ctr_ex,
 } encryption_type_e;
 
+#define NCA_FS_HASH_DATA_SIZE 0xF8
 #pragma pack(push, 1)
 typedef struct nca_fs_header {
     uint16_t version;
@@ -64,7 +65,7 @@ typedef struct nca_fs_header {
     encryption_type_e enc_type;
     uint8_t metadata_hash_type;
     uint16_t _pad0;
-    uint8_t hash_data[0xF8];
+    uint8_t hash_data[NCA_FS_HASH_DATA_SIZE];
     uint8_t patch_info[0x40];
     uint32_t generation;
     uint32_t secure_value;
@@ -117,9 +118,11 @@ typedef struct content_archive {
     bool encrypted;
     content_type_e type;
 
+    uint64_t program_id;
     list_t *pfs_list;
 } content_archive_t;
 
 
 content_archive_t * content_archive_create(keys_db_t*, fsdir_t *, const char *);
+pfs_t * content_archive_get_pfs(const content_archive_t*, size_t);
 void content_archive_destroy(content_archive_t *);
