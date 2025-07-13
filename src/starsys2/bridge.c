@@ -4,10 +4,10 @@
 
 
 bridge_t * bridge_create(sony_t *sony) {
-    bridge_t *board = funbox_malloc(sizeof(bridge_t));
+    bridge_t *board = fb_malloc(sizeof(bridge_t));
 
     board->pstwo = sony;
-    board->ee_memory = funbox_malloc(sizeof(uint8_t) * 32 * 1024 * 1024);
+    board->ee_memory = fb_malloc(sizeof(uint8_t) * 32 * 1024 * 1024);
 
     if (!sony->firmpath)
         oskill("a firmware is needed to continue");
@@ -22,11 +22,11 @@ bridge_t * bridge_create(sony_t *sony) {
     return board;
 }
 void bridge_destroy(bridge_t * board) {
-    funbox_free(board->ee_memory);
+    fb_free(board->ee_memory);
 
     board->ee_memory = nullptr;
 
-    funbox_free(board);
+    fb_free(board);
 }
 
 uint8_t * firmware_program(uint8_t * memory, const uint32_t addr) {

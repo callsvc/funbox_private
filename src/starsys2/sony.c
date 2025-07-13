@@ -3,7 +3,7 @@
 #include <fs/types.h>
 
 sony_t * sony_create() {
-    sony_t *sony = funbox_malloc(sizeof(sony_t));
+    sony_t *sony = fb_malloc(sizeof(sony_t));
     sony->procinfo = procinfo_create();
 
     sony->unkpaddr = vector_create(0, sizeof(uint32_t));
@@ -27,11 +27,11 @@ void sony_destroy(sony_t *sony) {
     ee_destroy(sony->mips);
     mips_destroy(sony->iop);
     if (sony->firmpath)
-        funbox_free((char*)sony->firmpath);
+        fb_free((char*)sony->firmpath);
 
     procinfo_destroy(sony->procinfo);
     vector_destroy(sony->unkpaddr);
     bridge_destroy(sony->bridge);
-    funbox_free(sony);
+    fb_free(sony);
 
 }

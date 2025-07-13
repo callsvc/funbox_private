@@ -22,7 +22,7 @@ int main() {
         fs_write((fsfile_t*)logo_file, vector_begin(logo), vector_size(logo), 0);
 
         vector_destroy(logo);
-        funbox_free(output_logo);
+        fb_free(output_logo);
         file_close(logo_file);
     }
 

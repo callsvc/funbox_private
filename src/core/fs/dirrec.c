@@ -24,7 +24,7 @@ char * fs_build_path(const int32_t depth, ...) {
     va_list ap = {};
     va_start(ap, depth);
 
-    char * buffer = funbox_malloc(PATH_MAX);
+    char * buffer = fb_malloc(PATH_MAX);
     if (!buffer)
         return nullptr;
     *buffer = ':';

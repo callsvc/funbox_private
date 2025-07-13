@@ -18,7 +18,7 @@ size_t fs_offset_file_getsize(const fsfile_t *file) {
 }
 
 offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t size, const uint64_t offset) {
-    offset_file_t *setfile = funbox_malloc(sizeof(offset_file_t));
+    offset_file_t *setfile = fb_malloc(sizeof(offset_file_t));
 
     strcpy(setfile->vfile.path, name);
     setfile->vfile.fs_getsize = fs_offset_file_getsize;
@@ -30,7 +30,7 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
 
     static constexpr size_t min_cache_size = 2 * 1024 * 1024;
     if (!fs_is_mapfile(setfile->file) && size < min_cache_size) {
-        setfile->buffer = funbox_malloc(size);
+        setfile->buffer = fb_malloc(size);
         fs_read(setfile->file, setfile->buffer, size, setfile->start);
     }
 
@@ -39,6 +39,6 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
 void offset_file_close(const fsfile_t *base, offset_file_t *file) {
     if (file->file != base)
         oskill("unable to close file");
-    funbox_free(file->buffer);
-    funbox_free(file);
+    fb_free(file->buffer);
+    fb_free(file);
 }

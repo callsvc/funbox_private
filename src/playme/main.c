@@ -32,7 +32,7 @@ int main() {
 
     char *classpath = strings_concat(2, strrchr(mainclass, ',') + 2, ".class");
     fsfile_t *mainfile = fs_open_file((fsdir_t*)micromid, classpath, "r");
-    funbox_free(classpath);
+    fb_free(classpath);
 
     if (!mainfile)
         oskill("can't open the main class file specified by the manifest");

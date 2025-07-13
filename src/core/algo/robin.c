@@ -50,13 +50,13 @@ uint64_t siphash(const void *input, size_t len, const uint8_t key[16]) {
 }
 
 robin_map_t * robin_map_create(uint8_t types[2]) {
-    robin_map_t * robin_map = funbox_malloc(sizeof(robin_map_t));
+    robin_map_t * robin_map = fb_malloc(sizeof(robin_map_t));
 
     robin_map->bucket = vector_create(0, sizeof(robin_map_entry_t));
     memcpy(robin_map->pair_types, types, sizeof(uint8_t) * 2);
 
-    const uint64_t a = funbox_rand();
-    const uint64_t b = funbox_rand();
+    const uint64_t a = fb_rand();
+    const uint64_t b = fb_rand();
     memcpy(robin_map->secret_key, &a, 8);
     memcpy(&robin_map->secret_key[8], &b, 8);
 
@@ -204,7 +204,7 @@ void robin_map_foreach(const robin_map_t *robin_map, const robin_callback_t call
 
 void robin_map_destroy(robin_map_t *robin_map) {
     vector_destroy(robin_map->bucket);
-    funbox_free(robin_map);
+    fb_free(robin_map);
 }
 
 

@@ -10,9 +10,9 @@ void envos_issafe() {
     if (euid == 0)
         oskill("You can't run as a root user!");
 }
-void funbox_create() {
+void fb_create() {
     strcpy(username, getenv("HOME"));
 }
 
-void funbox_destroy() {
+void fb_destroy() {
 }

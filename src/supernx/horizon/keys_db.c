@@ -16,7 +16,7 @@ void keys_compile_regex(regex_t *regex, const char *exp) {
 const char * named_keys[] = {"header_key"};
 
 keys_db_t *keys_db_create() {
-    keys_db_t *kdb = funbox_malloc(sizeof(keys_db_t));
+    keys_db_t *kdb = fb_malloc(sizeof(keys_db_t));
     kdb->keys_path = list_create(0);
     kdb->titles = set_create();
     kdb->tickets = list_create(0);
@@ -32,7 +32,7 @@ keys_db_t *keys_db_create() {
 
 static char* get_keyline(char *output, const char * line) {
     char *key_val = strchr(line, '=') + 2;
-    strncpy(output, line, strchr(line, '=') - line - 1);
+    fb_strcopy(output, line, strchr(line, '=') - line - 1);
     return key_val;
 }
 
@@ -103,7 +103,7 @@ void keys_db_load(keys_db_t *kdb, fsfile_t *file) {
     do {
         static char keypair[1000] = {};
         const char *last = strchr(line, '\n');
-        strncpy(keypair, line, last ? last - line : strlen(line));
+        fb_strcopy(keypair, line, last ? last - line : strlen(line));
 
         if (regexec(&kdb->title_regex, keypair, 0, nullptr, 0) == 0)
             keys_add_title(kdb, keypair);
@@ -138,5 +138,5 @@ void keys_db_destroy(keys_db_t *kdb) {
     list_destroy(kdb->keys_path);
     ht_destroy(kdb->named_keys);
     ht_destroy(kdb->tag_keys256);
-    funbox_free(kdb);
+    fb_free(kdb);
 }

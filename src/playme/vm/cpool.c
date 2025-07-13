@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include <vm/cpool.h>
@@ -19,12 +18,12 @@ uint32_t read_pvalue32(const uint8_t **begin) {
 }
 void read_utf8str(const uint8_t **begin, char *out) {
     const uint16_t len = read_pvalue16(begin);
-    strncpy(out, (char*)*begin, len);
+    fb_strcopy(out, (char*)*begin, len);
     *begin += len;
 }
 
 cpool_t *cpool_create(const uint8_t *begin, const size_t size) {
-    cpool_t *pool = funbox_malloc(sizeof(cpool_t));
+    cpool_t *pool = fb_malloc(sizeof(cpool_t));
     pool->constants = list_create(sizeof(cp_entry_t));
 
     const uint8_t *bytes = begin;
@@ -85,5 +84,5 @@ void cpool_strings(const cpool_t *pool, FILE *file) {
 
 void cpool_destroy(cpool_t *pool) {
     list_destroy(pool->constants);
-    free(pool);
+    fb_free(pool);
 }

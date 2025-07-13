@@ -3,7 +3,7 @@
 
 #include <cycles.h>
 cycles_t * cycles_create(sony_t * sony) {
-    cycles_t * cycles = funbox_malloc(sizeof(cycles_t));
+    cycles_t * cycles = fb_malloc(sizeof(cycles_t));
     cycles->sony = sony;
     cycles->affinity_isrng = true;
 
@@ -14,11 +14,11 @@ cycles_t * cycles_create(sony_t * sony) {
     };
 
     constexpr size_t devs_count = count_of(devices_list);
-    cycles->devices = funbox_malloc(sizeof(void *) * devs_count);
-    cycles->affinity = funbox_malloc(sizeof(device_type_e) * devs_count);
+    cycles->devices = fb_malloc(sizeof(void *) * devs_count);
+    cycles->affinity = fb_malloc(sizeof(device_type_e) * devs_count);
 
     for (size_t i = 0; i < devs_count; i++) {
-        cycles->devices[i] = funbox_malloc(sizeof(device_step_t));
+        cycles->devices[i] = fb_malloc(sizeof(device_step_t));
         memcpy(cycles->devices[i], &devices_list[i], sizeof(devices_list[i]));
 
         cycles->devices_count++;
@@ -47,7 +47,7 @@ void cycles_set_affinity(cycles_t *cycles, const char * str) {
             *devs++ = device_type_iop;
         else if (!strcmp(dev, "dmac"))
             *devs++ = device_type_dmac;
-    funbox_free(strdevs);
+    fb_free(strdevs);
 }
 
 const char * cycles_get_affinity_desc(const affinity_default_type_e type) {
@@ -83,12 +83,12 @@ const char * cycles_get_affinity_str(const cycles_t *cycles) {
 
 void cycles_destroy(cycles_t * cycles) {
     for (size_t i = 0; i < cycles->devices_count; i++)
-        funbox_free(cycles->devices[i]);
+        fb_free(cycles->devices[i]);
 
-    funbox_free(cycles->devices);
-    funbox_free(cycles->affinity);
+    fb_free(cycles->devices);
+    fb_free(cycles->affinity);
 
-    funbox_free(cycles);
+    fb_free(cycles);
 }
 
 void cycles_step_device(cycles_t * cycles, const device_type_e device) {
@@ -112,10 +112,10 @@ void cycles_step_devs(cycles_t * cycles) {
     }
     const bool ee_can_execute = cycles->last_executed != device_type_dmac;
 
-    if (funbox_rand() % (cycles->count / 16) && ee_can_execute)
+    if (fb_rand() % (cycles->count / 16) && ee_can_execute)
         cycles_step_device(cycles, device_type_ee);
-    if (funbox_rand() % (cycles->count / 4))
+    if (fb_rand() % (cycles->count / 4))
         cycles_step_device(cycles, device_type_iop);
-    if (funbox_rand() % (cycles->count / 16))
+    if (fb_rand() % (cycles->count / 16))
         cycles_step_device(cycles, device_type_dmac);
 }

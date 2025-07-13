@@ -15,11 +15,11 @@ void find_keys(keys_db_t *keys, const dir_t *dir, const char *keyname) {
     } else {
         oskill("can't find keys");
     }
-    funbox_free(keypath);
+    fb_free(keypath);
 }
 
 hos_t *hos_create(const char *dir) {
-    hos_t * hos = funbox_malloc(sizeof(hos_t));
+    hos_t * hos = fb_malloc(sizeof(hos_t));
     hos->kdb = keys_db_create();
 
     dir_t *wdir = dir_open(dir, "r");
@@ -35,5 +35,5 @@ hos_t *hos_create(const char *dir) {
 
 void hos_destroy(hos_t *hos) {
     keys_db_destroy(hos->kdb);
-    funbox_free(hos);
+    fb_free(hos);
 }

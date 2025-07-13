@@ -13,7 +13,7 @@ dynrec_cpu_type_e arm64_get_type(const struct dynrec_frontend *) {
 }
 
 dynrec_frontend_arm64_t * dynrec_frontend_arm64_create(dynrec_t *jit) {
-    dynrec_frontend_arm64_t * arm64front = funbox_malloc(sizeof(dynrec_frontend_arm64_t));
+    dynrec_frontend_arm64_t * arm64front = fb_malloc(sizeof(dynrec_frontend_arm64_t));
     arm64front->parent = jit;
 
     arm64front->funcslist.get_sizeof_gprs = arm64_get_sizeof_gprs;
@@ -23,5 +23,5 @@ dynrec_frontend_arm64_t * dynrec_frontend_arm64_create(dynrec_t *jit) {
 }
 void dynrec_frontend_arm64_destroy(dynrec_frontend_arm64_t *arm64front) {
     assert(arm64front->parent->frontend_ctx != (dynrec_frontend_t*)arm64front);
-    funbox_free(arm64front);
+    fb_free(arm64front);
 }

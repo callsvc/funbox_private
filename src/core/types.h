@@ -11,8 +11,8 @@ void envos_issafe();
 
 extern char username[30];
 
-void funbox_create();
-void funbox_destroy();
+void fb_create();
+void fb_destroy();
 
 typedef struct procinfo {
     char proc_cwd[PATH_MAX];
@@ -20,9 +20,9 @@ typedef struct procinfo {
 } procinfo_t;
 
 char * trim(char *s);
-void * funbox_malloc(size_t);
-void funbox_free(void *);
-char * funbox_strncpy(char *, const char *, size_t);
+void * fb_malloc(size_t);
+void fb_free(void *);
+char * fb_strcopy(char *, const char *, size_t);
 
 char* strings_concat(size_t, ...);
 
@@ -31,7 +31,7 @@ void procinfo_destroy(procinfo_t*);
 
 char * to_binary(const void *, size_t);
 void * strtobytes(const char * str, void*, size_t);
-uint64_t funbox_rand();
+uint64_t fb_rand();
 
 #define ms(x) (x * 1000000)
 

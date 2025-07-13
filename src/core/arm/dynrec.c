@@ -10,7 +10,7 @@
 #include <arm/frontend/aarch64/arm64_frontend.h>
 
 dynrec_t *dynrec_create(const dynrec_cpu_type_e type) {
-    dynrec_t *jit = funbox_malloc(sizeof(dynrec_t));
+    dynrec_t *jit = fb_malloc(sizeof(dynrec_t));
     jit->cores_list = list_create(0);
 
     uint8_t types[] = {1, 2};
@@ -30,8 +30,8 @@ dynrec_core_t * dynrec_enablecore(dynrec_t *jit) {
     if (!jit->frontend_ctx)
         return nullptr;
 
-    dynrec_core_t * earlycore = funbox_malloc(sizeof(dynrec_core_t));
-    earlycore->gprs_array = funbox_malloc(jit->frontend_ctx->get_sizeof_gprs());
+    dynrec_core_t * earlycore = fb_malloc(sizeof(dynrec_core_t));
+    earlycore->gprs_array = fb_malloc(jit->frontend_ctx->get_sizeof_gprs());
     earlycore->jit = jit;
 
     list_push(jit->cores_list, earlycore);
@@ -43,15 +43,15 @@ void dynrec_disablecore(const dynrec_t * jit, dynrec_core_t *core) {
         if (list_get(jit->cores_list, i) == core)
             list_drop(jit->cores_list, i);
 
-    free(core->gprs_array);
-    funbox_free(core);
+    fb_free(core->gprs_array);
+    fb_free(core);
 }
 void dynrec_destroy(dynrec_t *jit) {
     for (size_t i = 0; i < list_size(jit->cores_list); i++) {
         dynrec_core_t *core = list_get(jit->cores_list, i);
-        free(core->gprs_array);
+        fb_free(core->gprs_array);
         list_drop(jit->cores_list, i);
-        free(core);
+        fb_free(core);
     }
 
     list_destroy(jit->cores_list);
@@ -63,5 +63,5 @@ void dynrec_destroy(dynrec_t *jit) {
         dynrec_frontend_arm64_destroy((dynrec_frontend_arm64_t*)front);
     }
 
-    funbox_free(jit);
+    fb_free(jit);
 }

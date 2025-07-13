@@ -5,7 +5,7 @@
 #include <sony.h>
 #include <string.h>
 dmac_t *dmac_create(ee_t *ee) {
-    dmac_t * dmac = funbox_malloc(sizeof(dmac_t));
+    dmac_t * dmac = fb_malloc(sizeof(dmac_t));
     dmac->ee_core = ee;
     dmac->bridge = ee->bridge;
 
@@ -59,5 +59,5 @@ void dmac_write32(dmac_t *dmac, const uint32_t addr, const uint32_t value) {
 
 void dmac_destroy(dmac_t *dmac) {
     vector_destroy(dmac->channels_array);
-    funbox_free(dmac);
+    fb_free(dmac);
 }

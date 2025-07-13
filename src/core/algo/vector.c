@@ -8,7 +8,7 @@
 
 // typesize can be zero to specify a dynamic array of strings
 vector_t *vector_create(const size_t count, const size_t typesize) {
-    vector_t *vec = funbox_malloc(sizeof(vector_t));
+    vector_t *vec = fb_malloc(sizeof(vector_t));
     vec->type = typesize;
     if (count)
         vector_resize(vec, count);
@@ -50,13 +50,13 @@ void * vector_get(const vector_t *vec, size_t index) {
 }
 
 static void vector_realloc(vector_t *vec, const size_t size) {
-    void *result = funbox_malloc(size);
+    void *result = fb_malloc(size);
     if (!vec->data)
         if ((vec->data = result))
             if ((vec->capacity = size))
                 return;
     memcpy(result, vec->data, vec->size);
-    funbox_free(vec->data);
+    fb_free(vec->data);
 
     vec->capacity = size;
     vec->data = result;
@@ -84,12 +84,12 @@ void * vector_emplace(vector_t *vec, const void *data) {
 
 void vector_destroy(vector_t *vec) {
     if (vec->data)
-        funbox_free(vec->data);
-    funbox_free(vec);
+        fb_free(vec->data);
+    fb_free(vec);
 }
 
 vector_t * vector_clone(const vector_t *clone) {
-    vector_t * vec = funbox_malloc(sizeof(vector_t));
+    vector_t * vec = fb_malloc(sizeof(vector_t));
     vec->size = clone->size;
     vec->type = clone->type;
     vec->capacity = clone->capacity;
@@ -97,7 +97,7 @@ vector_t * vector_clone(const vector_t *clone) {
     if (!clone->data)
         return vec;
 
-    vec->data = funbox_malloc(clone->capacity);
+    vec->data = fb_malloc(clone->capacity);
     memcpy(vec->data, clone->data, vec->size);
     return vec;
 }

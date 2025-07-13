@@ -38,7 +38,7 @@ typedef struct pfs_list_item {
 } pfs_list_item_t;
 
 pfs_list_item_t * open_decrypted_file(const content_archive_t *nca, const nca_fs_entry_t *this_fs, const nca_fs_header_t * fs_info, const size_t *file_details) {
-    pfs_list_item_t * list_item = funbox_malloc(sizeof(pfs_list_item_t));
+    pfs_list_item_t * list_item = fb_malloc(sizeof(pfs_list_item_t));
     list_item->type = nca->type;
 
     list_item->aes_encrypted = fs_info->enc_type != encryption_type_none;
@@ -95,7 +95,7 @@ _Static_assert(sizeof(struct integrity_meta_info) == NCA_FS_HASH_DATA_SIZE);
 
 size_t* content_archive_fix_offsets_for_file(const nca_fs_header_t *file_info) {
     constexpr size_t list_size = sizeof(size_t) * 2;
-    size_t * offset_size = funbox_malloc(list_size);
+    size_t * offset_size = fb_malloc(list_size);
 
     if (file_info->type == fs_type_partition_fs && file_info->hash_type == 2) {
         const hashdata_hsd_t * hashable = (hashdata_hsd_t*)file_info->hash_data;
@@ -110,14 +110,14 @@ size_t* content_archive_fix_offsets_for_file(const nca_fs_header_t *file_info) {
         const uint64_t max_level = integrity->max_layers - 2;
         memcpy(offset_size, &integrity->levels[max_level], list_size);
     } else {
-        funbox_free(offset_size);
+        fb_free(offset_size);
         offset_size = nullptr;
     }
     return offset_size;
 }
 
 void content_archive_get_all_files(const content_archive_t *nca, const nca_type_header_t *nca_fs) {
-    nca_fs_header_t *nca_fs_info = funbox_malloc(sizeof(nca_fs_header_t));
+    nca_fs_header_t *nca_fs_info = fb_malloc(sizeof(nca_fs_header_t));
     for (size_t i = 0; i < NCA_FS_ENTRIES_COUNT; i++) {
         if (is_empty((uint8_t*)&nca_fs->files_entries[i], sizeof(nca_fs_entry_t)))
             continue;
@@ -136,20 +136,20 @@ void content_archive_get_all_files(const content_archive_t *nca, const nca_type_
                 list_push(nca->pfs_list, list_item);
         }
 
-        funbox_free(file_bis); // can be nullptr in some cases
+        fb_free(file_bis); // can be nullptr in some cases
     }
-    funbox_free(nca_fs_info);
+    fb_free(nca_fs_info);
 }
 
 content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *pfs, const char *path) {
-    content_archive_t *nca = funbox_malloc(sizeof(content_archive_t));
+    content_archive_t *nca = fb_malloc(sizeof(content_archive_t));
     nca->parent_pfs = pfs;
     nca->keys = keys;
     nca->pfs_list = list_create(0);
 
     nca->ncafile = fs_open_file(pfs, path, "r");
 
-    nca_type_header_t *nca_info = funbox_malloc(sizeof(nca_type_header_t));
+    nca_type_header_t *nca_info = fb_malloc(sizeof(nca_type_header_t));
     fs_read(nca->ncafile, nca_info, sizeof(*nca_info), 0);
     if (!nca_is(nca_info->magic)) {
         const key256_t *mainkey = keys->header_key;
@@ -171,7 +171,7 @@ content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *pfs, const 
     nca->program_id = nca_info->program_id;
 
     content_archive_get_all_files(nca, nca_info);
-    funbox_free(nca_info);
+    fb_free(nca_info);
 
     return nca;
 }
@@ -191,7 +191,7 @@ void content_archive_destroy(content_archive_t *nca) {
             pfs_destroy(list_item->pfs);
         if (!list_item->aes_encrypted)
             offset_file_close(nca->encrypted ? ((aes_file_t*)nca->ncafile)->parent : nca->ncafile, (offset_file_t*)list_item->file);
-        funbox_free(list_item);
+        fb_free(list_item);
     }
     list_destroy(nca->pfs_list);
 
@@ -203,5 +203,5 @@ void content_archive_destroy(content_archive_t *nca) {
     } else {
         fs_close_file(nca->parent_pfs, nca->ncafile);
     }
-    funbox_free(nca);
+    fb_free(nca);
 }

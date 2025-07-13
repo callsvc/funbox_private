@@ -95,7 +95,7 @@ size_t fs_aes_file_getsize(const fsfile_t *file) {
 }
 
 aes_file_t * aes_file_open(fsfile_t * file, const aes_type_e type, const char *mode) {
-    aes_file_t * aes_file = funbox_malloc(sizeof(aes_file_t));
+    aes_file_t * aes_file = fb_malloc(sizeof(aes_file_t));
     aes_file->parent = file;
 
     strcpy(aes_file->mode, mode);
@@ -141,5 +141,5 @@ void aes_file_close(aes_file_t *aes_file) {
     mbedtls_cipher_free(&aes_file->context);
     if (aes_file->buffer)
         vector_destroy(aes_file->buffer);
-    funbox_free(aes_file);
+    fb_free(aes_file);
 }

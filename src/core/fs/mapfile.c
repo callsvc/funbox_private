@@ -24,7 +24,7 @@ size_t fs_mapfile_getsize(const fsfile_t *file) {
 }
 
 mapfile_t * mapfile_open(const fsfile_t *file) {
-    mapfile_t *mapfile = funbox_malloc(sizeof(mapfile_t));
+    mapfile_t *mapfile = fb_malloc(sizeof(mapfile_t));
     strcpy(mapfile->vfile.path, fs_getpath(file));
     mapfile->vfile.type = *(uint32_t*)"MAPFILE";
 
@@ -43,5 +43,5 @@ void mapfile_close(mapfile_t *mapfile) {
     if (mapfile->buffer)
         munmap(mapfile->buffer, len);
     close(mapfile->fd);
-    funbox_free(mapfile);
+    fb_free(mapfile);
 }

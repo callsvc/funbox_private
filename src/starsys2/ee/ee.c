@@ -9,8 +9,8 @@ void ee_skip_cycles(const ee_t *mips) {
 }
 
 ee_t * ee_create(bridge_t *board) {
-    ee_t * mips = funbox_malloc(sizeof(ee_t));
-    mips->scratchpad = funbox_malloc(16 * 1024);
+    ee_t * mips = fb_malloc(sizeof(ee_t));
+    mips->scratchpad = fb_malloc(16 * 1024);
     mips->decfile = stdout;
     mips->bridge = board;
     return mips;
@@ -291,6 +291,6 @@ void ee_reset(ee_t *mips) {
 void ee_destroy(ee_t *mips) {
     if (mips->decfile != stdout)
         fclose(mips->decfile);
-    funbox_free(mips->scratchpad);
-    funbox_free(mips);
+    fb_free(mips->scratchpad);
+    fb_free(mips);
 }

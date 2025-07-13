@@ -12,7 +12,7 @@ char * strings_concat(const size_t count, ...) {
     for (size_t i = 0; i < count; i++)
         size += strlen(va_arg(va, char*));
 
-    char *result = funbox_malloc(size + 1);
+    char *result = fb_malloc(size + 1);
     char *ptr = result;
     for (size_t i = 0; i < count; i++) {
         const char *str = va_arg(cp, const char*);
@@ -45,7 +45,7 @@ char *trim(char *s) {
     return rtrim(ltrim(s)); 
 }
 
-char *funbox_strncpy(char * dest, const char * src, const size_t size) {
+char *fb_strcopy(char * dest, const char * src, const size_t size) {
     strncpy(dest, src, size);
     dest[size] = '\0';
     return dest;

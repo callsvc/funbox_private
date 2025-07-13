@@ -15,7 +15,7 @@ uint64_t hash_key_fnv1a(const char *_key) {
 }
 
 ht_t * ht_create(const size_t bucket, const size_t item_size, const char **keys_list) {
-    ht_t * ht = funbox_malloc(sizeof(ht_t));
+    ht_t * ht = fb_malloc(sizeof(ht_t));
 
     ht->item_size = item_size;
 
@@ -49,7 +49,7 @@ void ht_insert(const ht_t * ht, const char *key, const void *value) {
     if (!strlen(hv->key))
         strcpy(hv->key, key);
     if (!hv->value)
-        hv->value = funbox_malloc(ht->item_size);
+        hv->value = fb_malloc(ht->item_size);
     if (value)
         memcpy(hv->value, value, ht->item_size);
 }
@@ -67,8 +67,8 @@ bool ht_contains(const ht_t *ht, const char *key) {
 void ht_destroy(ht_t *ht) {
     for (size_t i = 0; i < vector_size(ht->bucket); i++) {
         const ht_value_t * hv = vector_get(ht->bucket, i);
-        funbox_free(hv->value);
+        fb_free(hv->value);
     }
     vector_destroy(ht->bucket);
-    funbox_free(ht);
+    fb_free(ht);
 }

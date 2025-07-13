@@ -5,9 +5,9 @@
 #include <vm/types.h>
 #define COFFEE_STACK_SIZE (16 * 1024)
 coffee_t * coffee_vm() {
-    coffee_t * vm = funbox_malloc(sizeof(coffee_t));
+    coffee_t * vm = fb_malloc(sizeof(coffee_t));
     vm->pc = vm->sp = COFFEE_STACK_SIZE;
-    vm->stack = funbox_malloc(COFFEE_STACK_SIZE);
+    vm->stack = fb_malloc(COFFEE_STACK_SIZE);
 
     vm->classes = list_create(0);
     return vm;
@@ -51,6 +51,6 @@ inline void coffee_destroy(coffee_t *vm) {
     for (size_t i = 0; i < list_size(vm->classes); i++)
         class_destroy(list_get(vm->classes, i));
     list_destroy(vm->classes);
-    funbox_free(vm->stack);
-    funbox_free(vm);
+    fb_free(vm->stack);
+    fb_free(vm);
 }

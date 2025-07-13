@@ -44,7 +44,7 @@ void pfs_validate(const pfs_t *pfs, const uint64_t file_size) {
 }
 
 void pfs_getall(const pfs_t *pfs, fsfile_t * file, const uint64_t tableoffset, size_t *offset, const struct pfs_header *pfs_header) {
-    char *strtable = funbox_malloc(pfs_header->str_table);
+    char *strtable = fb_malloc(pfs_header->str_table);
     fs_read(file, strtable, pfs_header->str_table, tableoffset);
     const size_t filedata = tableoffset + pfs_header->str_table;
 
@@ -61,7 +61,7 @@ void pfs_getall(const pfs_t *pfs, fsfile_t * file, const uint64_t tableoffset, s
 
         vector_emplace(pfs->files, &pfs_file);
     }
-    funbox_free(strtable);
+    fb_free(strtable);
 }
 
 fsfile_t * fs_pfs_open_file(fsdir_t *dir, const char * path, const char * mode) {
@@ -98,7 +98,7 @@ vector_t *fs_pfs_list_all_files(const fsdir_t *dir) {
 }
 
 pfs_t * pfs_create(fsfile_t *file) {
-    pfs_t * pfs = funbox_malloc(sizeof(pfs_t));
+    pfs_t * pfs = fb_malloc(sizeof(pfs_t));
     pfs->basefio = file;
 
     strcpy(pfs->vdir.path, fs_getpath(file));
@@ -133,5 +133,5 @@ void pfs_print_files(const pfs_t *pfs) {
 void pfs_destroy(pfs_t *pfs) {
     vector_destroy(pfs->files_paths);
     vector_destroy(pfs->files);
-    funbox_free(pfs);
+    fb_free(pfs);
 }

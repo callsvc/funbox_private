@@ -5,7 +5,7 @@
 
 int main() {
     envos_issafe();
-    funbox_create();
+    fb_create();
 
     config_t *config = config_create();
     pkg_list_all(config);

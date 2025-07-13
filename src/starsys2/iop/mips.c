@@ -2,7 +2,7 @@
 #include <types.h>
 #include <iop/mips.h>
 mips_t * mips_create(bridge_t * board) {
-    mips_t * mips = funbox_malloc(sizeof(mips_t));
+    mips_t * mips = fb_malloc(sizeof(mips_t));
     mips->bridge = board;
     return mips;
 }
@@ -30,5 +30,5 @@ void mips_run(mips_t *mips, size_t *cycles) {
 }
 
 void mips_destroy(mips_t *mips) {
-    funbox_free(mips);
+    fb_free(mips);
 }

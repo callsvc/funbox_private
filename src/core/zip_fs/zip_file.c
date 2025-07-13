@@ -26,7 +26,7 @@ size_t zipfile_getsize(const zipfile_t *file) {
 }
 
 zipfile_t * zipfile_open(zip_t *zip, const size_t index, const size_t size) {
-    zipfile_t *file = funbox_malloc(sizeof(zipfile_t));
+    zipfile_t *file = fb_malloc(sizeof(zipfile_t));
     file->zipentry = zip_fopen_index(zip, index, 0);
     file->zip = zip;
     file->index = index;
@@ -40,5 +40,5 @@ zipfile_t * zipfile_open(zip_t *zip, const size_t index, const size_t size) {
 }
 void zipfile_close(zipfile_t *file) {
     zip_fclose(file->zipentry);
-    funbox_free(file);
+    fb_free(file);
 }

@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <types.h>
 
-void * funbox_malloc(const size_t size) {
+void * fb_malloc(const size_t size) {
     if (!size)
         return nullptr;
     void * result = malloc(size);
@@ -13,9 +13,9 @@ void * funbox_malloc(const size_t size) {
     return result;
 }
 
-void funbox_free(void *ptr) {
+void fb_free(void *ptr) {
     if (ptr)
-        free(ptr);
+        fb_free(ptr);
 }
 
 char * to_binary(const void *value, const size_t size) {
@@ -69,7 +69,7 @@ void sleep_for(const size_t ns) {
     }
 }
 
-uint64_t funbox_rand() {
+uint64_t fb_rand() {
     static _Thread_local uint64_t buffer[0x100];
     static _Thread_local uint64_t bidx;
 

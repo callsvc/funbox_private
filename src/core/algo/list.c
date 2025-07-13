@@ -4,7 +4,7 @@
 #include <algo/list.h>
 
 list_t *list_create(const size_t typesize) {
-    list_t * list = funbox_malloc(sizeof(list_t));
+    list_t * list = fb_malloc(sizeof(list_t));
     list->size = typesize;
     return list;
 }
@@ -19,13 +19,13 @@ static void insert(list_t *begin, list_t *listnode) {
 void * list_emplace(list_t *list) {
     if (!list->size)
         return nullptr;
-    list_t *listnode = funbox_malloc(sizeof(list_t));
-    listnode->data = funbox_malloc(list->size);
+    list_t *listnode = fb_malloc(sizeof(list_t));
+    listnode->data = fb_malloc(list->size);
     insert(list, listnode);
     return listnode->data;
 }
 void list_push(list_t *list, void *data) {
-    list_t *listnode = funbox_malloc(sizeof(list_t));
+    list_t *listnode = fb_malloc(sizeof(list_t));
     listnode->data = data;
     insert(list, listnode);
 }
@@ -60,8 +60,8 @@ void list_drop(list_t *list, const size_t index) {
     else prev->next = nullptr;
 
     if (allocated && node->data)
-        funbox_free(node->data);
-    funbox_free(node);
+        fb_free(node->data);
+    fb_free(node);
 }
 
 void * list_get(const list_t *list, size_t index) {
@@ -76,8 +76,8 @@ void list_destroy(list_t *list) {
     do {
         list_t *save = next->next;
         if (!isfreed)
-            funbox_free(next->data);
-        funbox_free(next);
+            fb_free(next->data);
+        fb_free(next);
         next = save;
     } while (next);
 }

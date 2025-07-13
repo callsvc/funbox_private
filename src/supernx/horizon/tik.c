@@ -5,7 +5,7 @@
 
 #include <horizon/tik.h>
 tik_t * tik_create(fsfile_t *file) {
-    tik_t * tik = funbox_malloc(sizeof(tik_t));
+    tik_t * tik = fb_malloc(sizeof(tik_t));
 
     fs_read(file, &tik->type, sizeof(tik->type), 0);
     uint64_t offset = sizeof(tik->type);
@@ -36,7 +36,7 @@ tik_t * tik_create(fsfile_t *file) {
 }
 void tik_destroy(tik_t *tik) {
     vector_destroy(tik->signature);
-    funbox_free(tik);
+    fb_free(tik);
 }
 
 bool tik_isequal(const tik_t *tika, const tik_t *tikb) {

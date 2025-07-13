@@ -8,7 +8,7 @@
 #include <types.h>
 
 set_t * set_create() {
-    set_t * set = funbox_malloc(sizeof(set_t));
+    set_t * set = fb_malloc(sizeof(set_t));
     set->list = list_create(sizeof(setval_t));
     return set;
 }
@@ -50,5 +50,5 @@ void * set_get(const set_t * set, const setval_type_e type, const void *first) {
 
 void set_destroy(set_t *set) {
     list_destroy(set->list);
-    funbox_free(set);
+    fb_free(set);
 }

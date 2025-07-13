@@ -5,7 +5,7 @@
 #include <fs/file.h>
 
 cartridge_t *cartridge_create() {
-    cartridge_t * cart = funbox_malloc(sizeof(cartridge_t));
+    cartridge_t * cart = fb_malloc(sizeof(cartridge_t));
     return cart;
 }
 
@@ -33,5 +33,5 @@ void cartridge_load_rom(cartridge_t *cart, const char *path) {
 void cartridge_destroy(cartridge_t *cart) {
     if (cart->content)
         vector_destroy(cart->content);
-    funbox_free(cart);
+    fb_free(cart);
 }

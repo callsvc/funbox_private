@@ -16,7 +16,7 @@ vector_t * fs_dir_list_all_files(const fsdir_t *dir) {
 }
 
 dir_t *dir_open(const char *path, const char *mode) {
-    dir_t * dir = funbox_malloc(sizeof(dir_t));
+    dir_t * dir = fb_malloc(sizeof(dir_t));
     dir->cached_files = list_create(0);
 
     strcpy(dir->vdir.path, path);
@@ -65,5 +65,5 @@ void dir_close(dir_t *dir) {
         file_close(thisfile);
     }
     list_destroy(dir->cached_files);
-    funbox_free(dir);
+    fb_free(dir);
 }

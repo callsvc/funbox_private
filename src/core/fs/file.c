@@ -28,8 +28,8 @@ file_t * file_open(const char* path, const char* mode) {
         touch(path);
     }
 
-    file_t *file = funbox_malloc(sizeof(file_t));
-    file->buffer = funbox_malloc(sizeof(char) * buffer_len);
+    file_t *file = fb_malloc(sizeof(file_t));
+    file->buffer = fb_malloc(sizeof(char) * buffer_len);
 
     strcpy(file->vfile.path, path);
 
@@ -76,6 +76,6 @@ void file_close(file_t *file) {
     if (file->handle)
         fclose(file->handle);
 
-    funbox_free(file->buffer);
-    funbox_free(file);
+    fb_free(file->buffer);
+    fb_free(file);
 }

@@ -35,7 +35,7 @@ uint64_t loader_nsp_get_program_id(loader_base_t *base) {
 }
 
 nsp_t *nsp_create(fsfile_t *file, keys_db_t *keys) {
-    nsp_t *nsp = funbox_malloc(sizeof(nsp_t));
+    nsp_t *nsp = fb_malloc(sizeof(nsp_t));
     nsp->next_loader = submission_package_create(file, keys);
 
     nsp->vloader.loader_get_logo = loader_nsp_get_logo;
@@ -44,5 +44,5 @@ nsp_t *nsp_create(fsfile_t *file, keys_db_t *keys) {
 }
 void nsp_destroy(nsp_t *nsp) {
     submission_package_destroy(nsp->next_loader);
-    funbox_free(nsp);
+    fb_free(nsp);
 }

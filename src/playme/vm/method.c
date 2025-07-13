@@ -7,8 +7,8 @@
 void method_setup_frame(method_t *method) {
     method_frame_t *frame = &method->method_frame;
 
-    frame->locals = funbox_malloc(sizeof(void*) * (method->max_locals + 1));
-    frame->operand_stack = funbox_malloc(sizeof(void*) * (method->max_stack + 1));
+    frame->locals = fb_malloc(sizeof(void*) * (method->max_locals + 1));
+    frame->operand_stack = fb_malloc(sizeof(void*) * (method->max_stack + 1));
 }
 
 void method_setcode(method_t *method, const uint8_t **source, const size_t size) {
@@ -19,7 +19,7 @@ void method_setcode(method_t *method, const uint8_t **source, const size_t size)
     if (length > size)
         return;
 
-    method->bytecode = funbox_malloc(length);
+    method->bytecode = fb_malloc(length);
     memcpy(method->bytecode, *source, length);
     method->bytecode_end = method->bytecode + length;
 
@@ -29,7 +29,7 @@ void method_setcode(method_t *method, const uint8_t **source, const size_t size)
 }
 
 method_t * method_create(class_t *class, const uint8_t *begin, const size_t size) {
-    method_t * method = funbox_malloc(sizeof(method_t));
+    method_t * method = fb_malloc(sizeof(method_t));
     if (size < 8)
         return nullptr;
 
@@ -53,12 +53,12 @@ method_t * method_create(class_t *class, const uint8_t *begin, const size_t size
 }
 void method_destroy(method_t *method) {
     if (method->bytecode)
-        funbox_free(method->bytecode);
+        fb_free(method->bytecode);
 
     const method_frame_t *frame = &method->method_frame;
     if (frame->locals)
-        free(frame->locals);
+        fb_free(frame->locals);
     if (frame->operand_stack)
-        free(frame->operand_stack);
-    funbox_free(method);
+        fb_free(frame->operand_stack);
+    fb_free(method);
 }

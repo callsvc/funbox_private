@@ -15,7 +15,7 @@ void load_all_tiks(const submission_package_t *subp, const vector_t *tiks) {
 }
 
 submission_package_t * submission_package_create(fsfile_t *file, keys_db_t *keys) {
-    submission_package_t * subp = funbox_malloc(sizeof(submission_package_t));
+    submission_package_t * subp = fb_malloc(sizeof(submission_package_t));
     subp->keys = keys;
     subp->main_pfs = pfs_create(file);
     subp->nca_list = list_create(0);
@@ -74,5 +74,5 @@ void submission_package_destroy(submission_package_t *subp) {
     }
     list_destroy(subp->nca_list);
     pfs_destroy(subp->main_pfs);
-    funbox_free(subp);
+    fb_free(subp);
 }

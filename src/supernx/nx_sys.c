@@ -8,7 +8,7 @@
 
 
 nx_sys_t *nx_sys_create() {
-    nx_sys_t *nx = funbox_malloc(sizeof(nx_sys_t));
+    nx_sys_t *nx = fb_malloc(sizeof(nx_sys_t));
     nx->procinfo = procinfo_create();
     nx->hos = hos_create(nx->procinfo->proc_cwd);
 
@@ -35,13 +35,13 @@ void nx_get_all_loaders(const nx_sys_t *nx) {
         typed->file = (fsfile_t*)mapfile_open((const fsfile_t*)file);
         typed->type = rom_type;
 
-        funbox_free(gamefilepath);
+        fb_free(gamefilepath);
         dir_close_file(dir, file);
     }
 
     vector_destroy(files);
     dir_close(dir);
-    funbox_free(gamesdir);
+    fb_free(gamesdir);
 }
 
 void nx_load_first_one(nx_sys_t *nx) {
@@ -68,5 +68,5 @@ void nx_sys_destroy(nx_sys_t *nx) {
 
     hos_destroy(nx->hos);
     procinfo_destroy(nx->procinfo);
-    funbox_free(nx);
+    fb_free(nx);
 }

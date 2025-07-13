@@ -36,7 +36,7 @@ void class_setname(class_t * class) {
 }
 
 class_t * class_create(const uint8_t *begin, const size_t size) {
-    class_t *class = funbox_malloc(sizeof(class_t));
+    class_t *class = fb_malloc(sizeof(class_t));
 
     uint32_t version = 0;
     if ((version = class_tover(class_getversion(begin, size))) == 0)
@@ -88,5 +88,5 @@ void class_destroy(class_t *class) {
     if (class->contants)
         cpool_destroy(class->contants);
 
-    free(class);
+    fb_free(class);
 }

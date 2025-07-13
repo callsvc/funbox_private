@@ -3,7 +3,7 @@
 #include <types.h>
 
 procinfo_t * procinfo_create() {
-    procinfo_t *procinfo = funbox_malloc(sizeof(procinfo_t));
+    procinfo_t *procinfo = fb_malloc(sizeof(procinfo_t));
     getcwd(procinfo->proc_cwd, sizeof(procinfo->proc_cwd));
 
     procinfo->start = time(nullptr);
@@ -11,5 +11,5 @@ procinfo_t * procinfo_create() {
 }
 
 void procinfo_destroy(procinfo_t *procinfo) {
-    funbox_free(procinfo);
+    fb_free(procinfo);
 }

@@ -29,7 +29,7 @@ void fs_zipdir_close_file(fsdir_t *dir, fsfile_t *file) {
 }
 
 zipdir_t * zipdir_open(const char *path) {
-    zipdir_t *dir = funbox_malloc(sizeof(zipdir_t));
+    zipdir_t *dir = fb_malloc(sizeof(zipdir_t));
     dir->zipfile = zip_open(path, ZIP_RDONLY, 0);
     if (!dir->zipfile)
         oskill("can't open zip filename %s", path);
@@ -40,5 +40,5 @@ zipdir_t * zipdir_open(const char *path) {
 }
 void zipdir_close(zipdir_t *dir) {
     zip_close(dir->zipfile);
-    funbox_free(dir);
+    fb_free(dir);
 }

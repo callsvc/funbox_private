@@ -25,7 +25,7 @@ void fs_write(fsfile_t *file, const void *input, const size_t size, const size_t
 void create_directories(const char *path) {
     char buffer[0x10 * 3];
     for (const char *subpath = path; (subpath = strchr(*subpath == '/' ? subpath + 1 : subpath, '/')); ) {
-        funbox_strncpy(buffer, path, subpath - path);
+        fb_strcopy(buffer, path, subpath - path);
         mkdir(buffer, 0755);
         if (subpath == strrchr(path, '/'))
             break;

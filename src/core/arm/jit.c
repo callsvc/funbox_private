@@ -36,7 +36,7 @@ jit_cfg_block_t * jit_compile(dynrec_core_t *core, const uint64_t start_pc) {
 
     jit_cfg_block_t *first = nullptr;
     do {
-        jit_cfg_block_t *cfg = funbox_malloc(sizeof(jit_cfg_block_t));
+        jit_cfg_block_t *cfg = fb_malloc(sizeof(jit_cfg_block_t));
 
         cfg->start_pc = start_pc;
 
