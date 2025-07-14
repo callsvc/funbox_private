@@ -26,7 +26,7 @@ size_t fs_mapfile_getsize(const fsfile_t *file) {
 mapfile_t * mapfile_open(const fsfile_t *file) {
     mapfile_t *mapfile = fb_malloc(sizeof(mapfile_t));
     strcpy(mapfile->vfile.path, fs_getpath(file));
-    mapfile->vfile.type = *(uint32_t*)"MAPFILE";
+    mapfile->vfile.type = file_type_mapfile;
 
     mapfile->fd = open(fs_getpath(file), O_RDONLY);
     const uint64_t len = fs_getsize(file);

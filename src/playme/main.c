@@ -30,7 +30,7 @@ int main() {
 
     const char *mainclass = manifest_get_str(entries, "MIDlet-1");
 
-    char *classpath = strings_concat(2, strrchr(mainclass, ',') + 2, ".class");
+    char *classpath = fb_strmk(2, strrchr(mainclass, ',') + 2, ".class");
     fsfile_t *mainfile = fs_open_file((fsdir_t*)micromid, classpath, "r");
     fb_free(classpath);
 

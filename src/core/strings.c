@@ -4,7 +4,7 @@
 
 #include <types.h>
 
-char * strings_concat(const size_t count, ...) {
+char * fb_strmk(const size_t count, ...) {
     size_t size = 0;
     va_list va = {}, cp = {};
     va_start(va, count);

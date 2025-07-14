@@ -1,11 +1,13 @@
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
 #include <string.h>
-#include <fs/types.h>
 #include <sys/stat.h>
 
 #include <types.h>
+#include <fs/types.h>
+#include <fs/dir.h>
+#include <fs/mapfile.h>
+
 
 fsfile_t * fs_open_file(fsdir_t *dir, const char *path, const char *mode) {
     return dir->open_file(dir, path, mode);
@@ -54,8 +56,20 @@ vector_t * fs_filebytes(fsfile_t *file) {
     return result;
 }
 
+bool fs_isfdvalid(const int32_t fd) {
+    dir_t *fds = dir_open("/proc/self/fd", "r");
+    fsfile_t *file = fs_open_file((fsdir_t*)fds, to_str64(fd, 10), "r");
+    const bool result = file != nullptr;
+    if (file)
+        fs_close_file((fsdir_t*)fds, file);
+    dir_close(fds);
+    return result;
+}
+
 bool fs_is_mapfile(const fsfile_t *file) {
-    return file->type == *(uint32_t*)"MAPFILE";
+    if (file->type == file_type_mapfile)
+        return fs_isfdvalid(((mapfile_t*)file)->fd);
+    return false;
 }
 
 int32_t fs_exists(const char *path) {
@@ -89,19 +103,6 @@ const char * fs_readline(fsfile_t *file, size_t *offset) {
     } while ((isline = strlen(line)) == false);
     *offset += strlen(line) + 1;
     return line;
-}
-
-const char * to_str64(const uint64_t value, const uint8_t base) {
-    static _Thread_local char buffer[sizeof(value) * 2 + 1];
-
-    switch (base) {
-        case 16:
-            sprintf(buffer, "%8lX", value); break;
-        default:
-        case 10:
-            sprintf(buffer, "%lu", value);
-    }
-    return buffer;
 }
 
 vector_t * fs_grep(const fsdir_t *dir, const char *exp) {

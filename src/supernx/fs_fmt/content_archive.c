@@ -7,8 +7,6 @@
 #include <fs_fmt/offset_file.h>
 #include <fs_fmt/content_archive.h>
 
-
-
 bool nca_is(const uint32_t magic) {
     // ReSharper disable once CppVariableCanBeMadeConstexpr
     const uint32_t nca_versions[] = {*(uint32_t*)"NCA0", *(uint32_t*)"NCA1", *(uint32_t*)"NCA2", *(uint32_t*)"NCA3"};

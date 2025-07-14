@@ -24,12 +24,13 @@ void * fb_malloc(size_t);
 void fb_free(void *);
 char * fb_strcopy(char *, const char *, size_t);
 
-char* strings_concat(size_t, ...);
+char* fb_strmk(size_t, ...);
 
 procinfo_t * procinfo_create();
 void procinfo_destroy(procinfo_t*);
 
 char * to_binary(const void *, size_t);
+const char * to_str64(uint64_t, uint8_t);
 void * strtobytes(const char * str, void*, size_t);
 uint64_t fb_rand();
 

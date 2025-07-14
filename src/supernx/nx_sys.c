@@ -22,8 +22,7 @@ void nx_get_all_loaders(const nx_sys_t *nx) {
     dir_t *dir = dir_open(gamesdir, "r");
     vector_t *files = list_all_files(gamesdir);
     for (size_t i = 0; i < vector_size(files); i++) {
-        char *gamefilepath = fs_build_path(2, fs_getpath(dir), vector_get(files, i));
-        file_t *file = dir_open_file(dir, gamefilepath, "r");
+        file_t *file = dir_open_file(dir, vector_get(files, i), "r");
         if (!file)
             continue;
 
@@ -35,7 +34,6 @@ void nx_get_all_loaders(const nx_sys_t *nx) {
         typed->file = (fsfile_t*)mapfile_open((const fsfile_t*)file);
         typed->type = rom_type;
 
-        fb_free(gamefilepath);
         dir_close_file(dir, file);
     }
 
@@ -48,9 +46,10 @@ void nx_load_first_one(nx_sys_t *nx) {
     if (!nx_get_games_count(nx))
         return;
     const game_file_t *roimage = list_get(nx->games, 0);
-    if (roimage->type == loader_nsp_type)
-        nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb);
 
+    if (roimage->type == loader_nsp_type) {
+        nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb);
+    }
 }
 size_t nx_get_games_count(const nx_sys_t *nx) {
     return list_size(nx->games);

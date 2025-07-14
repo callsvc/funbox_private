@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include <core/types.h>
 #include <fs/file.h>
@@ -32,6 +33,7 @@ file_t * file_open(const char* path, const char* mode) {
     file->buffer = fb_malloc(sizeof(char) * buffer_len);
 
     strcpy(file->vfile.path, path);
+    file->vfile.type = file_type_file;
 
     file->handle = fopen(path, mode);
     setbuffer(file->handle, file->buffer, buffer_len);
@@ -65,7 +67,14 @@ void file_read(const file_t *file, void *output, const size_t size, const size_t
 
 const char * file_errorpath(const char *path) {
     if (access(path, F_OK))
-        return "file not exists";
+        return "file does not exist";
+    struct stat file_stat;
+    if (stat(path, &file_stat) == 0) {
+        if (!(file_stat.st_mode & S_IRUSR))
+            return "can't read from the file";
+        if (!(file_stat.st_mode & S_IWUSR))
+            return "can't write to the file";
+    }
     return "none";
 }
 void file_close(file_t *file) {

@@ -1,10 +1,9 @@
-#include <algo/vector.h>
 
-#include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 
 #include <types.h>
+#include <algo/vector.h>
 
 // typesize can be zero to specify a dynamic array of strings
 vector_t *vector_create(const size_t count, const size_t typesize) {
@@ -63,7 +62,7 @@ static void vector_realloc(vector_t *vec, const size_t size) {
 }
 
 size_t vector_resize(vector_t *vec, const size_t count) {
-    static const size_t minforstrings = PATH_MAX;
+    static constexpr size_t minforstrings = PATH_MAX;
     const size_t resize = vec->type ? count * vec->type : minforstrings;
     if (vec->size < resize)
         vector_realloc(vec, resize);

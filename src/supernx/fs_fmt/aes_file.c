@@ -100,6 +100,7 @@ aes_file_t * aes_file_open(fsfile_t * file, const aes_type_e type, const char *m
 
     strcpy(aes_file->mode, mode);
     strcpy(aes_file->vfile.path, fs_getpath(file));
+    aes_file->vfile.type = file_type_aes;
     aes_file->buffer = vector_create(0, sizeof(uint8_t));
 
     aes_file->vfile.fs_read = fs_aes_file_read;

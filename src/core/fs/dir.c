@@ -28,19 +28,26 @@ dir_t *dir_open(const char *path, const char *mode) {
     return dir;
 }
 file_t *dir_open_file(const dir_t *dir, const char *filepath, const char *mode) {
+    char * real_path = fs_build_path(2, fs_getpath(dir), filepath);
     for (size_t i = 0; i < list_size(dir->cached_files); i++) {
         file_t *file = list_get(dir->cached_files, i);
-        if (strcmp(fs_getpath(file), filepath) == 0)
+        if (strcmp(fs_getpath(file), real_path) == 0)
             return file;
     }
 
+    bool canopen = true;
     if (*mode == 'w')
         if (*dir->vdir.mode != 'w')
-            return nullptr;
+            canopen = false;
 
-    if (!fs_exists(filepath))
-        return nullptr;
-    file_t *file = file_open(filepath, "r");
+    if (!fs_exists(real_path))
+        canopen = false;
+    if (!canopen) {
+        fb_free(real_path);
+        return nullptr;;
+    }
+    file_t *file = file_open(real_path, "r");
+    fb_free(real_path);
     list_push(dir->cached_files, file);
 
     file->parent = dir;

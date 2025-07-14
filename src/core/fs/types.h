@@ -6,6 +6,14 @@
 
 #define MAX_FILEPATH 0x9F
 
+typedef enum file_type {
+    file_type_none,
+    file_type_file,
+    file_type_mapfile,
+    file_type_offetfile,
+    file_type_aes
+} file_type_e;
+
 typedef struct fsfile {
     char path[MAX_FILEPATH];
     void (*fs_read)(struct fsfile*, void*, size_t, size_t);
@@ -13,7 +21,7 @@ typedef struct fsfile {
     size_t (*fs_getsize)(const struct fsfile*);
 
     char buffer[100];
-    uint32_t type; // MAPFILE
+    file_type_e type;
 } fsfile_t;
 
 typedef struct fsdir {
@@ -47,7 +55,6 @@ vector_t * list_all_files(const char*);
 char * fs_build_path(int32_t depth, ...);
 
 const char * fs_readline(fsfile_t *file, size_t *offset);
-const char * to_str64(uint64_t, uint8_t);
 
 vector_t * fs_grep(const fsdir_t *, const char *);
 

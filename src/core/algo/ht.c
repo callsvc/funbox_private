@@ -48,9 +48,12 @@ void ht_insert(const ht_t * ht, const char *key, const void *value) {
     }
     if (!strlen(hv->key))
         strcpy(hv->key, key);
-    if (!hv->value)
+    if (!hv->value && ht->item_size > 8) {
         hv->value = fb_malloc(ht->item_size);
-    if (value)
+    } else if (!hv->value && ht->item_size <= 8) {
+        memcpy(&hv->value, value, ht->item_size);
+    }
+    if (value && ht->item_size > 8)
         memcpy(hv->value, value, ht->item_size);
 }
 void * ht_get(const ht_t *ht, const char *key) {
@@ -60,6 +63,20 @@ void * ht_get(const ht_t *ht, const char *key) {
     return hv->value;
 }
 
+size_t ht_size(const ht_t *ht) {
+    size_t size = 0;
+    for (size_t i = 0; i < vector_size(ht->bucket); i++)
+        if (strlen(((ht_value_t*)vector_get(ht->bucket, i))->key))
+            size++;
+    return size;
+}
+
+void ht_erase(const ht_t *ht, const char *key) {
+    ht_value_t * hv = ht_find(ht, key);
+    if (hv)
+        memset(hv, 0, sizeof(*hv));
+}
+
 bool ht_contains(const ht_t *ht, const char *key) {
     return ht_get(ht, key) != nullptr;
 }
@@ -67,7 +84,8 @@ bool ht_contains(const ht_t *ht, const char *key) {
 void ht_destroy(ht_t *ht) {
     for (size_t i = 0; i < vector_size(ht->bucket); i++) {
         const ht_value_t * hv = vector_get(ht->bucket, i);
-        fb_free(hv->value);
+        if (ht->item_size != 8)
+            fb_free(hv->value);
     }
     vector_destroy(ht->bucket);
     fb_free(ht);
