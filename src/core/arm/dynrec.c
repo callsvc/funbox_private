@@ -1,22 +1,19 @@
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <sched.h>
-#include <stdlib.h>
 
 #include <types.h>
 #include <arm/dynrec.h>
 
-
-#include <arm/frontend/aarch64/arm64_frontend.h>
-
-dynrec_t *dynrec_create(const dynrec_cpu_type_e type) {
+#include <arm/frontend/aarch64/arm64_types.h>
+dynrec_t * dynrec_create(const dynrec_cpu_type_e type) {
     dynrec_t *jit = fb_malloc(sizeof(dynrec_t));
     jit->cores_list = list_create(0);
 
-    uint8_t types[] = {1, 2};
+    uint8_t types[] = {0, 2};
     jit->flow_cfg_blocks = robin_map_create(types);
 
-    if (type == dynrec_aarch64)
+    if (type == dynrec_type_aarch64)
         jit->frontend_ctx = (dynrec_frontend_t*)dynrec_frontend_arm64_create(jit);
     return jit;
 }
@@ -30,34 +27,42 @@ dynrec_core_t * dynrec_enablecore(dynrec_t *jit) {
     if (!jit->frontend_ctx)
         return nullptr;
 
-    dynrec_core_t * earlycore = fb_malloc(sizeof(dynrec_core_t));
-    earlycore->gprs_array = fb_malloc(jit->frontend_ctx->get_sizeof_gprs());
-    earlycore->jit = jit;
+    dynrec_core_t * dyn_cpu = fb_malloc(sizeof(dynrec_core_t));
+    dyn_cpu->thc = th_context_create(jit);
+    dyn_cpu->jit = jit;
+    list_push(jit->cores_list, dyn_cpu);
 
-    list_push(jit->cores_list, earlycore);
-
-    return earlycore;
+    return dyn_cpu;
 }
-void dynrec_disablecore(const dynrec_t * jit, dynrec_core_t *core) {
+void dynrec_disablecore(const dynrec_t * jit, dynrec_core_t *dyn_cpu) {
     for (size_t i = 0; i < list_size(jit->cores_list); i++)
-        if (list_get(jit->cores_list, i) == core)
+        if (list_get(jit->cores_list, i) == dyn_cpu)
             list_drop(jit->cores_list, i);
 
-    fb_free(core->gprs_array);
-    fb_free(core);
+    th_context_destroy(dyn_cpu->thc);
+    fb_free(dyn_cpu);
 }
+
+uint64_t dynrec_read_reg(const dynrec_core_t *dyn_cpu, const uint32_t id) {
+    if (dyn_cpu->jit)
+        return 0;
+
+    if (id == ARM64_PC_REGID)
+        return dyn_cpu->jit->frontend_ctx->get_pc(dyn_cpu->thc);
+    return dyn_cpu->jit->frontend_ctx->read_gpr(dyn_cpu->thc, id);
+}
+
 void dynrec_destroy(dynrec_t *jit) {
     for (size_t i = 0; i < list_size(jit->cores_list); i++) {
         dynrec_core_t *core = list_get(jit->cores_list, i);
-        fb_free(core->gprs_array);
+        dynrec_disablecore(jit, core);
         list_drop(jit->cores_list, i);
-        fb_free(core);
     }
 
     list_destroy(jit->cores_list);
     robin_map_destroy(jit->flow_cfg_blocks);
 
-    if (jit->frontend_ctx->get_type(jit->frontend_ctx) == dynrec_aarch64) {
+    if (jit->frontend_ctx->get_type(jit->frontend_ctx) == dynrec_type_aarch64) {
         dynrec_frontend_t * front = jit->frontend_ctx;
         jit->frontend_ctx = nullptr;
         dynrec_frontend_arm64_destroy((dynrec_frontend_arm64_t*)front);

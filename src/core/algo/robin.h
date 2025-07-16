@@ -34,7 +34,7 @@ robin_map_t * robin_map_create(uint8_t[2]);
 
 typedef bool (*robin_callback_t)(robin_map_entry_t *, void *);
 
-void robin_map_emplace(robin_map_t *, void*, void*);
+void robin_map_emplace(robin_map_t *, const void*, const void*);
 void robin_map_foreach(const robin_map_t *, robin_callback_t, void *);
 void * robin_map_get(const robin_map_t *, const void *);
 void * robin_map_gethash(const robin_map_t *, const void *, uint64_t hash);

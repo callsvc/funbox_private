@@ -85,18 +85,20 @@ static size_t robin_map_get_entry(const robin_map_t *robin_map, const void *key)
 void * robin_map_get(const robin_map_t * robin_map, const void *key) {
     const size_t index = robin_map_get_entry(robin_map, key);
     robin_map_entry_t * re = vector_get(robin_map->bucket, index);
-    return re->valname;
+    if (re)
+        return re->valname;
+    return nullptr;
 }
 
-static void robin_map_fill_field(void * base, void *input, const uint8_t type) {
+static void robin_map_fill_field(void * base, const void *input, const uint8_t type) {
     if (!type)
         strcpy(base, input);
     else if (type == 1)
-        *(uint64_t*)base = *(uint64_t*)input;
+        memcpy(base, input, sizeof(uint64_t));
     else if (type == 2)
-        *(uintptr_t*)&base = *(uintptr_t*)&input;
+        memcpy(base, &input, sizeof(void*));
 }
-static void robin_map_fill(robin_map_entry_t *re, void *key, void *val, uint8_t types[2]) {
+static void robin_map_fill(robin_map_entry_t *re, const void *key, const void *val, uint8_t types[2]) {
     memset(re, 0, sizeof(*re));
     robin_map_fill_field(re->keyname, key, types[0]);
     robin_map_fill_field(re->valname, val, types[1]);
@@ -145,7 +147,7 @@ bool robin_buckets_is_full(const vector_t *buckets) {
     return true;
 }
 
-bool robin_reorder(robin_map_entry_t *re, const size_t index, void *user) {
+bool robin_reorder(const robin_map_entry_t *re, const size_t index, void *user) {
     (void)index;
     robin_map_emplace(user, re->keyname, re->valname);
     return false;
@@ -164,17 +166,14 @@ bool robin_grow(robin_map_t *robin_map) {
     return result;
 }
 
-void robin_map_emplace(robin_map_t *robin_map, void * key, void * val) {
+void robin_map_emplace(robin_map_t *robin_map, const void * key, const void * val) {
     robin_map_entry_t entry;
     robin_map_fill(&entry, key, val, robin_map->pair_types);
 
     size_t *probe = &entry.psl_value;
-
-    if (robin_buckets_is_full(robin_map->bucket)) {
+    if (robin_buckets_is_full(robin_map->bucket))
         robin_grow(robin_map);
-    }
-
-    size_t index = robin_map_get_entry(robin_map, key);
+    size_t index = robin_map_get_entry(robin_map, entry.keyname);
 
     while (true) {
         robin_map_entry_t *re = vector_get(robin_map->bucket, index);
@@ -182,8 +181,8 @@ void robin_map_emplace(robin_map_t *robin_map, void * key, void * val) {
             *re = entry;
             return;
         }
-        if (robin_map_key_cmp(re, key, robin_map->pair_types[0]))
-            robin_map_fill_field(re->valname, val, robin_map->pair_types[1]);
+        if (robin_map_key_cmp(re, entry.keyname, robin_map->pair_types[0]))
+            robin_map_fill_field(re->valname, entry.keyname, robin_map->pair_types[1]);
 
         if (*probe > re->psl_value)
             swap_values(re, &entry, sizeof(*re));

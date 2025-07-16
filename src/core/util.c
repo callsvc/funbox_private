@@ -79,7 +79,7 @@ const char * to_str64(const uint64_t value, const uint8_t base) {
 
     switch (base) {
         case 16:
-            sprintf(buffer, "%8lX", value); break;
+            sprintf(buffer, "%lX", value); break;
         default:
         case 10:
             sprintf(buffer, "%lu", value);

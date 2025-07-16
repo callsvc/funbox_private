@@ -1,79 +1,92 @@
-#include <arm/types.h>
 #include <arm/jit.h>
-
 #include <core/types.h>
 
-uint64_t jit_getpc(dynrec_core_t *core) {
-    return core->jit->frontend_ctx->get_pc(core->gprs_array);
+uint64_t jit_getpc(const dynrec_core_t *dyn_cpu) {
+    return dyn_cpu->jit->frontend_ctx->get_pc(dyn_cpu->thc);
+}
+uint64_t jit_read_gpr(const dynrec_core_t *dyn_cpu, const uint64_t index) {
+    return dyn_cpu->jit->frontend_ctx->read_gpr(dyn_cpu->thc, index);
+}
+uint8_t jit_read8(const dynrec_core_t *dyn_cpu, const uint64_t index) {
+    return dyn_cpu->jit->memory[index];
+}
+uint16_t jit_read16(const dynrec_core_t *dyn_cpu, const uint64_t index) {
+    return (uint8_t)(jit_read8(dyn_cpu, index) << 8) | jit_read8(dyn_cpu, index + 1);
+}
+uint32_t jit_read32(const dynrec_core_t *dyn_cpu, const uint64_t index) {
+    return (uint32_t)jit_read16(dyn_cpu, index) << 16 | jit_read16(dyn_cpu, index + 2);
+}
+uint64_t jit_read64(const dynrec_core_t *dyn_cpu, const uint64_t index) {
+    return (uint64_t)jit_read32(dyn_cpu, index) << 32 | jit_read32(dyn_cpu, index + 4);
 }
 
-uint64_t jit_read_gpr(dynrec_core_t *core, uint64_t index) {
-    return core->jit->frontend_ctx->read_gpr(core->gprs_array, index);
-}
-uint64_t jit_write_gpr(dynrec_core_t *core, uint64_t index, uint64_t value) {
-    return core->jit->frontend_ctx->write_gpr(core->gprs_array, index, value);
-}
-uint64_t jit_write_neon(dynrec_core_t *core, uint64_t index, arm64_neon_t value) {
-    return core->jit->frontend_ctx->write_vector(core->gprs_array, index, value);
-}
-
-uint8_t jit_read8(const dynrec_core_t *core, const uint64_t index) {
-    return core->jit->memory[index];
-}
-uint16_t jit_read16(const dynrec_core_t *core, const uint64_t index) {
-    return jit_read8(core, index) << 8 | jit_read8(core, index + 1);
-}
-uint32_t jit_read32(const dynrec_core_t *core, const uint64_t index) {
-    return jit_read16(core, index) << 16 | jit_read16(core, index + 2);
-}
-uint64_t jit_read64(const dynrec_core_t *core, const uint64_t index) {
-    return jit_read32(core, index) << 32 | jit_read32(core, index + 4);
-}
-
-jit_cfg_block_t * jit_compile(dynrec_core_t *core, const uint64_t start_pc) {
+jit_cfg_block_t * jit_compile(const dynrec_core_t *dyn_cpu, const uint64_t start_pc) {
     uint64_t compiled = 0;
-    dynrec_t *jit = core->jit;
+    const dynrec_t *jit = dyn_cpu->jit;
 
     jit_cfg_block_t *first = nullptr;
     do {
         jit_cfg_block_t *cfg = fb_malloc(sizeof(jit_cfg_block_t));
 
         cfg->start_pc = start_pc;
+        cfg->end_pc = start_pc + 0x200;
 
-        jit->frontend_ctx->generate_irs(core->jit, cfg);
-        compiled += vector_size(cfg->irs);
+        jit->frontend_ctx->generate_irs(dyn_cpu, cfg);
+        compiled += list_size(cfg->irs);
 
-        jit->backend_ctx->generate_code(core->jit, cfg);
+        // jit->backend_ctx->generate_code(core->jit, cfg);
 
-        if (first)
+        if (first) {
+            if (!first->nested_blocks)
+                first->nested_blocks = list_create(0);
             list_push(first->nested_blocks, cfg);
-        else first = cfg;
+        } else {
+            first = cfg;
+        }
     } while (compiled < 1024);
     return first;
 }
 
 
-void jit_execute(const jit_cfg_block_t *start_block) {
+void jit_cleanup(const dynrec_core_t *dyn_cpu, jit_cfg_block_t *start_block) {
+    dyn_cpu->jit->int_enabled = true;
     if (start_block->has_entrypoint)
         return;
-    for (size_t i = 0; i < list_size(start_block->nested_blocks); i++) {
-        const jit_cfg_block_t *next = list_get(start_block->nested_blocks, i);
-        (void)next;
+
+    if (start_block->nested_blocks) {
+        for (size_t i = 0; i < list_size(start_block->nested_blocks); i++)
+            jit_cleanup(dyn_cpu, list_get(start_block->nested_blocks, i));
+        list_destroy(start_block->nested_blocks);
+    }
+
+    if (start_block->irs)
+        list_destroy(start_block->irs);
+
+    fb_free(start_block);
+}
+
+void jit_run(const dynrec_core_t *dyn_cpu) {
+    const uint64_t pc = jit_getpc(dyn_cpu);
+    const uint64_t start_pc = pc & ~1000;
+    const dynrec_t *jit = dyn_cpu->jit;
+
+    while (!jit->int_enabled) {
+        jit_cfg_block_t *cfg = robin_map_get(jit->flow_cfg_blocks, to_str64(start_pc, 10));
+        if (!cfg) {
+            cfg = jit_compile(dyn_cpu, pc);
+            robin_map_emplace(jit->flow_cfg_blocks, (void*)to_str64(start_pc, 10), cfg);
+        }
+        jit_cleanup(dyn_cpu, cfg);
+        robin_map_emplace(jit->flow_cfg_blocks, (void*)to_str64(start_pc, 10), nullptr);
     }
 }
 
-void jit_run(dynrec_core_t *core) {
-    const uint64_t pc = jit_getpc(core);
-    const uint64_t start_pc = pc & ~1000;
-    const dynrec_t *jit = core->jit;
-
-    while (!jit->int_enabled) {
-        jit_cfg_block_t *cfg = robin_map_get(jit->flow_cfg_blocks, (void*)start_pc);
-        if (!cfg) {
-            cfg = jit_compile(core, pc);
-            robin_map_emplace(jit->flow_cfg_blocks, (void*)start_pc, cfg);
-        }
-        jit_execute(cfg);
-    }
+void jit_set_memory(const dynrec_core_t *dyn_cpu, uint8_t *memory, const size_t size) {
+    if (!dyn_cpu->jit)
+        return;
+    if (dyn_cpu->jit->memory)
+        fb_free(dyn_cpu->jit->memory);
+    dyn_cpu->jit->memory = memory;
+    dyn_cpu->jit->memory_size = size;
 }
 
