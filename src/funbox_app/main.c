@@ -2,6 +2,6 @@
 #include <types.h>
 
 int main() {
-    envos_issafe();
+    fb_issafe();
     printf("Hello, World!\n");
 }

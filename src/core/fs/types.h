@@ -49,6 +49,7 @@ bool fs_is_mapfile(const fsfile_t*);
 int32_t fs_exists(const char *);
 bool fs_exists_in_fsdir(const vector_t *, const char*);
 const char * fs_getpath(const void *);
+void fs_print_tree(const vector_t *);
 
 vector_t * fs_list_all_files(const fsdir_t*);
 vector_t * list_all_files(const char*);

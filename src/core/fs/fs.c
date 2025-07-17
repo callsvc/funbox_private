@@ -87,6 +87,23 @@ const char * fs_getpath(const void *fsaddr) {
     return fsaddr;
 }
 
+size_t fs_path_depth(const char *path) {
+    size_t count = 0;
+    for (const char *path_p = path; *path_p; path_p++)
+        if (*path_p == '/')
+            count++;
+    return count;
+}
+
+void fs_print_tree(const vector_t *files) {
+    printf("files in this folder: \n");
+    for (size_t i = 0; i < vector_size(files); i++) {
+        const char *path = vector_get(files, i);
+        const int32_t depth = fs_path_depth(path);
+        printf("%*s%s\n", depth * 4, "", path);
+    }
+}
+
 const char * fs_readline(fsfile_t *file, size_t *offset) {
     if (*offset >= fs_getsize(file))
         return nullptr;

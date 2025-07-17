@@ -7,3 +7,6 @@
 [submodule "libraries/raygui"]
 	path = libraries/raygui
 	url = https://github.com/raysan5/raygui.git
+[submodule "libraries/libxml2"]
+	path = libraries/libxml2
+	url = https://github.com/GNOME/libxml2.git

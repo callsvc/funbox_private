@@ -5,7 +5,7 @@
 #include <types.h>
 
 char username[30] = {};
-void envos_issafe() {
+void fb_issafe() {
     const uid_t euid = geteuid();
     if (euid == 0)
         oskill("You can't run as a root user!");

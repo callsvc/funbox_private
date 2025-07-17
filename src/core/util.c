@@ -92,7 +92,7 @@ uint8_t char_to_int(const char val) {
         return val - '0';
     if (val >= 'a' && val <= 'f')
         return val - 'a' + 10;
-    if (val >= 'A' && val < 'F')
+    if (val >= 'A' && val <= 'F')
         return val - 'A' + 10;
 
     __builtin_unreachable();

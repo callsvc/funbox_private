@@ -19,7 +19,7 @@ bool cmpsha(const uint8_t *bytes, const char *sha) {
 
     mbedtls_sha1_free(&sha1);
 
-    return memcmp(result, against, sizeof(result));
+    return memcmp(result, against, sizeof(result)) == 0;
 }
 
 bus_t *bus_create() {

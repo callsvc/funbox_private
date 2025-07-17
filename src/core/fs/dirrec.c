@@ -11,7 +11,7 @@ vector_t * list_all_files(const char *dirpath) {
     DIR* directory = opendir(dirpath);
     if (!directory)
         return nullptr;
-    vector_t * vec = vector_create(10, 0);
+    vector_t * vec = vector_create(0, 0);
     for (const struct dirent *entry; (entry = readdir(directory)); )
         if (*entry->d_name != '.')
             vector_emplace(vec, entry->d_name);

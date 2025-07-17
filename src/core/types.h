@@ -7,7 +7,7 @@
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
 void oskill(const char * format, ...);
-void envos_issafe();
+void fb_issafe();
 
 extern char username[30];
 

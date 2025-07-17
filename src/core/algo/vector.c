@@ -24,8 +24,8 @@ size_t vector_size(const vector_t *vec) {
     if (vec->type)
         return vec->size ? vec->size / vec->type : 0;
     size_t count = 0;
-    for (const char *begin = vec->data; strlen(begin) && begin <= (char*)vec->data + vec->size; begin++)
-        if ((begin = strchr(begin , '\0')))
+    for (const char *str = vec->data; str < (char*)vec->data + vec->size; str++)
+        if ((str = strchr(str , '\0')))
             count++;
     return count;
 }
@@ -48,7 +48,7 @@ void * vector_get(const vector_t *vec, size_t index) {
     return result;
 }
 
-static void vector_realloc(vector_t *vec, const size_t size) {
+void vector_realloc(vector_t *vec, const size_t size) {
     void *result = fb_malloc(size);
     if (!vec->data)
         if ((vec->data = result))
@@ -63,7 +63,7 @@ static void vector_realloc(vector_t *vec, const size_t size) {
 
 size_t vector_resize(vector_t *vec, const size_t count) {
     static constexpr size_t minforstrings = PATH_MAX;
-    const size_t resize = vec->type ? count * vec->type : minforstrings;
+    const size_t resize = vec->type ? count * vec->type : count ? count : minforstrings;
     if (vec->size < resize)
         vector_realloc(vec, resize);
     else vec->capacity = resize;
@@ -71,11 +71,11 @@ size_t vector_resize(vector_t *vec, const size_t count) {
 }
 
 void * vector_emplace(vector_t *vec, const void *data) {
-    const size_t realsize = !vec->type ? strlen(data) : vec->type;
+    const size_t realsize = !vec->type ? strlen(data) + 1: vec->type;
     if (!vec->capacity || vec->capacity < vec->size + realsize)
         vector_resize(vec, vec->capacity * 2 + realsize);
     uint8_t *place = &((uint8_t*)vec->data)[vec->size];
-    vec->size += realsize != vec->type ? realsize + 1 : vec->type;
+    vec->size += !vec->type ? realsize : vec->type;
     if (data)
         memcpy(place, data, realsize);
     return place;
@@ -92,7 +92,6 @@ vector_t * vector_clone(const vector_t *clone) {
     vec->size = clone->size;
     vec->type = clone->type;
     vec->capacity = clone->capacity;
-
     if (!clone->data)
         return vec;
 
