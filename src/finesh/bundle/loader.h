@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sh_fs/plist.h>
+#include <fsh/plist.h>
 
 typedef struct loader {
     fsdir_t *ipa_pkg;

@@ -31,6 +31,8 @@ loader_t * loader_create(const char *path) {
         fsfile_t * plist = fs_open_file(ld->ipa_pkg, filepath, "r");
         ld->info_plist = plist_create(plist);
 
+        printf("user-visible package name: %s\n", plist_getstr(ld->info_plist, "CFBundleDisplayName"));
+
         fs_close_file(ld->ipa_pkg, plist);
     }
 
