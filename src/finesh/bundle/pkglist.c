@@ -5,7 +5,7 @@
 #include <fs/file.h>
 
 void pkg_list_all(const config_t *config) {
-    const char* workdir = config->procinfo->proc_cwd;
+    const char* workdir = config->procinfo->current_dir;
     vector_t *files = list_all_files(workdir);
 
     for (size_t i = 0; i < vector_size(files); i++) {

@@ -71,7 +71,7 @@ const char * cycles_get_affinity_str(const cycles_t *cycles) {
             case device_type_dmac:
                 sprintf(strchr(buffer, '?'), "dmac,?"); break;
         }
-    *(strchr(buffer, '?') - 1) = '\0';
+    *(strchr(buffer, '?')-1) = '\0';
 
     for (size_t i = 0; i < count_of(affinity_default_strs); i++)
         if (!strcmp(buffer, affinity_default_strs[i]))

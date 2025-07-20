@@ -37,11 +37,12 @@ void * fb_malloc(const size_t size) {
     }
 
     void *result;
+    char buffer[45];
     if (unlikely(size >= malloc_threshold)) {
         pthread_mutex_lock(&ht_mutex);
         result = mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         if (result)
-            ht_insert(ht_mm, to_str64((uint64_t)result, 16), &size);
+            ht_insert(ht_mm, to_str64((uint64_t)result, buffer, 16), &size);
         pthread_mutex_unlock(&ht_mutex);
     } else {
         result = malloc(size);
@@ -59,11 +60,12 @@ void * exchange(void **val, void *eval) {
 void fb_free(void *ptr) {
 
     pthread_mutex_lock(&ht_mutex);
-    const size_t size = ht_mm ? (size_t)ht_get(ht_mm, to_str64((uint64_t)ptr, 16)) : 0;
+    char buffer[45];
+    const size_t size = ht_mm ? (size_t)ht_get(ht_mm, to_str64((uint64_t)ptr, buffer, 16)) : 0;
     if (unlikely(size)) {
         if (munmap(ptr, size))
             oskill("ptr %p is invalid", ptr);
-        ht_erase(ht_mm, to_str64((uint64_t)ptr, 16));
+        ht_erase(ht_mm, to_str64((uint64_t)ptr, buffer, 16));
     } else if (ptr) {
         free(ptr);
     }
@@ -78,20 +80,17 @@ void fb_free(void *ptr) {
 }
 
 char * to_binary(const void *value, const size_t size) {
-    _Thread_local static char buffer_th[0x100];
-    char * ptr = buffer_th;
+    _Thread_local static char buffert[100];
+    char * ptr = buffert;
     for (const uint8_t * b = value; b < (uint8_t*)value + size; b++) {
         for (uint8_t bi = 0; bi < 8; bi++)
             *ptr++ = *b & 1 << bi ? '1' : '0';
-        *ptr++ = ' ';
     }
-    *(ptr - 1) = '\0';
-    return buffer_th;
+    *(ptr-1) = '\0';
+    return buffert;
 }
 
-const char * to_str64(const uint64_t value, const uint8_t base) {
-    static _Thread_local char buffer[sizeof(value) * 2 + 1];
-
+const char * to_str64(const uint64_t value, char *buffer, const uint8_t base) {
     switch (base) {
         case 16:
             sprintf(buffer, "%lX", value); break;

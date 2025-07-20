@@ -13,7 +13,7 @@ typedef struct ht {
 
 ht_t * ht_create(size_t, size_t, const char **);
 
-void ht_insert(const ht_t *, const char*, const void*);
+void ht_insert(ht_t *, const char*, const void*);
 void * ht_get(const ht_t *, const char*);
 size_t ht_size(const ht_t*);
 void ht_erase(const ht_t*, const char*);

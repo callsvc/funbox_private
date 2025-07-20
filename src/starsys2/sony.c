@@ -7,7 +7,7 @@ sony_t * sony_create() {
     sony->procinfo = procinfo_create();
 
     sony->unkpaddr = vector_create(0, sizeof(uint32_t));
-    sony->firmpath = fs_build_path(2, sony->procinfo->proc_cwd, "scph10000.bin");
+    sony->firmpath = fs_build_path(2, sony->procinfo->current_dir, "scph10000.bin");
 
     sony->bridge = bridge_create(sony);
     sony->mips = ee_create(sony->bridge);

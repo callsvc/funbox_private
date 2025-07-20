@@ -38,11 +38,28 @@ static ht_value_t * ht_find(const ht_t *ht, const char *key) {
     return vector_get(ht->bucket, kindex);
 }
 
-void ht_insert(const ht_t * ht, const char *key, const void *value) {
+void ht_grow(ht_t *ht) {
+    // The bucket is full, we should expand it and try again
+    vector_t *oldbucket = ht->bucket;
+
+    const size_t size = vector_size(oldbucket) * 2 + 1;
+    vector_t *bucket = vector_create(size, sizeof(ht_value_t));
+    vector_setsize(bucket, size);
+    ht->bucket = bucket;
+
+    for (size_t i = 0; i < vector_size(oldbucket); i++) {
+        const ht_value_t * rvalue = vector_get(oldbucket, i);
+        if (strlen(rvalue->key) && rvalue->value)
+            ht_insert(ht, rvalue->key, &rvalue->value);
+    }
+
+    vector_destroy(oldbucket);
+}
+
+void ht_insert(ht_t * ht, const char *key, const void *value) {
     ht_value_t * hv = ht_find(ht, key);
     if (strlen(hv->key) && strcmp(key, hv->key)) {
-        // The bucket is full, we should expand it and try again
-        vector_setsize(ht->bucket, vector_size(ht->bucket) * 2);
+        ht_grow(ht);
         ht_insert(ht, key, value);
         return;
     }

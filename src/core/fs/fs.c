@@ -58,7 +58,8 @@ vector_t * fs_filebytes(fsfile_t *file) {
 
 bool fs_isfdvalid(const int32_t fd) {
     dir_t *fds = dir_open("/proc/self/fd", "r");
-    fsfile_t *file = fs_open_file((fsdir_t*)fds, to_str64(fd, 10), "r");
+    char buffer[45];
+    fsfile_t *file = fs_open_file((fsdir_t*)fds, to_str64(fd, buffer, 10), "r");
     const bool result = file != nullptr;
     if (file)
         fs_close_file((fsdir_t*)fds, file);

@@ -10,14 +10,14 @@
 nx_sys_t *nx_sys_create() {
     nx_sys_t *nx = fb_malloc(sizeof(nx_sys_t));
     nx->procinfo = procinfo_create();
-    nx->hos = hos_create(nx->procinfo->proc_cwd);
+    nx->hos = hos_create(nx->procinfo->current_dir);
 
     nx->games = list_create(sizeof(game_file_t));
     return nx;
 }
 
 void nx_get_all_loaders(const nx_sys_t *nx) {
-    char * gamesdir = fs_build_path(2, nx->procinfo->proc_cwd, "games_files");
+    char * gamesdir = fs_build_path(2, nx->procinfo->current_dir, "games_files");
 
     dir_t *dir = dir_open(gamesdir, "r");
     vector_t *files = list_all_files(gamesdir);

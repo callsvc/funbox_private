@@ -15,7 +15,7 @@ void fb_create();
 void fb_destroy();
 
 typedef struct procinfo {
-    char proc_cwd[PATH_MAX];
+    char current_dir[PATH_MAX];
     time_t start;
 } procinfo_t;
 
@@ -30,7 +30,7 @@ procinfo_t * procinfo_create();
 void procinfo_destroy(procinfo_t*);
 
 char * to_binary(const void *, size_t);
-const char * to_str64(uint64_t, uint8_t);
+const char * to_str64(uint64_t, char *, uint8_t);
 void * strtobytes(const char * str, void*, size_t);
 uint64_t fb_rand();
 
