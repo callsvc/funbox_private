@@ -37,6 +37,7 @@ uint64_t fb_rand();
 #define ms(x) (x * 1000000)
 
 void sleep_for(size_t);
+bool cmpsha(const uint8_t *, size_t, const char *);
 
 #define big32(begin) __builtin_bswap32(*(const uint32_t*)(begin))
 #define big16(begin) __builtin_bswap16(*(const uint16_t*)(begin))

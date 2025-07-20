@@ -9,13 +9,28 @@
 #include <types.h>
 #include <algo/ht.h>
 ht_t *ht_mm = nullptr;
-pthread_mutex_t ht_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t ht_mutex;
+
+void fb_exit() {
+    pthread_mutex_destroy(&ht_mutex);
+}
+
+__attribute__((constructor)) void fb_entry() {
+    atexit(fb_exit);
+
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&ht_mutex, &attr);
+    pthread_mutexattr_destroy(&attr);
+}
 
 constexpr size_t malloc_threshold = 2 * 1024 * 1024;
 void * fb_malloc(const size_t size) {
     if (!size)
         return nullptr;
     if (unlikely(!ht_mm)) {
+        ht_mm = (void*)1; // hack for dealing with dead loops
         if (!pthread_mutex_trylock(&ht_mutex))
             if ((ht_mm = ht_create(0, sizeof(size_t), nullptr)))
                 pthread_mutex_unlock(&ht_mutex);
