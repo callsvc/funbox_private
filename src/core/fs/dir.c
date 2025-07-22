@@ -44,7 +44,7 @@ file_t *dir_open_file(const dir_t *dir, const char *filepath, const char *mode) 
         canopen = false;
     if (!canopen) {
         fb_free(real_path);
-        return nullptr;;
+        return nullptr;
     }
     file_t *file = file_open(real_path, "r");
     fb_free(real_path);
