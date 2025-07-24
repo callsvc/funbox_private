@@ -34,6 +34,18 @@ tik_t * tik_create(fsfile_t *file) {
 
     return tik;
 }
+
+void tik_export(const tik_t *tik, const char *filepath) {
+    file_t *file = file_open(filepath, "w");
+    fs_write((fsfile_t*)file, &tik->type, 4, 0);
+    fs_write((fsfile_t*)file, vector_begin(tik->signature), vector_size(tik->signature), 4);
+
+    const uint64_t offset = vector_size(tik->signature) + 4;
+    fs_write((fsfile_t*)file, &tik->ticket_data, sizeof(ticket_data_t), offset);
+
+    file_close(file);
+}
+
 void tik_destroy(tik_t *tik) {
     vector_destroy(tik->signature);
     fb_free(tik);
@@ -45,10 +57,4 @@ bool tik_isequal(const tik_t *tika, const tik_t *tikb) {
             if (vector_isequal(tika->signature, tikb->signature))
                 return true;
     return false;
-}
-
-void tik_export(const tik_t *tik, const char *filepath) {
-    file_t *file = file_open(filepath, "w");
-    (void)tik->type;
-    file_close(file);
 }

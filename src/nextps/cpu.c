@@ -31,18 +31,27 @@ void cpu_reset(cpu_t *cpu) {
     cpu->maskint = 0;
 }
 
+#define REG32_W(cpu, reg, value)\
+    if (reg)\
+        cpu->regs[reg] = value
+#define REG32_R(cpu, reg)\
+    cpu->regs[reg]
+
 // load upper immediate
 void op_lui(cpu_t *cpu, const uint32_t op) {
     const uint16_t imm = op & 0xFFFF;
-    cpu->regs[op >> 16 & 0x1F] = imm << 16;
+    REG32_W(cpu, op >> 16 & 0x1F, imm << 16);
 
 }
 // or immediate
 void op_ori(cpu_t *cpu, const uint32_t op) {
     const uint16_t imm = op & 0xFFFF;
-    if ((op >> 16 & 0x1F) == (op >> 21 & 0x1F))
-        cpu->regs[op >> 16 & 0x1F] |= imm;
-    else cpu->regs[op >> 16 & 0x1F] = (uint32_t)imm | cpu->regs[op >> 21 & 0x1F];
+    if ((op >> 16 & 0x1F) == (op >> 21 & 0x1F)) {
+        REG32_W(cpu, op >> 16 & 0x1F, REG32_R(cpu, op >> 16 & 0x1F) | imm);
+    } else {
+        REG32_W(cpu,op >> 16 & 0x1F, (uint32_t)imm | REG32_R(cpu, op >> 21 & 0x1F));
+    }
+
 #if 1
     if (cpu->pc == 0xBFC00008)
         assert(cpu->regs[8] == 0x0013243f);
@@ -51,7 +60,6 @@ void op_ori(cpu_t *cpu, const uint32_t op) {
 
 // store word
 void op_sw(const cpu_t *cpu, const uint32_t op) {
-
     if (cpu->cop0.regs[12] & 0x10000) {
         // the “isolate cache” bit
         printf("the cache is being initialized\n");
@@ -59,29 +67,28 @@ void op_sw(const cpu_t *cpu, const uint32_t op) {
     }
 
     const int16_t offset = op & 0xFFFF;
-    const uint32_t value = cpu->regs[op >> 16 & 0x1F];
+    const uint32_t value = REG32_R(cpu, op >> 16 & 0x1F);
 
-    bus_write(cpu->gateway, cpu->regs[op >> 21 & 0x1F] + offset, value);
+    bus_write(cpu->gateway, REG32_R(cpu, op >> 21 & 0x1F) + offset, value);
 
 }
 
 void op_addiu(cpu_t *cpu, const uint32_t op) {
     const int16_t imm = op & 0xFFFF;
-    cpu->regs[op >> 16 & 0x1F] = (int32_t)cpu->regs[op >> 21 & 0x1F] + imm;
+    REG32_W(cpu, op >> 16 & 0x1F, (int32_t)REG32_R(cpu, op >> 21 & 0x1F) + imm);
 }
 
 void op_addi(cpu_t *cpu, const uint32_t op) {
     const int16_t imm = op & 0xFFFF;
 
     uint32_t result = 0;
-    if (ckd_add(&result, (int32_t)cpu->regs[op >> 21 & 0x1F], imm)) {
-
+    if (ckd_add(&result, (int32_t)REG32_R(cpu, op >> 21 & 0x1F), imm)) {
     }
-    cpu->regs[op >> 16 & 0x1F] = result;
+    REG32_W(cpu, op >> 16 & 0x1F, result);
 }
 
 void op_sltu(cpu_t *cpu, const uint32_t op) {
-    cpu->regs[op >> 11 & 0x1F] = cpu->regs[op >> 21 & 0x1F] < cpu->regs[op >> 16 & 0x1F];
+    REG32_W(cpu, op >> 11 & 0x1F, REG32_R(cpu, op >> 21 & 0x1F) < REG32_R(cpu, op >> 16 & 0x1F) );
 }
 
 void cpu_setbranch(cpu_t *cpu, const uint32_t next_pc) {
@@ -105,16 +112,16 @@ void op_j(cpu_t *cpu, const uint32_t op) {
 }
 
 void op_or(cpu_t *cpu, const uint32_t op) {
-    cpu->regs[op >> 11 & 0x1F] = cpu->regs[op >> 21 & 0x1F] | cpu->regs[op >> 16 & 0x1F];
+    REG32_W(cpu, op >> 11 & 0x1F, REG32_R(cpu, op >> 21 & 0x1F) | REG32_R(cpu, op >> 16 & 0x1F));
 }
 
 void op_cop0_mtc(cpu_t *cpu, const uint32_t op) {
-    cop0_mtc(&cpu->cop0, op >> 11 & 0x1F, cpu->regs[op >> 16 & 0x1F]);
+    cop0_mtc(&cpu->cop0, op >> 11 & 0x1F, REG32_R(cpu, op >> 16 & 0x1F));
 }
 
 void op_bne(cpu_t *cpu, const uint32_t op) {
-    const uint32_t var = cpu->regs[op >> 16 & 0x1F];
-    const uint32_t test = cpu->regs[op >> 21 & 0x1F];
+    const uint32_t var = REG32_R(cpu, op >> 16 & 0x1F);
+    const uint32_t test = REG32_R(cpu, op >> 21 & 0x1F);
 
     if (var != test)
         cpu_setbranch(cpu, (int32_t)cpu->pc + (int16_t)((op & 0xFFFF) << 2));
@@ -125,7 +132,7 @@ void op_lw(cpu_t *cpu, const uint32_t op) {
         return;
 
     int32_t offset = op & 0xFFFF;
-    offset += cpu->regs[op >> 21 & 0x1F];
+    offset += REG32_R(cpu, op >> 21 & 0x1F);
 
     cpu->load_slot[0] = op >> 16 & 0x1F;
     cpu->load_slot[1] = bus_read(cpu->gateway, offset);
@@ -133,7 +140,7 @@ void op_lw(cpu_t *cpu, const uint32_t op) {
     cpu->load_slot[2]++;
 }
 
-void cpu_special_opswt(cpu_t *cpu, const uint32_t op) {
+void special_opcodes(cpu_t *cpu, const uint32_t op) {
     switch (op & 0x3F) {
         case 0x25:
             op_ori(cpu, op); break;
@@ -149,8 +156,6 @@ void cpu_run(cpu_t *cpu) {
 
     if (fetched == 0xA5200180) // “store halfword
         cpu->maskint = 1;
-    if (cpu->pc == 0xBFC003BC)
-        cpu->maskint = 1;
 
     if (cpu->maskint)
         return;
@@ -165,8 +170,7 @@ void cpu_run(cpu_t *cpu) {
 
     switch (fetched >> 26 & 0x3F) {
         case 0:
-            if (fetched)
-                cpu_special_opswt(cpu, fetched);
+            if (fetched) special_opcodes(cpu, fetched);
             break;
         case 2:
             op_j(cpu, fetched); break;

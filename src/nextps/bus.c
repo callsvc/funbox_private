@@ -36,6 +36,7 @@ uint32_t bus_read(const bus_t *bus, const uint32_t address) {
 void bus_write(bus_t *bus, const uint32_t address, const uint32_t value) {
     if (address >= 0xA0000000 && address < 0xA0200000) {
         *(uint32_t*)&bus->ram_memory[address & ram_mask] = value;
+        return;
     }
 
     switch (address) {

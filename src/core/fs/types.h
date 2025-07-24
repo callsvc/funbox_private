@@ -10,7 +10,7 @@ typedef enum file_type {
     file_type_none,
     file_type_file,
     file_type_mapfile,
-    file_type_offetfile,
+    file_type_offsetfile,
     file_type_aes
 } file_type_e;
 

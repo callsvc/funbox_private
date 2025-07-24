@@ -9,10 +9,8 @@ int main() {
     cpu_t *cpu = cpu_create(bus);
 
     reset(cpu);
-
     while (!cpu->maskint) {
         cpu_run(cpu);
-
         if (cpu->pc == 0xBFC80000)
             break;
     }

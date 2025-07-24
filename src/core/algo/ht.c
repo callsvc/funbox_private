@@ -103,8 +103,12 @@ size_t ht_size(const ht_t *ht) {
 
 void ht_erase(const ht_t *ht, const char *key) {
     ht_value_t * hv = ht_find(ht, key);
-    if (hv)
+    if (hv && ht->item_size > 8) {
+        memset(hv->key, 0 , sizeof(hv->key));
+        memset(hv->value, 0, ht->item_size);
+    } else if (hv) {
         memset(hv, 0, sizeof(*hv));
+    }
 }
 
 bool ht_contains(const ht_t *ht, const char *key) {

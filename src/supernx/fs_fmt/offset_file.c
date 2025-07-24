@@ -21,7 +21,7 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
     offset_file_t *setfile = fb_malloc(sizeof(offset_file_t));
 
     strcpy(setfile->vfile.path, name);
-    setfile->vfile.type = file_type_offetfile;
+    setfile->vfile.type = file_type_offsetfile;
     setfile->vfile.fs_getsize = fs_offset_file_getsize;
     setfile->vfile.fs_read = fs_offset_file_read;
 
