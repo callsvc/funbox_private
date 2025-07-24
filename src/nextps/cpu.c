@@ -16,13 +16,19 @@ uint32_t cpu_read32(const cpu_t *cpu, const uint32_t address) {
     return bus_read(cpu->gateway, address);
 }
 
+
+#define REG32_W(cpu, reg, value)\
+    if (reg)\
+        cpu->regs[reg] = value
+#define REG32_R(cpu, reg)\
+    cpu->regs[reg]
 void cpu_reset(cpu_t *cpu) {
     for (size_t i = 0; i < count_of(cpu->regs); i++) {
-        cpu->regs[i] = 0xBADA55;
+        REG32_W(cpu, i, 0xBADA55);
     }
     cop0_reset(&cpu->cop0);
 
-    cpu->regs[0] = 0;
+    cpu->regs[0] = 0; // HW to 0
     cpu->exec_count = 0;
     cpu->pc = 0xBFC00000;
 
@@ -30,12 +36,6 @@ void cpu_reset(cpu_t *cpu) {
     memset(cpu->load_slot, 0, sizeof(cpu->load_slot));
     cpu->maskint = 0;
 }
-
-#define REG32_W(cpu, reg, value)\
-    if (reg)\
-        cpu->regs[reg] = value
-#define REG32_R(cpu, reg)\
-    cpu->regs[reg]
 
 // load upper immediate
 void op_lui(cpu_t *cpu, const uint32_t op) {
@@ -162,7 +162,7 @@ void cpu_run(cpu_t *cpu) {
 
     if (!cpu->load_slot[2] && cpu->load_slot[0] && cpu->load_slot[1]) {
         // timer for the delay slot
-        cpu->regs[cpu->load_slot[0]] = cpu->load_slot[1];
+        REG32_W(cpu, cpu->load_slot[0], cpu->load_slot[1]);
         memset(cpu->load_slot, 0, sizeof(cpu->load_slot));
     } else if (cpu->load_slot[2]) {
         cpu->load_slot[2]--;

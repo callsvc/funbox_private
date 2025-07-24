@@ -23,7 +23,10 @@ typedef struct tagged_key {
     uint16_t index;
 
 
-    key256_t value;
+    union {
+        key256_t value;
+        key128_t indexed;
+    };
 } tagged_key_t;
 
 typedef struct keys_db {

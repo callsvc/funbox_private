@@ -68,7 +68,7 @@ static void insert_prod256(keys_db_t *kdb, const char * key, const char * value)
     if (keyval.type == key_none)
         return;
 
-    strtobytes(value, &keyval.value, sizeof(keyval.value));
+    strtobytes(value, &keyval.indexed, sizeof(keyval.indexed));
     const char * index = strrchr(key, '_') + 1;
     if (!index)
         oskill("index not found for indexable key %s", key);
