@@ -39,6 +39,7 @@ void fs_close_file(fsdir_t *, fsfile_t *);
 void fs_read(fsfile_t*, void*, size_t, size_t);
 void fs_write(fsfile_t*, const void*, size_t, size_t);
 
+void create_directories(const char *);
 void touch(const char*);
 
 size_t fs_getsize(const fsfile_t*);

@@ -7,6 +7,11 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Release")
     target_link_libraries(core PUBLIC seccomp)
 endif()
 
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+    target_sources(core PUBLIC fs/userfs.c fs/userfs.h)
+    target_link_libraries(core PUBLIC fuse3)
+endif()
+
 target_include_directories(core PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:>)
