@@ -24,6 +24,14 @@ char * fb_strmk(const size_t count, ...) {
     va_end(cp);
     return result;
 }
+char * fb_strndup(const char *str, const size_t n) {
+    char * buffer = fb_malloc(n + 1);
+    fb_strcopy(buffer, str, n);
+    return buffer;
+}
+char * fb_strdup(const char *str) {
+    return fb_strndup(str, strlen(str));
+}
 
 // https://stackoverflow.com/questions/656542/trim-a-string-in-c
 int scape(const char val) {

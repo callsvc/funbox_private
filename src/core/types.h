@@ -34,6 +34,8 @@ const char * to_str64(uint64_t, char *, uint8_t);
 void * strtobytes(const char * str, void*, size_t);
 uint64_t fb_rand();
 
+char * fb_strdup(const char *str);
+
 #define ms(x) (x * 1000000)
 
 void sleep_for(size_t);

@@ -6,8 +6,8 @@
 
 
 typedef enum userfs_type {
-    usefs_type_dir,
-    usefs_type_file
+    userfs_type_dir,
+    userfs_type_file
 } userfs_type_e;
 typedef struct userfs_base {
     char mpath[100];
@@ -33,6 +33,10 @@ typedef struct usefs {
 
     userfs_dir_t *root_files;
     ino_t next_inode;
+    uint8_t * buffer;
+
+    pthread_t thread;
+    volatile bool online;
 } userfs_t;
 userfs_t *userfs_create(const char *);
 void userfs_mountfile(userfs_t*, fsfile_t*, const char*);
