@@ -8,7 +8,7 @@ int main() {
     file_t *selfbin = file_open("userfs_files", "r");
 
     userfs_mountfile(filesystem, (fsfile_t*)selfbin, "DIR/binary/files/file.bin");
-    sleep(1000);
+    sleep(5);
 
     userfs_destroy(filesystem);
     file_close(selfbin);

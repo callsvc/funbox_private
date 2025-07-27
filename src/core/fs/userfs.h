@@ -11,14 +11,14 @@ typedef enum userfs_type {
 } userfs_type_e;
 typedef struct userfs_base {
     char mpath[100];
-    ino_t inode_value;
+    fuse_ino_t inode_value;
+    fuse_ino_t parent_inode;
     userfs_type_e type;
 } userfs_base_t;
 
 typedef struct userfs_file {
     userfs_base_t ubase;
     fsfile_t *file;
-    ino_t parent_inode;
 } userfs_file_t;
 
 typedef struct userfs_dir {
@@ -31,7 +31,7 @@ typedef struct usefs {
     struct fuse_session *se;
 
     userfs_dir_t *root_files;
-    ino_t next_inode;
+    fuse_ino_t next_inode;
     uint8_t * buffer;
 
     pthread_t thread;
