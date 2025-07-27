@@ -10,7 +10,8 @@ typedef enum userfs_type {
     userfs_type_file
 } userfs_type_e;
 typedef struct userfs_base {
-    char mpath[100];
+    char fullpath[100];
+    const char *filename;
     fuse_ino_t inode_value;
     fuse_ino_t parent_inode;
     userfs_type_e type;
@@ -26,7 +27,7 @@ typedef struct userfs_dir {
     list_t *children;
 } userfs_dir_t;
 
-typedef struct usefs {
+typedef struct userfs {
     char mountname[100];
     struct fuse_session *se;
 
