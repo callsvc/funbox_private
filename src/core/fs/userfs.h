@@ -29,7 +29,6 @@ typedef struct userfs_dir {
 typedef struct usefs {
     char mountname[100];
     struct fuse_session *se;
-    struct fuse_chan *ch;
 
     userfs_dir_t *root_files;
     ino_t next_inode;
