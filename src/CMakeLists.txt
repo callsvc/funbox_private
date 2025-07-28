@@ -15,6 +15,7 @@ if(FUNBOX_COMPILE_ALL_SUBSYSTEMS)
     add_subdirectory(heyds)
     add_subdirectory(reality64)
     add_subdirectory(nextps)
+    add_subdirectory(redos)
 else()
 endif()
 
