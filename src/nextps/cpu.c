@@ -106,7 +106,7 @@ uint32_t cpu_getpc(cpu_t *cpu) {
     return pc;
 }
 void op_j(cpu_t *cpu, const uint32_t op) {
-    // To branch within the current 256 MB aligned region
+    // to branch within the current 256 MB aligned region
     const uint32_t clear_pc = cpu->pc & 0xF0000000;
     cpu_setbranch(cpu, clear_pc | op << 2);
 }
