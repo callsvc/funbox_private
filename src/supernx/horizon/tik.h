@@ -42,6 +42,7 @@ typedef struct tik {
 
 tik_t * tik_create(fsfile_t *);
 void tik_destroy(tik_t *);
+bool tik_gettitle(const tik_t *, uint8_t *, const uint8_t *);
 bool tik_isequal(const tik_t *, const tik_t *);
 
 void tik_export(const tik_t *, const char *);

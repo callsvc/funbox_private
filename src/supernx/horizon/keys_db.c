@@ -124,6 +124,14 @@ void keys_db_add_ticket(const keys_db_t *kdb, const tik_t *tik) {
 
     list_push(kdb->tickets, (void*)tik);
 }
+void keys_db_get_titlekey(const keys_db_t *kdb, key128_t *key_dest, const key128_t *rights_id) {
+    memset(key_dest, 0, sizeof(*key_dest));
+    for (size_t i = 0; i < list_size(kdb->tickets); i++) {
+        const tik_t *ticket = list_get(kdb->tickets, i);
+        if (tik_gettitle(ticket, (uint8_t*)key_dest, (const uint8_t*)rights_id))
+            return;
+    }
+}
 
 void keys_db_destroy(keys_db_t *kdb) {
     regfree(&kdb->title_regex);

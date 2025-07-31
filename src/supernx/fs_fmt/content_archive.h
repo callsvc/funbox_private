@@ -115,11 +115,12 @@ typedef struct content_archive {
     fsdir_t *parent_pfs;
     fsfile_t *ncafile;
     keys_db_t *keys;
+    key128_t rights_id;
     bool encrypted;
     content_type_e type;
 
     uint64_t program_id;
-    list_t *pfs_list;
+    list_t *pfs_list, *romfs_list;
 } content_archive_t;
 
 

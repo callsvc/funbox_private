@@ -50,5 +50,6 @@ void keys_db_load(keys_db_t*, fsfile_t *);
 
 typedef struct tik tik_t;
 void keys_db_add_ticket(const keys_db_t*, const tik_t*);
+void keys_db_get_titlekey(const keys_db_t*, key128_t*, const key128_t*);
 
 void keys_db_destroy(keys_db_t *);

@@ -51,6 +51,15 @@ void tik_destroy(tik_t *tik) {
     fb_free(tik);
 }
 
+bool tik_gettitle(const tik_t *tik, uint8_t *dest, const uint8_t *rights) {
+    const uint8_t * rid = tik->ticket_data.rights_id;
+    if (memcmp(rid, rights, 16) != 0)
+        return false;
+
+    memcpy(dest, tik->ticket_data.title_key_block, 16);
+    return true;
+}
+
 bool tik_isequal(const tik_t *tika, const tik_t *tikb) {
     if (tika->type == tikb->type)
         if (memcmp(&tika->ticket_data, &tikb->ticket_data, sizeof(tika->ticket_data)) == 0)
