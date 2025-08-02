@@ -19,8 +19,3 @@ if(FUNBOX_COMPILE_ALL_SUBSYSTEMS)
 else()
 endif()
 
-if(FUNBOX_BUILD_GUI)
-    add_subdirectory(funbox_app/funbox_gui)
-else()
-    add_subdirectory(funbox_app)
-endif()

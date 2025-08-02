@@ -65,19 +65,20 @@ void jit_cleanup(const dynrec_core_t *dyn_cpu, jit_cfg_block_t *start_block) {
     fb_free(start_block);
 }
 
+_Thread_local char buffer[30];
 void jit_run(const dynrec_core_t *dyn_cpu) {
     const uint64_t pc = jit_getpc(dyn_cpu);
     const uint64_t start_pc = pc & ~1000;
     const dynrec_t *jit = dyn_cpu->jit;
 
     while (!jit->int_enabled) {
-        jit_cfg_block_t *cfg = robin_map_get(jit->flow_cfg_blocks, to_str64(start_pc, 10));
+        jit_cfg_block_t *cfg = robin_map_get(jit->flow_cfg_blocks, to_str64(start_pc, buffer, 10));
         if (!cfg) {
             cfg = jit_compile(dyn_cpu, pc);
-            robin_map_emplace(jit->flow_cfg_blocks, (void*)to_str64(start_pc, 10), cfg);
+            robin_map_emplace(jit->flow_cfg_blocks, (void*)to_str64(start_pc, buffer, 10), cfg);
         }
         jit_cleanup(dyn_cpu, cfg);
-        robin_map_emplace(jit->flow_cfg_blocks, (void*)to_str64(start_pc, 10), nullptr);
+        robin_map_emplace(jit->flow_cfg_blocks, (void*)to_str64(start_pc, buffer, 10), nullptr);
     }
 }
 

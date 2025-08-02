@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
 
-add_subdirectory(raygui/projects/CMake)
 set(BUILD_REGRESS OFF CACHE BOOL "Build regression tests" FORCE)
 add_subdirectory(libzip)
 
