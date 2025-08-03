@@ -3,16 +3,13 @@
 #include <stdint.h>
 #include <time.h>
 
+#include <logger.h>
 #define likely(x)   __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
 void oskill(const char * format, ...);
-void fb_issafe();
 
 extern char username[30];
-
-void fb_create();
-void fb_destroy();
 
 typedef struct procinfo {
     char current_dir[PATH_MAX];
@@ -41,8 +38,8 @@ char * fb_strdup(const char *str);
 void sleep_for(size_t);
 bool cmpsha(const uint8_t *, size_t, const char *);
 
-#define big32(begin) __builtin_bswap32(*(const uint32_t*)(begin))
-#define big16(begin) __builtin_bswap16(*(const uint16_t*)(begin))
+#define swap_b32(begin) __builtin_bswap32(*(const uint32_t*)(begin))
+#define swap_b16(begin) __builtin_bswap16(*(const uint16_t*)(begin))
 
 #define count_of(x) (sizeof(x) / sizeof(*x))
 

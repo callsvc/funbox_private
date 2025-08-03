@@ -1,12 +1,12 @@
 #include <vm/types.h>
 #include <types.h>
 uint16_t read_16(const uint8_t **src) {
-    const uint16_t result = big16(*src);
+    const uint16_t result = swap_b16(*src);
     *src += sizeof(result);
     return result;
 }
 uint32_t read_32(const uint8_t **src) {
-    const uint32_t result = big32(*src);
+    const uint32_t result = swap_b32(*src);
     *src += sizeof(result);
     return result;
 }

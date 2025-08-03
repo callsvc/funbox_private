@@ -4,9 +4,6 @@
 #include <bundle/loader.h>
 
 int main() {
-    fb_issafe();
-    fb_create();
-
     config_t *config = config_create();
     pkg_list_all(config);
 

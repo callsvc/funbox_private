@@ -120,8 +120,8 @@ size_t* content_archive_fix_offsets_for_file(const nca_fs_header_t *file_info) {
 
 file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_fs_entry_t *this_fs, const nca_fs_header_t * fs_info, const size_t *file_details) {
     uint8_t ctr[16] = {};
-    *(uint32_t*)&ctr = big32(&fs_info->secure_value);
-    *(uint32_t*)((uint8_t*)&ctr + 4) = big32(&fs_info->generation);
+    *(uint32_t*)&ctr = swap_b32(&fs_info->secure_value);
+    *(uint32_t*)((uint8_t*)&ctr + 4) = swap_b32(&fs_info->generation);
 
     file_list_item_t * file_item = fb_malloc(sizeof(file_list_item_t));
     file_item->aes_encrypted = true;
@@ -201,7 +201,7 @@ content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *pfs, const 
 
         fs_read(nca->ncafile, nca_info, sizeof(*nca_info), 0);
 
-        fprintf(stderr, "this nca at %p is encrypted, header key address: %p\n", nca, mainkey);
+        logger_info("this nca at %p is encrypted, header key address: %p", nca, mainkey);
         nca->encrypted = true;
     }
     if (nca_info->size != fs_getsize(nca->ncafile))

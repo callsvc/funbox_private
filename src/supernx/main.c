@@ -5,7 +5,6 @@
 
 
 int main() {
-    fb_create();
     nx_sys_t *nx_sys = nx_sys_create();
     nx_get_all_loaders(nx_sys);
 
@@ -29,5 +28,4 @@ int main() {
     }
 
     nx_sys_destroy(nx_sys);
-    fb_destroy();
 }

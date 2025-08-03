@@ -5,7 +5,7 @@
 #include <vm/coffee.h>
 
 void invokevirtual(coffee_t *vm, const cpool_t *pool, const uint8_t *pc) {
-    const uint16_t methodref_index = big16((uint16_t*)pc);
+    const uint16_t methodref_index = swap_b16((uint16_t*)pc);
     const cp_entry_t *refmethod = cpool_get(pool, methodref_index);
     assert(refmethod->type == cp_type_methodref);
 

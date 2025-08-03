@@ -6,15 +6,15 @@
 #endif
 
 #include <types.h>
-
+#include <logger.h>
 char username[30] = {};
-void fb_issafe() {
+
+void fb_create() {
     const uid_t euid = geteuid();
     if (euid == 0)
         oskill("You can't run as a root user!");
-}
-void fb_create() {
     strcpy(username, getenv("HOME"));
+    logger_init();
 
 #if NDEBUG
     const scmp_filter_ctx filter = seccomp_init(SCMP_ACT_KILL);
@@ -31,4 +31,5 @@ void fb_create() {
 }
 
 void fb_destroy() {
+    logger_destroy();
 }

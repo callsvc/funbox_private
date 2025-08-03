@@ -11,7 +11,11 @@
 ht_t *ht_mm = nullptr;
 pthread_mutex_t ht_mutex;
 
+void fb_create();
+void fb_destroy();
+
 void fb_exit() {
+    fb_destroy();
     pthread_mutex_destroy(&ht_mutex);
 }
 
@@ -23,6 +27,8 @@ __attribute__((constructor)) void fb_entry() {
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&ht_mutex, &attr);
     pthread_mutexattr_destroy(&attr);
+
+    fb_create();
 }
 
 constexpr size_t malloc_threshold = 2 * 1024 * 1024;

@@ -8,9 +8,9 @@
 const char* class_getversion(const uint8_t *src, const size_t len) {
     if (len < 8)
         return nullptr;
-    if (big32(src) != 0xCAFEBABE)
+    if (swap_b32(src) != 0xCAFEBABE)
         return nullptr;
-    if (big16(src + 6) == 0x2D)
+    if (swap_b32(src + 6) == 0x2D)
         return "JVM 1.0";
     return nullptr;
 }

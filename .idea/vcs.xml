@@ -6,6 +6,5 @@
     <mapping directory="$PROJECT_DIR$/libraries/libzip" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/libraries/mbedtls" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/libraries/mbedtls/framework" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/libraries/raygui" vcs="Git" />
   </component>
 </project>
