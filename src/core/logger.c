@@ -4,21 +4,29 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <fs/file.h>
 #include <types.h>
 #include <logger.h>
+
 logger_t *logs = nullptr;
 
+constexpr size_t max_length = 150;
 void logger_init() {
     logs = fb_malloc(sizeof(logger_t));
     pthread_mutex_init(&logs->mutex, nullptr);
 
-    logs->threshold = sizeof(logs->logm) / 100;
+    logs->threshold = sizeof(logs->logm) / max_length;
     *logs->logm = '?';
+
+    remove("logs.txt");
+    logs->file = (fsfile_t*)file_open("logs.txt", "w");
 }
 void logger_flush(logger_t *logger, bool lock);
 void logger_destroy() {
 
     logger_flush(logs, true);
+    if (logs->file)
+        file_close((file_t*)logs->file);
     pthread_mutex_destroy(&logs->mutex);
     fb_free(logs);
     logs = nullptr;
@@ -31,12 +39,16 @@ void logger_flush(logger_t *logger, const bool lock) {
     const char *logm = logger->logm;
     const size_t lines = logger->count;
     for (size_t i = 0; i < lines; i++) {
-        char message[1024];
-        snprintf(message, strchr(logm, '\n') - logm + 2, "%s", logger->logm);
         if (!logger->count--)
             break;
-        if (!logger->file)
-            fputs(message, stderr);
+        const size_t len = strchr(logm, '\n') - logm + 1;
+        if (!logger->file) {
+            snprintf(logger->scratch, len + 1, "%s", logger->logm);
+            fputs(logger->scratch, stderr);
+        } else {
+            fs_write(logger->file, logger->logm, len, logger->filepos);
+            logger->filepos += len;
+        }
 
         logm = strchr(logm, '\n');
         if (!logm || *logm == '?')
@@ -57,8 +69,8 @@ void logger_write(logger_t *logger, const logm_type_e type, const char * file, c
 
     pthread_mutex_lock(&logs->mutex);
 
-    char log[150];
-    vsnprintf(log, 1024, fmt, args);
+    char log[max_length];
+    vsnprintf(log, max_length, fmt, args);
     const char * type_str = nullptr;
 
     switch(type) {

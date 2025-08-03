@@ -37,7 +37,8 @@ void create_directories(const char *path) {
 }
 
 void touch(const char *path) {
-    create_directories(path);
+    if (strchr(path, '/'))
+        create_directories(path);
     close(open(path, O_RDWR | O_CREAT, 0644));
 }
 

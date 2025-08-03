@@ -14,11 +14,14 @@ typedef enum logm_type {
 } logm_type_e;
 
 typedef struct logger {
-    char logm[600];
+    char logm[3 * 1024];
+    char scratch[1024];
+
     size_t count;
     size_t threshold;
 
     fsfile_t *file;
+    size_t filepos;
     pthread_mutex_t mutex;
 } logger_t;
 
