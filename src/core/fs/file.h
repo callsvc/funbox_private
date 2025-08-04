@@ -11,12 +11,15 @@ typedef struct file {
     char *buffer;
 
     const dir_t *parent;
+    vector_t *write_stall;
 } file_t;
 
 file_t * file_open(const char*, const char*);
 
 size_t file_getsize(const file_t *file);
-void file_write(const file_t *, const void *, size_t, size_t offset) ;
+void file_write(const file_t *, const void *, size_t, size_t offset);
+void file_lazywrite(const file_t *, const void *, size_t); // stall next write
+void file_flush(const file_t*);
 void file_read(const file_t*, void*, size_t, size_t);
 
 const char * file_errorpath(const char*);

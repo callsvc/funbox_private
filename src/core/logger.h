@@ -2,7 +2,7 @@
 #include <pthread.h>
 #include <stddef.h>
 
-typedef struct fsfile fsfile_t;
+typedef struct file file_t;
 
 typedef enum logm_type {
     logm_type_success,
@@ -20,7 +20,7 @@ typedef struct logger {
     size_t count;
     size_t threshold;
 
-    fsfile_t *file;
+    file_t *file;
     size_t filepos;
     pthread_mutex_t mutex;
 } logger_t;

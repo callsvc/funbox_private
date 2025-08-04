@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/uio.h>
 #include <sys/stat.h>
 
 #include <core/types.h>
@@ -42,6 +43,8 @@ file_t * file_open(const char* path, const char* mode) {
     file->vfile.fs_write = fs_file_write;
     file->vfile.fs_read = fs_file_read;
 
+    file->write_stall = vector_create(0, sizeof(struct iovec));
+
     return file;
 }
 
@@ -57,6 +60,29 @@ void file_write(const file_t *file, const void *input, const size_t size, const 
     if (ftell(file->handle) != offset)
         fseek(file->handle, (int64_t)offset, SEEK_SET);
     fwrite(input, size, 1, file->handle);
+}
+
+void file_lazywrite(const file_t *file, const void *src, const size_t size) {
+    if (!size && !src)
+        return;
+    const struct {
+        const void *buffer;
+        size_t size;
+    } stall = {.buffer = src, .size = size};
+    _Static_assert(sizeof(stall) == sizeof(struct iovec));
+    vector_emplace(file->write_stall, &stall);
+}
+
+void file_flush(const file_t *file) {
+    fflush(file->handle);
+
+    if (!vector_size(file->write_stall))
+        return;
+    const struct iovec *iolist = vector_begin(file->write_stall);
+    const uint64_t result = writev(fileno(file->handle), iolist, vector_size(file->write_stall));
+
+    fseek(file->handle, result, SEEK_CUR);
+    vector_setsize(file->write_stall, 0);
 }
 
 void file_read(const file_t *file, void *output, const size_t size, const size_t offset) {
@@ -78,6 +104,8 @@ const char * file_errorpath(const char *path) {
     return "none";
 }
 void file_close(file_t *file) {
+    file_flush(file);
+    vector_destroy(file->write_stall);
     if (file->parent) {
         dir_close_file(file->parent, file);
         return;

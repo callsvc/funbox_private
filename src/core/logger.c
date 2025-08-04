@@ -19,14 +19,14 @@ void logger_init() {
     *logs->logm = '?';
 
     remove("logs.txt");
-    logs->file = (fsfile_t*)file_open("logs.txt", "w");
+    logs->file = file_open("logs.txt", "w");
 }
 void logger_flush(logger_t *logger, bool lock);
 void logger_destroy() {
 
     logger_flush(logs, true);
     if (logs->file)
-        file_close((file_t*)logs->file);
+        file_close(logs->file);
     pthread_mutex_destroy(&logs->mutex);
     fb_free(logs);
     logs = nullptr;
@@ -46,7 +46,7 @@ void logger_flush(logger_t *logger, const bool lock) {
             snprintf(logger->scratch, len + 1, "%s", logger->logm);
             fputs(logger->scratch, stderr);
         } else {
-            fs_write(logger->file, logger->logm, len, logger->filepos);
+            file_lazywrite(logger->file, logger->logm, len);
             logger->filepos += len;
         }
 
@@ -55,6 +55,8 @@ void logger_flush(logger_t *logger, const bool lock) {
             break;
         logm++;
     }
+    if (logger->file)
+        file_flush(logger->file);
     memset(logger->logm, '\0', sizeof(logger->logm));
     *logger->logm = '?';
     logger->count = 0;
