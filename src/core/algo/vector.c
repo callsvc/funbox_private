@@ -30,6 +30,10 @@ size_t vector_size(const vector_t *vec) {
     return count;
 }
 
+bool vector_empty(const vector_t *vec) {
+    return vec->size == 0;
+}
+
 void vector_setsize(vector_t *vec, const size_t size) {
     vector_resize(vec, size);
     if (vec->capacity >= size)

@@ -31,7 +31,7 @@ ht_t * ht_create(const size_t bucket, const size_t item_size, const char **keys_
 
 static ht_value_t * ht_find(const ht_t *ht, const char *key) {
     const uint64_t hash = hash_key_fnv1a(key);
-    if (!vector_size(ht->bucket))
+    if (vector_empty(ht->bucket))
         vector_setsize(ht->bucket, 1);
     const uint64_t kindex = hash % vector_size(ht->bucket);
 

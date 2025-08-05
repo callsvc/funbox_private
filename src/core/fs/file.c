@@ -57,6 +57,8 @@ size_t file_getsize(const file_t *file) {
 }
 
 void file_write(const file_t *file, const void *input, const size_t size, const size_t offset) {
+    if (!vector_empty(file->write_stall))
+        file_flush(file);
     if (ftell(file->handle) != offset)
         fseek(file->handle, (int64_t)offset, SEEK_SET);
     fwrite(input, size, 1, file->handle);
@@ -76,10 +78,11 @@ void file_lazywrite(const file_t *file, const void *src, const size_t size) {
 void file_flush(const file_t *file) {
     fflush(file->handle);
 
-    if (!vector_size(file->write_stall))
+    if (vector_empty(file->write_stall))
         return;
     const struct iovec *iolist = vector_begin(file->write_stall);
-    const uint64_t result = writev(fileno(file->handle), iolist, vector_size(file->write_stall));
+    const uint64_t offset = ftell(file->handle);
+    const uint64_t result = pwritev(fileno(file->handle), iolist, vector_size(file->write_stall), offset);
 
     fseek(file->handle, result, SEEK_CUR);
     vector_setsize(file->write_stall, 0);

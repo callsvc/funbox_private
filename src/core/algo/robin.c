@@ -77,7 +77,7 @@ static size_t robin_map_get_entry(const robin_map_t *robin_map, const void *key)
         key_size = strlen(key);
     else key_size = robin_pair_type_size(robin_map->pair_types[0]);
 
-    if (vector_size(robin_map->bucket))
+    if (!vector_empty(robin_map->bucket))
         return siphash(key, key_size, robin_map->secret_key) % vector_size(robin_map->bucket);
     return 0;
 }

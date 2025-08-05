@@ -13,6 +13,8 @@ vector_t * vector_create(size_t, size_t);
 void * vector_begin(const vector_t*);
 size_t vector_resize(vector_t *, size_t);
 size_t vector_size(const vector_t*);
+bool vector_empty(const vector_t*);
+
 void vector_setsize(vector_t*, size_t);
 void * vector_get(const vector_t *, size_t);
 void * vector_emplace(vector_t *, const void *data);
