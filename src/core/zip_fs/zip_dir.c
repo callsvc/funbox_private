@@ -45,7 +45,7 @@ zipdir_t * zipdir_open(const char *path) {
     zipdir_t *dir = fb_malloc(sizeof(zipdir_t));
     dir->zipfile = zip_open(path, ZIP_RDONLY, nullptr);
     if (!dir->zipfile)
-        oskill("can't open zip filename %s", path);
+        quit("can't open zip filename %s", path);
 
     dir->vdir.open_file = fs_zipdir_open_file;
     dir->vdir.close_file = fs_zipdir_close_file;

@@ -9,7 +9,7 @@
 
 void keys_compile_regex(regex_t *regex, const char *exp) {
     if (regcomp(regex, exp, REG_EXTENDED) != 0)
-        oskill("can't compile regex");
+        quit("can't compile regex");
 }
 
 
@@ -71,7 +71,7 @@ static void insert_prod256(keys_db_t *kdb, const char * key, const char * value)
     strtobytes(value, &keyval.indexed, sizeof(keyval.indexed));
     const char * index = strrchr(key, '_') + 1;
     if (!index)
-        oskill("index not found for indexable key %s", key);
+        quit("index not found for indexable key %s", key);
     keyval.index = strtoul(index, nullptr, 16);
     if (!ht_contains(kdb->tag_keys256, key))
         ht_insert(kdb->tag_keys256, key, &keyval);

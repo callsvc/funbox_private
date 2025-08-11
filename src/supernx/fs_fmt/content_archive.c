@@ -102,13 +102,13 @@ size_t* content_archive_fix_offsets_for_file(const nca_fs_header_t *file_info) {
     if (file_info->type == fs_type_partition_fs && file_info->hash_type == 2) {
         const hashdata_hsd_t * hashable = (hashdata_hsd_t*)file_info->hash_data;
         if (hashable->layer_count != 2)
-            oskill("layout_count must be equal to 2");
+            quit("layout_count must be equal to 2");
 
         memcpy(offset_size, &hashable->layer_regions[hashable->layer_count - 1], list_size);
     } else if (file_info->type == fs_type_romfs && file_info->hash_type == 3) {
         const hashdata_imi_t * integrity = (hashdata_imi_t*)file_info->hash_data;
         if (integrity->magic != *(uint32_t*)"IVFC")
-            oskill("magic value is corrupted");
+            quit("magic value is corrupted");
         const uint64_t max_level = integrity->max_layers - 2;
         memcpy(offset_size, &integrity->levels[max_level], list_size);
     } else {
@@ -205,7 +205,7 @@ content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *pfs, const 
         nca->encrypted = true;
     }
     if (nca_info->size != fs_getsize(nca->ncafile))
-        oskill("nca size does not match the file size");
+        quit("nca size does not match the file size");
 
     nca->type = nca_info->content_type;
     nca->program_id = nca_info->program_id;

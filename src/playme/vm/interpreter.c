@@ -52,7 +52,7 @@ void interpreter(coffee_t *vm, method_t *method) {
                 frame->pc += 2;
                 break;
             default:
-                oskill("invalid opcode %u", opcode);
+                quit("invalid opcode %u", opcode);
         }
     }
 }

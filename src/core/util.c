@@ -70,7 +70,7 @@ void fb_free(void *ptr) {
     const size_t size = ht_mm ? (size_t)ht_get(ht_mm, to_str64((uint64_t)ptr, buffer, 16)) : 0;
     if (unlikely(size)) {
         if (munmap(ptr, size))
-            oskill("ptr %p is invalid", ptr);
+            quit("ptr %p is invalid", ptr);
         ht_erase(ht_mm, to_str64((uint64_t)ptr, buffer, 16));
     } else if (ptr) {
         free(ptr);
@@ -139,10 +139,10 @@ void sleep_for(const size_t ns) {
     if (ns < NS_MAX_VALUE) {
         const struct timespec rtime = { 0, ns };
         if (nanosleep(&rtime, nullptr))
-            oskill("can't sleep");
+            quit("can't sleep");
     } else {
         if (usleep(ns / 1000))
-            oskill("also can't sleep anyway");
+            quit("also can't sleep anyway");
     }
 }
 

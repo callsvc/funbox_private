@@ -6,7 +6,7 @@
 void fs_offset_file_read(struct fsfile *file, void *output, const size_t size, const size_t offset) {
     const offset_file_t *setfile = (offset_file_t*)file;
     if (offset >= fs_getsize((fsfile_t*)setfile))
-        oskill("invalid offset file");
+        quit("invalid offset file");
 
     if (!setfile->buffer)
         fs_read(setfile->file, output, size, setfile->start + offset);
@@ -39,7 +39,7 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
 }
 void offset_file_close(const fsfile_t *base, offset_file_t *file) {
     if (file->file != base)
-        oskill("unable to close file");
+        quit("unable to close file");
     fb_free(file->buffer);
     fb_free(file);
 }

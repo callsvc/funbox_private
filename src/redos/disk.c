@@ -10,7 +10,7 @@ void disk_reset(disk_t *disk, const char *filepath) {
         file_close(disk->file);
     disk->file = file_open(filepath, "r");
     if (!disk->file)
-        oskill("bootable file not found");
+        quit("bootable file not found");
 }
 
 void disk_read_sector(const disk_t *disk, const uint16_t sec, uint8_t *dest) {

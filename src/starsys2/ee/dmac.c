@@ -26,7 +26,7 @@ void dmac_run(const dmac_t *dmac, size_t *cycles) {
         return;
     for (; *cycles; (*cycles)--) {}
 
-    oskill("DMAC is required");
+    quit("DMAC is required");
 }
 
 constexpr int32_t dmac_ctrl_addr = 0x1000E000;

@@ -12,7 +12,7 @@ bus_t *bus_create() {
     fs_read((fsfile_t*)bios_scph, bus->mips_memory, fs_getsize((fsfile_t*)bios_scph), 0);
 
     if (!cmpsha(bus->mips_memory, 512 * 1024, "10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF"))
-        oskill("bios file is corrupted");
+        quit("bios file is corrupted");
     file_close(bios_scph);
     return bus;
 }

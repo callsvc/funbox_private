@@ -33,14 +33,14 @@ void aes_file_update(aes_file_t *aes_file, void *output, const size_t size, cons
         for (size_t i = 0; i < size; i += result)
             if (mbedtls_cipher_update(&aes_file->context, input, vector_size(aes_file->buffer), output, &result))
                 if (result != block_size)
-                    oskill("can't update block");
+                    quit("can't update block");
     } else {
         mbedtls_cipher_update(&aes_file->context, input, vector_size(aes_file->buffer), output, &result);
 
     }
 
     if (result != size)
-        oskill("can't update all blocks");
+        quit("can't update all blocks");
 }
 
 void aes_file_read_xts(aes_file_t *aes_file, void *output, const size_t size, size_t offset) {
@@ -138,7 +138,7 @@ void aes_file_setkey(aes_file_t *aes_file, const uint8_t *key, const size_t keyl
     const mbedtls_operation_t mbedtls_op = *aes_file->mode == 'r' ? MBEDTLS_DECRYPT : MBEDTLS_ENCRYPT;
 
     if (mbedtls_cipher_setkey(&aes_file->context, key, len, mbedtls_op))
-        oskill("can't set key");
+        quit("can't set key");
 }
 
 void aes_file_setiv(aes_file_t *aes_file, uint8_t iv[16]) {
@@ -153,7 +153,7 @@ void aes_file_setconstraints(aes_file_t *aes_file, const uint64_t size, const ui
 
     const size_t last_offset = aes_file->sector_last * aes_file->sector_size;
     if (fs_getsize(aes_file->parent) < last_offset)
-        oskill("invalid offset");
+        quit("invalid offset");
 }
 
 void aes_file_close(aes_file_t *aes_file) {

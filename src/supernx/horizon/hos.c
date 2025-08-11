@@ -13,7 +13,7 @@ void find_keys(keys_db_t *keys, const dir_t *dir, const char *keyname) {
             keys_db_load(keys, (fsfile_t*)file);
         dir_close_file(dir, file);
     } else {
-        oskill("can't find keys");
+        quit("can't find keys");
     }
     fb_free(keypath);
 }
@@ -24,7 +24,7 @@ hos_t *hos_create(const char *dir) {
 
     dir_t *wdir = dir_open(dir, "r");
     if (!wdir)
-        oskill("can't open directory");
+        quit("can't open directory");
 
     find_keys(hos->kdb, wdir, "title.keys");
     find_keys(hos->kdb, wdir, "prod.keys");

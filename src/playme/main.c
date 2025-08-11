@@ -35,7 +35,7 @@ int main() {
     fb_free(classpath);
 
     if (!mainfile)
-        oskill("can't open the main class file specified by the manifest");
+        quit("can't open the main class file specified by the manifest");
 
     vector_t *content = fs_filebytes(mainfile);
     fs_close_file((fsdir_t*)micromid, mainfile);

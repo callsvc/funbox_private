@@ -40,7 +40,7 @@ void pfs_validate(const pfs_t *pfs, const uint64_t file_size) {
 
     fprintf(stderr, "number of bytes discarded from this PFS: %lu\n", file_size - files_sizes);
     if (files_sizes >= max_size || files_sizes > file_size)
-        oskill("PFS is too large");
+        quit("PFS is too large");
 }
 
 void pfs_getall(const pfs_t *pfs, fsfile_t * file, const uint64_t tableoffset, size_t *offset, const struct pfs_header *pfs_header) {
@@ -67,7 +67,7 @@ void pfs_getall(const pfs_t *pfs, fsfile_t * file, const uint64_t tableoffset, s
 fsfile_t * fs_pfs_open_file(fsdir_t *dir, const char * path, const char * mode) {
     const pfs_t * pfs = (pfs_t*)dir;
     if (*mode == 'w')
-        oskill("unable to open file for writing");
+        quit("unable to open file for writing");
     for (size_t i = 0; i < vector_size(pfs->files); i++) {
         const pfs_file_t * file = vector_get(pfs->files, i);
 

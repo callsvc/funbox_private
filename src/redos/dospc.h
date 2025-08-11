@@ -1,6 +1,6 @@
 #pragma once
 
-#include <pc_cpu.h>
+#include <pc8086.h>
 #include <disk.h>
 
 typedef struct dospc {
@@ -8,7 +8,7 @@ typedef struct dospc {
     uint32_t barrier;
 
     disk_t *disk_slot;
-    pc_cpu_t *cpu;
+    pc8086_t *cpu;
 
     uint32_t cannary;
 } dospc_t;

@@ -93,7 +93,7 @@ void mtc0(ee_t *mips, const uint32_t cpdest, const uint32_t source) {
 }
 
 void ee_sigill(const ee_t *mips, const uint32_t opcode) {
-    oskill("opcode %s not implemented, pc: %#x", to_binary(&opcode, 4), mips->pc);
+    quit("opcode %s not implemented, pc: %#x", to_binary(&opcode, 4), mips->pc);
 }
 
 void ee_quit(const ee_t * mips, const char *str, const uint32_t opcode, const bool cond) {

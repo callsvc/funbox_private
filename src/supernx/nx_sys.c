@@ -28,7 +28,7 @@ void nx_get_all_loaders(const nx_sys_t *nx) {
 
         const loader_type_e rom_type = loader_get_rom_type((fsfile_t*)file);
         if (rom_type == loader_unknown_type)
-            oskill("Are you kidding???");
+            quit("Are you kidding???");
 
         game_file_t *typed = list_emplace(nx->games);
         typed->file = (fsfile_t*)mapfile_open((const fsfile_t*)file);

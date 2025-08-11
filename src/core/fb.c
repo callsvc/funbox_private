@@ -12,7 +12,7 @@ char username[30] = {};
 void fb_create() {
     const uid_t euid = geteuid();
     if (euid == 0)
-        oskill("You can't run as a root user!");
+        quit("You can't run as a root user!");
     strcpy(username, getenv("HOME"));
     logger_init();
 

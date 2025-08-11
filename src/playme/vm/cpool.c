@@ -54,7 +54,7 @@ cpool_t *cpool_create(const uint8_t *begin, const size_t size) {
                 entry->pair_16[1] = read_pvalue16(&bytes);
                 break;
             default:
-                oskill("not implemented (%u)", entry->type);
+                quit("not implemented (%u)", entry->type);
         }
     }
     pool->size = bytes - begin;

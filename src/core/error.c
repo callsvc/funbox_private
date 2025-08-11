@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void oskill(const char *format, ...) {
+void quit(const char *format, ...) {
     va_list args = {};
     va_start(args, format);
 

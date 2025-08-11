@@ -10,11 +10,11 @@ bridge_t * bridge_create(sony_t *sony) {
     board->ee_memory = fb_malloc(sizeof(uint8_t) * 32 * 1024 * 1024);
 
     if (!sony->firmpath)
-        oskill("a firmware is needed to continue");
+        quit("a firmware is needed to continue");
 
     file_t *file = file_open(sony->firmpath, "r");
     if (!file)
-        oskill("can't open the firmware file: %s", file_errorpath(sony->firmpath));
+        quit("can't open the firmware file: %s", file_errorpath(sony->firmpath));
 
     file_read(file, board->ee_memory, 0x400000, 0);
     file_close(file);

@@ -12,7 +12,7 @@ cartridge_t *cartridge_create() {
 void cartridge_load_rom(cartridge_t *cart, const char *path) {
     file_t *rom = file_open(path, "r");
     if (!rom)
-        oskill("can't open rom");
+        quit("can't open rom");
     cart->content = fs_filebytes((fsfile_t*)rom);
     file_close(rom);
 
