@@ -122,12 +122,15 @@ void movimm(pc8086_t *cpu, const uint8_t *mptr, const uint8_t id) {
 }
 
 void movbytes(pc8086_t *cpu, const size_t size) {
+    // calculate physical address
     uint32_t src = ((uint32_t)cpu->ds << 4) + cpu->si;
     uint32_t dst = ((uint32_t)cpu->es << 4) + cpu->di;
 
+    // perform actual copy
     for (size_t i = 0; i < size; i++) {
         cpu->pc->pc_memory[dst++] = cpu->pc->pc_memory[src++];
     }
+    // checking copy direction
     const int32_t direction = x86_flags_get(cpu, X86_FLAGS_DIRECTION) ? -1 : 1;
     cpu->si += size * direction;
     cpu->di += size * direction;
