@@ -7,6 +7,10 @@
 #define likely(x)   __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
+// grep -E 'MIN\(|MAX\(' /usr/include/sys/param.h
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 void quit(const char * format, ...);
 
 extern char username[30];

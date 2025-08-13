@@ -23,7 +23,7 @@ keys_db_t *keys_db_create() {
 
     kdb->named_keys = ht_create(count_of(named_keys), sizeof(key256_t), named_keys);
 
-    kdb->tag_keys256 = ht_create(0, sizeof(tagged_key_t), nullptr);
+    kdb->tag_keysmap = ht_create(0, sizeof(tagged_key_t), nullptr);
 
     keys_compile_regex(&kdb->prod_regex, "^\\w+\\s*=\\s*[a-fA-F0-9]+$");
     keys_compile_regex(&kdb->title_regex, "^[a-fA-F0-9]{32}\\s*=\\s*[a-fA-F0-9]{32}$");
@@ -57,7 +57,7 @@ static void insert_prod256(keys_db_t *kdb, const char * key, const char * value)
         return;
     }
 
-    static const char *keys_area[] = {"none key wtf?!!", "key_area_key_application_", "key_area_key_ocean_", "key_area_key_system_"};
+    static const char *keys_area[] = {"none key wtf?!!", "titlekek_", "key_area_key_application_", "key_area_key_ocean_", "key_area_key_system_"};
 
     key_type_e type = key_none;
     for (size_t i = 0; i < count_of(keys_area) && keyval.type == key_none; i++) {
@@ -73,8 +73,8 @@ static void insert_prod256(keys_db_t *kdb, const char * key, const char * value)
     if (!index)
         quit("index not found for indexable key %s", key);
     keyval.index = strtoul(index, nullptr, 16);
-    if (!ht_contains(kdb->tag_keys256, key))
-        ht_insert(kdb->tag_keys256, key, &keyval);
+    if (!ht_contains(kdb->tag_keysmap, key))
+        ht_insert(kdb->tag_keysmap, key, &keyval);
 }
 
 void keys_add_prod(keys_db_t *kdb, const char *line) {
@@ -124,11 +124,11 @@ void keys_db_add_ticket(const keys_db_t *kdb, const tik_t *tik) {
 
     list_push(kdb->tickets, (void*)tik);
 }
-void keys_db_get_titlekey(const keys_db_t *kdb, key128_t *key_dest, const key128_t *rights_id) {
+void keys_db_get_titlekey(const keys_db_t *kdb, key128_t key_dest, const key128_t rights_id) {
     memset(key_dest, 0, sizeof(*key_dest));
     for (size_t i = 0; i < list_size(kdb->tickets); i++) {
         const tik_t *ticket = list_get(kdb->tickets, i);
-        if (tik_gettitle(ticket, (uint8_t*)key_dest, (const uint8_t*)rights_id))
+        if (tik_gettitle(ticket, key_dest, rights_id))
             return;
     }
 }
@@ -145,6 +145,6 @@ void keys_db_destroy(keys_db_t *kdb) {
     set_destroy(kdb->titles);
     list_destroy(kdb->keys_path);
     ht_destroy(kdb->named_keys);
-    ht_destroy(kdb->tag_keys256);
+    ht_destroy(kdb->tag_keysmap);
     fb_free(kdb);
 }

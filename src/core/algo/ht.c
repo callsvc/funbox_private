@@ -118,7 +118,7 @@ bool ht_contains(const ht_t *ht, const char *key) {
 void ht_destroy(ht_t *ht) {
     for (size_t i = 0; i < vector_size(ht->bucket); i++) {
         const ht_value_t * hv = vector_get(ht->bucket, i);
-        if (ht->item_size != 8)
+        if (ht->item_size > 8)
             fb_free(hv->value);
     }
     vector_destroy(ht->bucket);

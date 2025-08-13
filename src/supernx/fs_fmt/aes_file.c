@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <string.h>
 #include <types.h>
 #include <fs_fmt/aes_file.h>
@@ -21,25 +22,28 @@ uint8_t * aes_get_nintendo_tweak(const uint64_t sector) {
 void aes_file_update(aes_file_t *aes_file, void *output, const size_t size, const size_t offset) {
     const size_t block_size = mbedtls_cipher_get_block_size(&aes_file->context);
 
+    // assert(size % block_size == 0);
     if (size > vector_size(aes_file->buffer))
         vector_setsize(aes_file->buffer, size);
 
-    uint8_t *input = vector_begin(aes_file->buffer);
-    fs_read(aes_file->parent, input, size, offset);
+    uint8_t *dest_buffer = vector_begin(aes_file->buffer);
+    fs_read(aes_file->parent, output, size, offset);
     mbedtls_cipher_reset(&aes_file->context);
 
     size_t result = 0;
     if (unlikely(!aes_file_isxts(aes_file))) {
-        for (size_t i = 0; i < size; i += result)
-            if (mbedtls_cipher_update(&aes_file->context, input, vector_size(aes_file->buffer), output, &result))
+        size_t i = 0;
+        for (; i < size; i += result)
+            if (mbedtls_cipher_update(&aes_file->context, output + i, MIN(vector_size(aes_file->buffer) - i, 0x10), dest_buffer + i, &result))
                 if (result != block_size)
                     quit("can't update block");
+        result = i;
     } else {
-        mbedtls_cipher_update(&aes_file->context, input, vector_size(aes_file->buffer), output, &result);
+        mbedtls_cipher_update(&aes_file->context, output, vector_size(aes_file->buffer), dest_buffer, &result);
 
     }
-
-    if (result != size)
+    memcpy(output, dest_buffer, result);
+    if (result < size)
         quit("can't update all blocks");
 }
 
@@ -65,7 +69,8 @@ void aes_file_read_xts(aes_file_t *aes_file, void *output, const size_t size, si
 
 void aes_file_updatectr(aes_file_t *aes_file, const size_t offset) {
     const uint64_t blkoffset = offset >> 4;
-    memcpy(aes_file->iv_ctr + 8, &blkoffset, 8);
+    const uint64_t be_offset = __builtin_bswap64(blkoffset);
+    memcpy(aes_file->iv_ctr + 8, &be_offset, 8);
     aes_file_setiv(aes_file, aes_file->iv_ctr);
 }
 
@@ -74,28 +79,29 @@ void aes_file_read_ctr(aes_file_t *aes_file, void *output, const size_t size, co
     const size_t alignoffset = offset % ctr_block_size;
 
     const size_t padding = ctr_block_size - alignoffset;
+    uint8_t start_block[ctr_block_size];
+    size_t filled = 0;
     if (!alignoffset) {
         aes_file_updatectr(aes_file, offset);
-        aes_file_update(aes_file, output, ctr_block_size, offset);
+        aes_file_update(aes_file, output, size, offset);
     } else {
-        uint8_t start_block[ctr_block_size];
         aes_file_updatectr(aes_file, offset - alignoffset);
         aes_file_update(aes_file, start_block, ctr_block_size, offset - alignoffset);
-        if (size + alignoffset < ctr_block_size) {
+        if (size + alignoffset <= ctr_block_size) {
             memcpy(output, &start_block[alignoffset], size);
-            return;
+        } else {
+            memcpy(output, &start_block[alignoffset], padding);
+            filled += padding;
         }
-        memcpy(output, &start_block[alignoffset], padding);
     }
 
-    const size_t fill_size = size - padding;
-    if (fill_size)
-        aes_file_read_ctr(aes_file, (uint8_t*)output + fill_size, fill_size, offset + padding);
+    if (filled)
+        aes_file_read_ctr(aes_file, (uint8_t*)output + filled, size - filled, offset + filled);
 }
 
 void fs_aes_file_read(fsfile_t *file, void *output, const size_t size, const size_t offset) {
     const auto aes_file = (aes_file_t*)file;
-    const uint64_t offset_block = aes_file->sector_offset * aes_file->sector_size + offset;
+    const uint64_t offset_block = aes_file->sector_offset * aes_file->sector_size + aes_file->sector_pad + offset;
 
     if (aes_file_isxts((aes_file_t*)file))
         aes_file_read_xts((aes_file_t*)file, output, size, offset_block);
@@ -134,7 +140,7 @@ aes_file_t * aes_file_open(fsfile_t * file, const aes_type_e type, const char *m
 void aes_file_setkey(aes_file_t *aes_file, const uint8_t *key, const size_t keylen) {
     const size_t len = mbedtls_cipher_get_key_bitlen(&aes_file->context);
     if (len == MBEDTLS_KEY_LENGTH_NONE || len != keylen * 8)
-        return;
+        quit("invalid key size");
     const mbedtls_operation_t mbedtls_op = *aes_file->mode == 'r' ? MBEDTLS_DECRYPT : MBEDTLS_ENCRYPT;
 
     if (mbedtls_cipher_setkey(&aes_file->context, key, len, mbedtls_op))
@@ -142,13 +148,15 @@ void aes_file_setkey(aes_file_t *aes_file, const uint8_t *key, const size_t keyl
 }
 
 void aes_file_setiv(aes_file_t *aes_file, uint8_t iv[16]) {
-    mbedtls_cipher_set_iv(&aes_file->context, iv, 0x10);
+    assert(mbedtls_cipher_set_iv(&aes_file->context, iv, 0x10) == 0);
     memmove(aes_file->iv_ctr, iv, 16);
 }
 
-void aes_file_setconstraints(aes_file_t *aes_file, const uint64_t size, const uint64_t offset, const uint64_t end_offset) {
+void aes_file_setconstraints(aes_file_t *aes_file, const uint64_t size, const uint64_t offset, const size_t padding, const uint64_t end_offset) {
     aes_file->sector_size = size;
     aes_file->sector_offset = offset;
+    aes_file->sector_pad = padding;
+
     aes_file->sector_last = end_offset;
 
     const size_t last_offset = aes_file->sector_last * aes_file->sector_size;

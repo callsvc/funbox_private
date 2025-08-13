@@ -1,5 +1,6 @@
 #pragma once
 #include <horizon/keys_db.h>
+#include <fs_fmt/pfs.h>
 #include <fs/types.h>
 
 typedef enum distribution_type : uint8_t {

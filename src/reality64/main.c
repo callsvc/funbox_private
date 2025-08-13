@@ -9,7 +9,7 @@ int main() {
     fs_read((fsfile_t*)romfile, &buffer, sizeof(buffer), 0);
     fprintf(stderr, "N64 title to be loaded: %s\n", (char*)&buffer[0x20]);
 
-    const uint32_t bentry = big32((uint32_t*)&buffer[0x8]);
+    const uint32_t bentry = swap_b32((uint32_t*)&buffer[0x8]);
     fprintf(stderr, "Rom entry point: %#x\n", bentry);
 
     file_close(romfile);

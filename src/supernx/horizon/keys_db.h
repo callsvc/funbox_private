@@ -12,6 +12,7 @@ typedef uint8_t key256_t[0x20];
 
 typedef enum key_type {
     key_none,
+    key_titlekek,
     key_area_application,
     key_area_ocean,
     key_area_system,
@@ -37,7 +38,7 @@ typedef struct keys_db {
 
     const key256_t *header_key;
     ht_t *named_keys;
-    ht_t *tag_keys256;
+    ht_t *tag_keysmap;
 
     regex_t prod_regex;
     regex_t title_regex;
@@ -50,6 +51,12 @@ void keys_db_load(keys_db_t*, fsfile_t *);
 
 typedef struct tik tik_t;
 void keys_db_add_ticket(const keys_db_t*, const tik_t*);
-void keys_db_get_titlekey(const keys_db_t*, key128_t*, const key128_t*);
+void keys_db_get_titlekey(const keys_db_t*, key128_t, const key128_t);
 
 void keys_db_destroy(keys_db_t *);
+
+
+typedef struct nca_fs_header nca_fs_header_t;
+typedef struct nca_type_header nca_type_header_t;
+void keys_getkey_fornca(const keys_db_t *, void *, size_t, const nca_fs_header_t *, const nca_type_header_t *);
+void keys_getkey_fromrights(const keys_db_t *, void *, size_t, const uint8_t *, const nca_type_header_t *);
