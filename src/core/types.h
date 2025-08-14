@@ -32,7 +32,7 @@ void procinfo_destroy(procinfo_t*);
 
 char * to_binary(const void *, size_t);
 const char * to_str64(uint64_t, char *, uint8_t);
-const char * to_str(char *buffer, const uint8_t*, size_t);
+const char * to_str(char *, const uint8_t*, size_t);
 void * strtobytes(const char * str, void*, size_t);
 uint64_t fb_rand();
 
@@ -43,8 +43,9 @@ char * fb_strdup(const char *str);
 void sleep_for(size_t);
 bool cmpsha(const uint8_t *, size_t, const char *);
 
-#define swap_b32(begin) __builtin_bswap32(*(const uint32_t*)(begin))
-#define swap_b16(begin) __builtin_bswap16(*(const uint16_t*)(begin))
+#define to_little64(b) __builtin_bswap64(*(const uint64_t*)(b))
+#define to_little32(b) __builtin_bswap32(*(const uint32_t*)(b))
+#define to_little16(b) __builtin_bswap16(*(const uint16_t*)(b))
 
 #define count_of(x) (sizeof(x) / sizeof(*x))
 

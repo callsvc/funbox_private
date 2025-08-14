@@ -7,12 +7,12 @@
 #include <types.h>
 
 uint16_t read_pvalue16(const uint8_t **begin) {
-    const uint16_t value = swap_b16(*begin);
+    const uint16_t value = to_little16(*begin);
     *begin += sizeof(value);
     return value;
 }
 uint32_t read_pvalue32(const uint8_t **begin) {
-    const uint32_t value = swap_b32(*begin);
+    const uint32_t value = to_little32(*begin);
     *begin += sizeof(value);
     return value;
 }

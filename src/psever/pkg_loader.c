@@ -6,7 +6,7 @@ pkg_loader_t * pkg_create(fsfile_t *file) {
 
     fs_read(file, &loader->file_header, sizeof(loader->file_header), 0);
 
-    fprintf(stderr, "pkg file type: %u\n", swap_b32(&loader->file_header.pkg_type));
+    fprintf(stderr, "pkg file type: %u\n", to_little32(&loader->file_header.pkg_type));
     return loader;
 }
 void pkg_destroy(pkg_loader_t *loader) {

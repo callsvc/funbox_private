@@ -14,8 +14,8 @@ bool aes_file_isxts(const aes_file_t *aes_file) {
 uint8_t * aes_get_nintendo_tweak(const uint64_t sector) {
     static _Thread_local uint8_t iv_buffer[0x10] = {};
 
-    const uint64_t be_sector = __builtin_bswap64(sector);
-    memcpy(iv_buffer + 8, &be_sector, sizeof(be_sector));
+    const uint64_t le_sector = to_little64(&sector);
+    memcpy(iv_buffer + 8, &le_sector, sizeof(le_sector));
     return iv_buffer;
 }
 
@@ -69,8 +69,8 @@ void aes_file_read_xts(aes_file_t *aes_file, void *output, const size_t size, si
 
 void aes_file_updatectr(aes_file_t *aes_file, const size_t offset) {
     const uint64_t blkoffset = offset >> 4;
-    const uint64_t be_offset = __builtin_bswap64(blkoffset);
-    memcpy(aes_file->iv_ctr + 8, &be_offset, 8);
+    const uint64_t le_offset = to_little64(&blkoffset);
+    memcpy(aes_file->iv_ctr + 8, &le_offset, 8);
     aes_file_setiv(aes_file, aes_file->iv_ctr);
 }
 

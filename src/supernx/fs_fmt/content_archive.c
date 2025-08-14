@@ -120,16 +120,16 @@ size_t* content_archive_fix_offsets_for_file(const nca_fs_header_t *file_info) {
 }
 
 file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_fs_entry_t *this_fs, const nca_fs_header_t * fs_info, const nca_type_header_t *nca_info, const size_t *file_details) {
-    uint64_t ctr[2] = {};
-    *(uint32_t*)&ctr = swap_b32(&fs_info->secure_value);
-    *(uint32_t*)((uint8_t*)&ctr + 4) = swap_b32(&fs_info->generation);
+    uint64_t ctr_values[2] = {};
+    ((uint32_t*)&ctr_values)[0] = to_little32(&fs_info->secure_value);
+    ((uint32_t*)&ctr_values)[1] = to_little32(&fs_info->generation);
 
     file_list_item_t * file_item = fb_malloc(sizeof(file_list_item_t));
     file_item->aes_encrypted = true;
     file_item->type = nca->type;
 
     aes_file_t *aes_file = aes_file_open(((const aes_file_t*)nca->ncafile)->parent, aes_type_ctr128, "r");
-    aes_file_setiv(aes_file, (uint8_t*)ctr);
+    aes_file_setiv(aes_file, (uint8_t*)ctr_values);
     if (is_empty((const uint8_t*)&nca->rights_id, sizeof(nca->rights_id))) {
         key128_t dec_key = {};
         keys_getkey_fornca(nca->keys, &dec_key, sizeof(dec_key), fs_info, nca_info);
