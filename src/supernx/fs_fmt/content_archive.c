@@ -130,22 +130,22 @@ file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_f
 
     aes_file_t *aes_file = aes_file_open(((const aes_file_t*)nca->ncafile)->parent, aes_type_ctr128, "r");
     aes_file_setiv(aes_file, (uint8_t*)ctr);
-    if (is_empty(nca->rights_id, sizeof(nca->rights_id))) {
+    if (is_empty((const uint8_t*)&nca->rights_id, sizeof(nca->rights_id))) {
         key128_t dec_key = {};
-        keys_getkey_fornca(nca->keys, dec_key, sizeof(dec_key), fs_info, nca_info);
+        keys_getkey_fornca(nca->keys, &dec_key, sizeof(dec_key), fs_info, nca_info);
 
-        aes_file_setkey(aes_file, dec_key, sizeof(dec_key));
+        aes_file_setkey(aes_file, (const uint8_t*)&dec_key, sizeof(dec_key));
     } else {
         key128_t title_key = {};
-        keys_getkey_fromrights(nca->keys, title_key, sizeof(title_key), nca->rights_id, nca_info);
-        aes_file_setkey(aes_file, title_key, sizeof(title_key));
+        keys_getkey_fromrights(nca->keys, &title_key, sizeof(title_key), (const uint8_t*)&nca->rights_id, nca_info);
+        aes_file_setkey(aes_file, (const uint8_t*)&title_key, sizeof(title_key));
     }
     aes_file_setconstraints(aes_file, 0x200, this_fs->start_offset + (*file_details / 0x200), *file_details % 0x200, this_fs->end_offset);
 
     file_item->file = (fsfile_t*)aes_file;
 #if 1
     uint8_t buffer[4096] = {};
-    fs_read(file_item->file, buffer, 1000, 32);
+    fs_read(file_item->file, buffer, 16, 0);
 #endif
 
     return file_item;

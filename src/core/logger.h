@@ -14,7 +14,7 @@ typedef enum logm_type {
 } logm_type_e;
 
 typedef struct logger {
-    char logm[3 * 1024];
+    char logm[16 * 1024];
     char scratch[1024];
 
     size_t count;

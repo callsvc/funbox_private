@@ -40,8 +40,8 @@ void keys_add_title(keys_db_t *kdb, const char *line) {
     kdb->count++;
 
     char keyname[100] = {};
-    char * key_val = get_keyline(keyname, line);
-    fprintf(stderr, "new key %s = %s\n", keyname, key_val);
+    const char * key_val = get_keyline(keyname, line);
+    // logger_info("new key %s = %s", keyname, key_val);
     set_set(kdb->titles, setval_string, setval_string, keyname, key_val);
 }
 
@@ -124,11 +124,11 @@ void keys_db_add_ticket(const keys_db_t *kdb, const tik_t *tik) {
 
     list_push(kdb->tickets, (void*)tik);
 }
-void keys_db_get_titlekey(const keys_db_t *kdb, key128_t key_dest, const key128_t rights_id) {
+void keys_db_get_titlekey(const keys_db_t *kdb, key128_t *key_dest, const key128_t *rights_id) {
     memset(key_dest, 0, sizeof(*key_dest));
     for (size_t i = 0; i < list_size(kdb->tickets); i++) {
         const tik_t *ticket = list_get(kdb->tickets, i);
-        if (tik_gettitle(ticket, key_dest, rights_id))
+        if (tik_gettitle(ticket, (uint8_t*)key_dest, (const uint8_t*)rights_id))
             return;
     }
 }

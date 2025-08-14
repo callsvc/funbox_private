@@ -32,6 +32,7 @@ void procinfo_destroy(procinfo_t*);
 
 char * to_binary(const void *, size_t);
 const char * to_str64(uint64_t, char *, uint8_t);
+const char * to_str(char *buffer, const uint8_t*, size_t);
 void * strtobytes(const char * str, void*, size_t);
 uint64_t fb_rand();
 

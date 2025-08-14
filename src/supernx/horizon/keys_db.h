@@ -7,8 +7,15 @@
 #include <algo/ht.h>
 
 
-typedef uint8_t key128_t[0x10];
-typedef uint8_t key256_t[0x20];
+typedef struct key128 {
+    uint8_t data[16];
+} key128_t;
+typedef struct key256 {
+    uint8_t data[32];
+} key256_t;
+
+// typedef uint8_t key128_t[0x10];
+// typedef uint8_t key256_t[0x20];
 
 typedef enum key_type {
     key_none,
@@ -51,7 +58,7 @@ void keys_db_load(keys_db_t*, fsfile_t *);
 
 typedef struct tik tik_t;
 void keys_db_add_ticket(const keys_db_t*, const tik_t*);
-void keys_db_get_titlekey(const keys_db_t*, key128_t, const key128_t);
+void keys_db_get_titlekey(const keys_db_t*, key128_t*, const key128_t*);
 
 void keys_db_destroy(keys_db_t *);
 

@@ -28,13 +28,13 @@ void mbedtls_fast_ecbdec(const uint8_t *src, const size_t src_size, const uint8_
 }
 void keys_getkey_fromrights(const keys_db_t * keys, void * dest, const size_t size, const uint8_t *rights, const nca_type_header_t *nca_info) {
     key128_t title = {};
-    keys_db_get_titlekey(keys, title, rights);
+    keys_db_get_titlekey(keys, &title, (const key128_t*)rights);
 
     char titlekek_name[24] = {};
     sprintf(titlekek_name, "titlekek_%02u", get_generation(nca_info));
     if (ht_contains(keys->tag_keysmap, titlekek_name)) {
         const tagged_key_t * key = ht_get(keys->tag_keysmap, titlekek_name);
-        mbedtls_fast_ecbdec(title, 0x10, key->indexed, 0x10, dest, size);
+        mbedtls_fast_ecbdec((uint8_t*)&title, 0x10, (const uint8_t*)&key->indexed, 0x10, dest, size);
     } else {
 
         quit("kek not found!!!");
@@ -70,6 +70,6 @@ void keys_getkey_fornca(const keys_db_t *kdb, void *dest, const size_t size, con
         return;
 
     const tagged_key_t *this_key = ht_get(kdb->tag_keysmap, keyarea_name);
-    mbedtls_fast_ecbdec(&nca_info->encrypted_key_area[key_index], 0x10, this_key->indexed, 0x10, dest, size);
+    mbedtls_fast_ecbdec(&nca_info->encrypted_key_area[key_index * 0x10], 0x10, (const uint8_t*)&this_key->indexed, 0x10, dest, size);
 
 }

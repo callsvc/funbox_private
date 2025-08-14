@@ -106,6 +106,16 @@ const char * to_str64(const uint64_t value, char *buffer, const uint8_t base) {
     }
     return buffer;
 }
+const char * to_str(char *buffer, const uint8_t *bytes, size_t size) {
+    char *to = buffer;
+    while (size--) {
+        constexpr char byte_fmt[] = {"0123456789abcdef"};
+        *to++ = byte_fmt[(*bytes >> 4) & 0xF];
+        *to++ = byte_fmt[*bytes++ & 0xF];
+    }
+    *to = '\0';
+    return buffer;
+}
 
 uint8_t char_to_int(const char val) {
     if (val >= '0' && val <= '9')

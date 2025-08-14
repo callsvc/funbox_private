@@ -52,8 +52,8 @@ void tik_destroy(tik_t *tik) {
 }
 
 bool tik_gettitle(const tik_t *tik, uint8_t *dest, const uint8_t *rights) {
-    const uint8_t * rid = tik->ticket_data.rights_id;
-    if (memcmp(rid, rights, 16) != 0)
+    const uint8_t * rights_bytes = tik->ticket_data.rights_id;
+    if (memcmp(rights_bytes, rights, 16) != 0)
         return false;
 
     memcpy(dest, tik->ticket_data.title_key_block, 16);
