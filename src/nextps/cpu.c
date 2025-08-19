@@ -8,12 +8,12 @@
 
 cpu_t * cpu_create(bus_t *bus) {
     cpu_t * cpu = fb_malloc(sizeof(cpu_t));
-    cpu->gateway = bus;
+    cpu->_bus = bus;
     return cpu;
 }
 
 uint32_t cpu_read32(const cpu_t *cpu, const uint32_t address) {
-    return bus_read(cpu->gateway, address);
+    return bus_read(cpu->_bus, address);
 }
 
 
@@ -27,6 +27,7 @@ void cpu_reset(cpu_t *cpu) {
         REG32_W(cpu, i, 0xBADA55);
     }
     cop0_reset(&cpu->cop0);
+    cache_reset(&cpu->cache);
 
     cpu->regs[0] = 0; // HW to 0
     cpu->exec_count = 0;
@@ -59,17 +60,21 @@ void op_ori(cpu_t *cpu, const uint32_t op) {
 }
 
 // store word
-void op_sw(const cpu_t *cpu, const uint32_t op) {
+void op_sw(cpu_t *cpu, const uint32_t op) {
+    const int16_t offset = op & 0xFFFF;
+    const uint32_t base = REG32_R(cpu, op >> 21 & 0x1F);
+
+    const uint32_t value = REG32_R(cpu, op >> 16 & 0x1F);
     if (cpu->cop0.regs[12] & 0x10000) {
         // the “isolate cache” bit
         printf("the cache is being initialized\n");
-        return;
+        uint32_t set[4];
+        for (size_t i = 0; i < 4; i++)
+            set[i] = value;
+        cache_set2(&cpu->cache, base + offset, set);
+    } else {
+        bus_write(cpu->_bus, base + offset, value);
     }
-
-    const int16_t offset = op & 0xFFFF;
-    const uint32_t value = REG32_R(cpu, op >> 16 & 0x1F);
-
-    bus_write(cpu->gateway, REG32_R(cpu, op >> 21 & 0x1F) + offset, value);
 
 }
 
@@ -135,7 +140,7 @@ void op_lw(cpu_t *cpu, const uint32_t op) {
     offset += REG32_R(cpu, op >> 21 & 0x1F);
 
     cpu->load_slot[0] = op >> 16 & 0x1F;
-    cpu->load_slot[1] = bus_read(cpu->gateway, offset);
+    cpu->load_slot[1] = bus_read(cpu->_bus, offset);
 
     cpu->load_slot[2]++;
 }
@@ -150,8 +155,27 @@ void special_opcodes(cpu_t *cpu, const uint32_t op) {
     }
 }
 
+int32_t cpu_fetch(cpu_t *cpu) {
+    bool cachehit;
+    uint32_t pc = cpu_getpc(cpu);
+    const int32_t opcode = cache_hit(&cpu->cache, pc, &cachehit);
+    if (cachehit)
+        return opcode;
+    const int32_t index = (pc >> 2) & 0x3;
+    uint32_t fetched[4] = {0};
+
+    for (size_t i = index; i < 4; i++) {
+        fetched[i] = cpu_read32(cpu, pc);
+        pc += 4;
+    }
+
+    pc -= 16;
+    cache_set(&cpu->cache, pc, index, fetched);
+    return fetched[index];
+}
+
 void cpu_run(cpu_t *cpu) {
-    const uint32_t fetched = cpu_read32(cpu, cpu_getpc(cpu));
+    const uint32_t fetched = cpu_fetch(cpu);
     cpu->exec_count++;
 
     if (fetched == 0xA5200180) // “store halfword

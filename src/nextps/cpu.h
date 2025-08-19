@@ -2,6 +2,7 @@
 
 #include <ps.h>
 #include <cop0.h>
+#include <cache.h>
 typedef struct cpu {
     uint32_t pc;
 
@@ -10,11 +11,13 @@ typedef struct cpu {
     uint32_t delay_slot;
     uint32_t load_slot[3];
 
+    cache_t cache;
+
 
     cop0_t cop0;
     uint64_t exec_count;
 
-    bus_t *gateway;
+    bus_t *_bus;
     int32_t maskint;
 } cpu_t;
 

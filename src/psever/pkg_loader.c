@@ -7,7 +7,7 @@ struct pkg_table_entry {
     uint32_t flags1, flags2;
     uint32_t offset;
     uint32_t size;
-    uint64_t pad0; // // blank padding
+    uint64_t pad0; // blank padding
 };
 
 #define PSEVER_PKG_MAGIC 0x7F434E54
