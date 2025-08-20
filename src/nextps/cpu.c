@@ -169,7 +169,7 @@ int32_t cpu_fetch(cpu_t *cpu) {
         pc += 4;
     }
 
-    pc -= 16;
+    pc -= 16 - index * 4;
     cache_set(&cpu->cache, pc, index, fetched);
     return fetched[index];
 }
@@ -188,13 +188,15 @@ void cpu_run(cpu_t *cpu) {
         // timer for the delay slot
         REG32_W(cpu, cpu->load_slot[0], cpu->load_slot[1]);
         memset(cpu->load_slot, 0, sizeof(cpu->load_slot));
-    } else if (cpu->load_slot[2]) {
-        cpu->load_slot[2]--;
+    } else {
+        if (cpu->load_slot[2])
+            cpu->load_slot[2]--;
     }
 
     switch (fetched >> 26 & 0x3F) {
         case 0:
-            if (fetched) special_opcodes(cpu, fetched);
+            if (fetched)
+                special_opcodes(cpu, fetched);
             break;
         case 2:
             op_j(cpu, fetched); break;
