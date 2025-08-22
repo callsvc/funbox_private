@@ -8,6 +8,8 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
 
 option(FUNBOX_COMPILE_ALL_SUBSYSTEMS "Compile each available subsystem." ON)
 
+find_package(SDL3 REQUIRED)
+
 add_subdirectory(libraries)
 add_subdirectory(src)
 
