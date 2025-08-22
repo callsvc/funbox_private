@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
@@ -24,21 +25,28 @@ void fs_write(fsfile_t *file, const void *input, const size_t size, const size_t
     file->fs_write(file, input, size, offset);
 }
 
-void create_directories(const char *path) {
-    char buffer[0x30 * 3] = {0};
+void create_directories(const char *path, const bool parent) {
+    constexpr mode_t mkmode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
+    char dirstep[sizeof(int)*0x10 * 3] = {0};
     for (const char *subpath = path; (subpath = strchr(*subpath == '/' ? subpath + 1 : subpath, '/')); ) {
-        fb_strcopy(buffer, path, subpath - path);
-        mkdir(buffer, 0755);
+        fb_strcopy(dirstep, path, subpath - path);
+        mkdir(dirstep, mkmode);
         if (subpath == strrchr(path, '/'))
             break;
     }
-    if (!strlen(buffer))
-        mkdir(path, 0755);
+    if (!strlen(dirstep))
+        mkdir(path, mkmode);
+    if (parent)
+        return;
+    const int32_t dir_fd = open(dirstep, O_RDONLY | O_DIRECTORY);
+    if (mkdirat(dir_fd, path + strlen(dirstep) + 1, mkmode) == -1)
+        quit("failed to create a directory at: %s", dirstep);
+    close(dir_fd);
 }
 
 void touch(const char *path) {
     if (strchr(path, '/'))
-        create_directories(path);
+        create_directories(path, true);
     close(open(path, O_RDWR | O_CREAT, 0644));
 }
 

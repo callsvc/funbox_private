@@ -10,6 +10,8 @@ typedef struct bus {
     uint32_t ram_size;
 } bus_t;
 
+typedef struct procinfo procinfo_t;
+extern procinfo_t *nextps;
 
 bus_t *bus_create();
 uint32_t bus_read(const bus_t *bus, uint32_t address);

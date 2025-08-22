@@ -3,10 +3,14 @@
 
 #include <types.h>
 #include <sdl/sdl_app.h>
+
+void sdl_app_count(sdl_app_t *, bool);
 void sdl_app_join(sdl_app_t *app) {
 
     SDL_Event event;
     for (; app->state; app->frame_count++) {
+        sdl_app_count(app, false);
+
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT)
                 return;
@@ -16,9 +20,13 @@ void sdl_app_join(sdl_app_t *app) {
         SDL_RenderClear(app->renderer);
         app->frame_callback(app->app_data);
 
-        SDL_RenderPresent(app->renderer);
+        if (app->show_fps)
+            sdl_app_printf(app, 0, 0, "fps: %u", (int32_t)app->fps);
 
+        SDL_RenderPresent(app->renderer);
         SDL_Delay(16);
+
+        sdl_app_count(app, true);
     }
 }
 
@@ -35,6 +43,7 @@ sdl_app_t *sdl_app_create(void *userdata, const ev_callback_t callback, const fr
 
     SDL_CreateWindowAndRenderer("title", 640, 480, 0, &app->main_window, &app->renderer);
     app->state = true;
+    app->show_fps = true;
 
     return app;
 }
@@ -42,6 +51,11 @@ sdl_app_t *sdl_app_create(void *userdata, const ev_callback_t callback, const fr
 void sdl_app_destroy(sdl_app_t *app) {
     SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->main_window);
+
+    if (app->font) {
+        TTF_CloseFont(app->font);
+        TTF_Quit();
+    }
     SDL_Quit();
 
     fb_free(app);

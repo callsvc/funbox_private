@@ -8,7 +8,12 @@ bus_t *bus_create() {
     bus_t *bus = fb_malloc(sizeof(bus_t));
     bus->mips_memory = fb_malloc(4 * 1024 * 1024);
 
-    file_t *bios_scph = file_open("scph1001.bin", "r");
+    char bios_path[100];
+    sprintf(bios_path, "%s/bios/scph1001.bin", fs_get_cache(nextps));
+
+    file_t *bios_scph = file_open(bios_path, "r");
+    if (!bios_scph)
+        quit("can't open %s", bios_path);
     fs_read((fsfile_t*)bios_scph, bus->mips_memory, fs_getsize((fsfile_t*)bios_scph), 0);
 
     if (!cmpsha(bus->mips_memory, 512 * 1024, "10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF"))

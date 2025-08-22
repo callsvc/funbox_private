@@ -37,3 +37,18 @@ char * fs_build_path(const int32_t depth, ...) {
     va_end(ap);
     return buffer;
 }
+
+const char * fs_get_cache(procinfo_t *info) {
+    if (strlen(info->current_dir + 1024))
+        return info->current_dir + 1024;
+    char *dest = info->current_dir + 1024;
+
+    char cwd_copy[100];
+    strncpy(cwd_copy, info->current_dir, sizeof(cwd_copy));
+
+    sprintf(dest, "%s/%s_cache", cwd_copy, info->libname);
+
+    if (!fs_exists(dest))
+        quit("cache not found: %s", dest);
+    return dest;
+}

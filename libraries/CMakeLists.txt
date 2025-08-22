@@ -6,3 +6,5 @@ add_subdirectory(libzip)
 set(ENABLE_PROGRAMS OFF CACHE BOOL "Build Mbed TLS programs." FORCE)
 add_subdirectory(mbedtls)
 add_subdirectory(libxml2)
+
+add_subdirectory(SDL_ttf)

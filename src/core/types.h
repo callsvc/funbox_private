@@ -15,9 +15,14 @@ void quit(const char * format, ...);
 
 extern char username[30];
 
+typedef struct sdl_app sdl_app_t;
 typedef struct procinfo {
     char current_dir[PATH_MAX];
+    char libname[0x30];
     time_t start;
+
+    void *user_ptr;
+    sdl_app_t *sdl_toolkit;
 } procinfo_t;
 
 char * trim(char *s);

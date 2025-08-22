@@ -39,7 +39,7 @@ void fs_close_file(fsdir_t *, fsfile_t *);
 void fs_read(fsfile_t*, void*, size_t, size_t);
 void fs_write(fsfile_t*, const void*, size_t, size_t);
 
-void create_directories(const char *);
+void create_directories(const char *, bool);
 void touch(const char*);
 
 size_t fs_getsize(const fsfile_t*);
@@ -55,6 +55,9 @@ void fs_print_tree(const vector_t *);
 vector_t * fs_list_all_files(const fsdir_t*);
 vector_t * list_all_files(const char*);
 char * fs_build_path(int32_t depth, ...);
+
+typedef struct procinfo procinfo_t;
+const char * fs_get_cache(procinfo_t*);
 
 const char * fs_readline(fsfile_t *file, size_t *offset);
 

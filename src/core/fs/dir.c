@@ -19,7 +19,7 @@ vector_t * fs_dir_list_all_files(const fsdir_t *dir) {
 dir_t *dir_open(const char *path, const char *mode) {
     dir_t * dir = fb_malloc(sizeof(dir_t));
     if (path && *mode == 'w' && access(mode, R_OK))
-        create_directories(path);
+        create_directories(path, true);
 
     dir->cached_files = list_create(0);
 
