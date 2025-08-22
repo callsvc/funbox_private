@@ -27,5 +27,6 @@ typedef struct sdl_app {
 
 sdl_app_t *sdl_app_create(void *, ev_callback_t, frame_callback_t);
 void sdl_app_join(sdl_app_t *);
+void sdl_app_settitle(const sdl_app_t*, const char*);
 void sdl_app_printf(sdl_app_t*, int32_t, int32_t, const char *, ...);
 void sdl_app_destroy(sdl_app_t *);

@@ -47,6 +47,7 @@ int nextps_main(procinfo_t *proc, const int32_t argc, const char **argv) {
     cpu_reset(psxone->cpu);
 
     proc->user_ptr = psxone;
+    sdl_app_settitle(proc->sdl_toolkit, "nextps");
     sdl_app_join(proc->sdl_toolkit);
 
     cpu_destroy(psxone->cpu);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
 
-add_library(nextps MODULE main.c cpu.c cpu.h cop0.c cop0.h cache.c cache.h bus.c ps.h)
+add_library(nextps SHARED main.c cpu.c cpu.h cop0.c cop0.h cache.c cache.h bus.c ps.h)
 target_include_directories(nextps PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:>)

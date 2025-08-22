@@ -8,6 +8,7 @@ void sdl_app_count(sdl_app_t *, bool);
 void sdl_app_join(sdl_app_t *app) {
 
     SDL_Event event;
+    SDL_SetRenderVSync(app->renderer, 1);
     for (; app->state; app->frame_count++) {
         sdl_app_count(app, false);
 
@@ -21,7 +22,7 @@ void sdl_app_join(sdl_app_t *app) {
         app->frame_callback(app->app_data);
 
         if (app->show_fps)
-            sdl_app_printf(app, 0, 0, "fps: %u", (int32_t)app->fps);
+            sdl_app_printf(app, 0, 0, "fps: %u frame: %lu", (int32_t)app->fps, app->frame_count);
 
         SDL_RenderPresent(app->renderer);
         SDL_Delay(16);
@@ -41,11 +42,14 @@ sdl_app_t *sdl_app_create(void *userdata, const ev_callback_t callback, const fr
     if (!SDL_Init(SDL_INIT_VIDEO))
         quit("couldn't initialize SDL: %s", SDL_GetError());
 
-    SDL_CreateWindowAndRenderer("title", 640, 480, 0, &app->main_window, &app->renderer);
+    SDL_CreateWindowAndRenderer("untitle", 640, 480, SDL_WINDOW_HIGH_PIXEL_DENSITY, &app->main_window, &app->renderer);
     app->state = true;
     app->show_fps = true;
 
     return app;
+}
+void sdl_app_settitle(const sdl_app_t *app, const char *title) {
+    SDL_SetWindowTitle(app->main_window, title);
 }
 
 void sdl_app_destroy(sdl_app_t *app) {

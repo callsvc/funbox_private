@@ -5,13 +5,14 @@ target_include_directories(funbox PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:>)
 
-target_link_libraries(funbox PUBLIC dl core mbedtls)
+target_link_libraries(funbox PRIVATE dl core mbedtls)
 
 function(mkdir dirname)
     add_custom_command(TARGET funbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:funbox>/${dirname})
 endfunction()
 
 function(add_funbox_applet applet_name)
+    target_link_libraries(funbox PRIVATE ${applet_name})
     add_custom_command(TARGET funbox POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${applet_name}> $<TARGET_FILE_DIR:funbox>)
     mkdir(${applet_name}_cache)
 

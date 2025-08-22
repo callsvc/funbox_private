@@ -1,3 +1,4 @@
+#include <SDL3/SDL_render.h>
 #include <sdl/sdl_app.h>
 
 #include <fs/file.h>
@@ -16,22 +17,22 @@ void sdl_app_printf(sdl_app_t *app, const int32_t text_x, const int32_t text_y, 
 
         file_t * libfont = file_open("fonts/LiberationSans-Regular.ttf", "r");
         if (libfont)
-            app->font = TTF_OpenFont("fonts/LiberationSans-Regular.ttf", 48);
+            app->font = TTF_OpenFont("fonts/LiberationSans-Regular.ttf", 16);
         file_close(libfont);
     }
     SDL_Surface * text_surface = TTF_RenderText_Blended(app->font, buffer, 0, text_color);
 
-    const int32_t text_w = text_surface->w;
-    const int32_t text_h = text_surface->h;
-    const SDL_FRect text_rect = {text_x, text_y, text_w, text_h};
 
     if (!text_surface)
         quit("SDL ran out of memory");
 
     // combines what's in the surface with our text layer into a single image
     SDL_Texture* text_texture = SDL_CreateTextureFromSurface(app->renderer, text_surface);
+    float text_w, text_h;
+    SDL_GetTextureSize(text_texture, &text_w, &text_h);
+    const SDL_FRect text_rect = {text_x, text_y, text_w, text_h};
     SDL_DestroySurface(text_surface);
-    SDL_RenderTexture(app->renderer, text_texture, &text_rect, nullptr);
+    SDL_RenderTexture(app->renderer, text_texture, nullptr, &text_rect);
     SDL_DestroyTexture(text_texture);
 
     va_end(args);
