@@ -74,7 +74,7 @@ fsfile_t * fs_pfs_open_file(fsdir_t *dir, const char * path, const char * mode) 
         if (strcmp(file->filename, path) != 0)
             continue;
 
-        return (fsfile_t*)offset_file_open(pfs->basefio, file->filename, file->size, file->offset);
+        return (fsfile_t*)offset_file_open(pfs->basefio, file->filename, file->size, file->offset, false);
     }
     return nullptr;
 }

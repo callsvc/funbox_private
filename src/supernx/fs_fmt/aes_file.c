@@ -19,12 +19,15 @@ uint8_t * aes_get_nintendo_tweak(const uint64_t sector) {
     return iv_buffer;
 }
 
+
+size_t roundto(const size_t value, const size_t n) {
+    return (value + n) & ~(n);
+}
 void aes_file_update(aes_file_t *aes_file, void *output, const size_t size, const size_t offset) {
     const size_t block_size = mbedtls_cipher_get_block_size(&aes_file->context);
 
-    // assert(size % block_size == 0);
     if (size > vector_size(aes_file->buffer))
-        vector_setsize(aes_file->buffer, size);
+        vector_setsize(aes_file->buffer, roundto(size, block_size));
 
     uint8_t *dest_buffer = vector_begin(aes_file->buffer);
     fs_read(aes_file->parent, output, size, offset);
@@ -34,17 +37,17 @@ void aes_file_update(aes_file_t *aes_file, void *output, const size_t size, cons
     if (unlikely(!aes_file_isxts(aes_file))) {
         size_t i = 0;
         for (; i < size; i += result)
-            if (mbedtls_cipher_update(&aes_file->context, output + i, MIN(vector_size(aes_file->buffer) - i, 0x10), dest_buffer + i, &result))
+            if (mbedtls_cipher_update(&aes_file->context, output + i, MIN(size - i, 0x10), dest_buffer + i, &result))
                 if (result != block_size)
                     quit("can't update block");
         result = i;
     } else {
-        mbedtls_cipher_update(&aes_file->context, output, vector_size(aes_file->buffer), dest_buffer, &result);
+        mbedtls_cipher_update(&aes_file->context, output, size, dest_buffer, &result);
 
     }
-    memcpy(output, dest_buffer, result);
     if (result < size)
         quit("can't update all blocks");
+    memcpy(output, dest_buffer, size);
 }
 
 void aes_file_read_xts(aes_file_t *aes_file, void *output, const size_t size, size_t offset) {

@@ -10,5 +10,5 @@ typedef struct offset_file {
     size_t size;
 } offset_file_t;
 
-offset_file_t * offset_file_open(fsfile_t *base, const char *name, size_t size, uint64_t offset);
+offset_file_t * offset_file_open(fsfile_t *base, const char *name, size_t size, uint64_t offset, bool);
 void offset_file_close(const fsfile_t *, offset_file_t *);

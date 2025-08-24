@@ -36,6 +36,7 @@ typedef struct file_list_item {
     bool ispfs;
     union {
         pfs_t * pfs;
+        romfs_t *romfs;
     };
     bool aes_encrypted;
 } file_list_item_t;
@@ -55,9 +56,9 @@ file_list_item_t * open_decrypted_file(const content_archive_t *nca, const nca_f
 
     if (nca->encrypted) {
         const aes_file_t *nca_enc = (aes_file_t*)nca->ncafile;
-        list_item->file = (fsfile_t*)offset_file_open(nca_enc->parent, fs_getpath(nca_enc), size, offset);
+        list_item->file = (fsfile_t*)offset_file_open(nca_enc->parent, fs_getpath(nca_enc), size, offset, false);
     } else {
-        list_item->file = (fsfile_t*)offset_file_open(nca->ncafile, fs_getpath(nca->ncafile), size, offset);
+        list_item->file = (fsfile_t*)offset_file_open(nca->ncafile, fs_getpath(nca->ncafile), size, offset, false);
     }
 
     return list_item;
@@ -180,6 +181,7 @@ void content_archive_get_all_files(const content_archive_t *nca, const nca_type_
             if (list_item->pfs)
                 list_push(nca->pfs_list, list_item);
         } else if (list_item && nca_fs_info->type == fs_type_romfs) {
+            list_item->romfs = romfs_create(list_item->file);
             list_push(nca->romfs_list, list_item);
         }
 
@@ -235,8 +237,11 @@ pfs_t * content_archive_get_pfs(const content_archive_t * nca, const size_t inde
 void nca_destroy_files(const content_archive_t *nca, const list_t *files) {
     for (size_t i = 0; i < list_size(files); i++) {
         file_list_item_t * list_item = list_get(files, i);
-        if (list_item->pfs)
+        if (list_item->pfs && list_item->ispfs)
             pfs_destroy(list_item->pfs);
+        else if (list_item->romfs)
+            romfs_destroy(list_item->romfs);
+
         if (!list_item->aes_encrypted)
             offset_file_close(nca->encrypted ? ((aes_file_t*)nca->ncafile)->parent : nca->ncafile, (offset_file_t*)list_item->file);
         else aes_file_close((aes_file_t*)list_item->file);

@@ -17,7 +17,7 @@ size_t fs_offset_file_getsize(const fsfile_t *file) {
     return setfile->size;
 }
 
-offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t size, const uint64_t offset) {
+offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t size, const uint64_t offset, const bool allocate) {
     offset_file_t *setfile = fb_malloc(sizeof(offset_file_t));
 
     strcpy(setfile->vfile.path, name);
@@ -29,8 +29,8 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
     setfile->size = size;
     setfile->start = offset;
 
-    static constexpr size_t min_cache_size = 2 * 1024 * 1024;
-    if (!fs_is_mapfile(setfile->file) && size < min_cache_size) {
+    static constexpr size_t mim_buffer_size = 2 * 1024 * 1024;
+    if (!fs_is_mapfile(setfile->file) && size < mim_buffer_size && allocate) {
         setfile->buffer = fb_malloc(size);
         fs_read(setfile->file, setfile->buffer, size, setfile->start);
     }
