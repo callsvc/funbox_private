@@ -7,6 +7,7 @@ set(CMAKE_C_FLAGS "-ffast-math -Wall")
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
 
 option(FUNBOX_COMPILE_ALL_SUBSYSTEMS "Compile each available subsystem." ON)
+option(FUNBOX_ENABLE_GUI "Enables the GUI (SDL3 for now)." ON)
 
 find_package(SDL3 REQUIRED)
 

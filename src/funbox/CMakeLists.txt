@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.31)
 
 add_executable(funbox funbox.c applet.c applet.h applet_types.c)
 target_include_directories(funbox PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:>)
 
 target_link_libraries(funbox PRIVATE dl core mbedtls)
 

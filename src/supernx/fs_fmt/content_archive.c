@@ -161,22 +161,26 @@ void content_archive_get_all_files(const content_archive_t *nca, const nca_type_
         fs_read(nca->ncafile, nca_fs_info, sizeof(*nca_fs_info), 0x400 + i * 0x200);
         size_t * file_bis = content_archive_fix_offsets_for_file(nca_fs_info);
 
-        if (nca_fs_info->enc_type == encryption_type_none) {
-            if (nca_fs_info->type != fs_type_partition_fs) { // logofs
-                continue;
-            }
-            file_list_item_t *list_item = open_decrypted_file(nca, this_fs, nca_fs_info, file_bis);
+        file_list_item_t *list_item = nullptr;
+        switch (nca_fs_info->enc_type) {
+            case encryption_type_none:
+                list_item = open_decrypted_file(nca, this_fs, nca_fs_info, file_bis); break;
+            case encryption_type_aes_xts:
+                quit("missing for");
+            case encryption_type_aes_ctr:
+            case encryption_type_aes_ctr_ex:
+                list_item = open_encrypted_file(nca, this_fs, nca_fs_info, nca_fs, file_bis); break;
+            default:
+        }
+        if (list_item && nca_fs_info->type == fs_type_partition_fs) { // logofs
+            if (!pfs_is_pfs(list_item->file))
+                quit("isn't a pfs file");
             list_item->pfs = pfs_create(list_item->file);
             list_item->ispfs = true;
             if (list_item->pfs)
                 list_push(nca->pfs_list, list_item);
-        } else {
-            file_list_item_t *item = open_encrypted_file(nca, this_fs, nca_fs_info, nca_fs, file_bis);
-#if 0
-            if (pfs_is_pfs(item->file))
-                list_push(nca->pfs_list, item);
-#endif
-            list_push(nca->romfs_list, item);
+        } else if (list_item && nca_fs_info->type == fs_type_romfs) {
+            list_push(nca->romfs_list, list_item);
         }
 
         fb_free(file_bis); // can be nullptr in some cases

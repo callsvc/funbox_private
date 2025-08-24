@@ -4,7 +4,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(core)
 
-if(FUNBOX_COMPILE_ALL_SUBSYSTEMS)
+if(${FUNBOX_COMPILE_ALL_SUBSYSTEMS})
     add_subdirectory(playme)
     add_subdirectory(supernx)
     add_subdirectory(starsys2)
@@ -20,5 +20,7 @@ if(FUNBOX_COMPILE_ALL_SUBSYSTEMS)
 else()
 endif()
 
-add_subdirectory(funbox)
+if(${FUNBOX_ENABLE_GUI})
+    add_subdirectory(funbox)
+endif()
 

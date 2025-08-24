@@ -131,7 +131,8 @@ void pfs_print_files(const pfs_t *pfs) {
 }
 
 void pfs_destroy(pfs_t *pfs) {
-    vector_destroy(pfs->files_paths);
+    if (pfs->files_paths)
+        vector_destroy(pfs->files_paths);
     vector_destroy(pfs->files);
     fb_free(pfs);
 }
