@@ -86,14 +86,14 @@ void fb_free(void *ptr) {
 }
 
 char * to_binary(const void *value, const size_t size) {
-    _Thread_local static char buffert[100];
-    char * ptr = buffert;
+    _Thread_local static char buffer_text[100];
+    char * ptr = buffer_text;
     for (const uint8_t * b = value; b < (uint8_t*)value + size; b++) {
         for (uint8_t bi = 0; bi < 8; bi++)
             *ptr++ = *b & 1 << bi ? '1' : '0';
     }
     *(ptr-1) = '\0';
-    return buffert;
+    return buffer_text;
 }
 
 const char * to_str64(const uint64_t value, char *buffer, const uint8_t base) {
