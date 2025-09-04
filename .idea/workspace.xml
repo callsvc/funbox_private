@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="14" type="long" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="funbox" targetName="test_suite_entropy" />
+      <config projectName="funbox" targetName="mbedcrypto" />
+      <config projectName="funbox" targetName="runxmlconf" />
+      <config projectName="funbox" targetName="update-man" />
+      <config projectName="funbox" targetName="test_suite_aes.xts" />
+      <config projectName="funbox" targetName="test_suite_md.psa" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_ecp" />
+      <config projectName="funbox" targetName="test_suite_constant_time_hmac" />
+      <config projectName="funbox" targetName="test_suite_gcm.aes128_de" />
+      <config projectName="funbox" targetName="distcheck" />
+      <config projectName="funbox" targetName="test_suite_shax" />
+      <config projectName="funbox" targetName="testlimits" />
+      <config projectName="funbox" targetName="test_suite_bignum_mod_raw" />
+      <config projectName="funbox" targetName="test_suite_gcm.aes192_de" />
+      <config projectName="funbox" targetName="LibXml2" />
+      <config projectName="funbox" targetName="test_suite_x509write" />
+      <config projectName="funbox" targetName="test_suite_bignum.generated" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_storage_format.current" />
+      <config projectName="funbox" targetName="test_suite_aria" />
+      <config projectName="funbox" targetName="dynrec" />
+      <config projectName="funbox" targetName="test_suite_psa_its" />
+      <config projectName="funbox" targetName="test_suite_bignum.misc" />
+      <config projectName="funbox" targetName="test_suite_bignum_mod_raw.generated" />
+      <config projectName="funbox" targetName="test_suite_ccm" />
+      <config projectName="funbox" targetName="test_suite_cipher.null" />
+      <config projectName="funbox" targetName="test_suite_ssl" />
+      <config projectName="funbox" targetName="test_suite_des" />
+      <config projectName="funbox" targetName="test_suite_hmac_drbg.misc" />
+      <config projectName="funbox" targetName="zip_read_fuzzer" />
+      <config projectName="funbox" targetName="test_suite_error" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_util" />
+      <config projectName="funbox" targetName="test_suite_cipher.ccm" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto.pbkdf2" />
+      <config projectName="funbox" targetName="test_suite_cipher.chachapoly" />
+      <config projectName="funbox" targetName="test_suite_cipher.des" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_not_supported.misc" />
+      <config projectName="funbox" targetName="test_suite_md" />
+      <config projectName="funbox" targetName="test_suite_cipher.nist_kw" />
+      <config projectName="funbox" targetName="test_suite_bignum_core.misc" />
+      <config projectName="funbox" targetName="test_suite_mdx" />
+      <config projectName="funbox" targetName="test_suite_gcm.aes192_en" />
+      <config projectName="funbox" targetName="test_suite_oid" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_op_fail.generated" />
+      <config projectName="funbox" targetName="test_suite_aes.rest" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto.concurrent" />
+      <config projectName="funbox" targetName="test_suite_hmac_drbg.pr" />
+      <config projectName="funbox" targetName="test_suite_hkdf" />
+      <config projectName="funbox" targetName="psever" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_memory" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_metadata" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_op_fail.misc" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_generate_key.generated" />
+      <config projectName="funbox" targetName="testrecurse" />
+      <config projectName="funbox" targetName="test_suite_cipher.misc" />
+      <config projectName="funbox" targetName="test_suite_dhm" />
+      <config projectName="funbox" targetName="finesh" />
+      <config projectName="funbox" targetName="test_suite_debug" />
+      <config projectName="funbox" targetName="test_suite_aes.cfb" />
+      <config projectName="funbox" targetName="test_suite_cipher.camellia" />
+      <config projectName="funbox" targetName="in-memory" />
+      <config projectName="funbox" targetName="test_suite_ecdh" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_low_hash.generated" />
+      <config projectName="funbox" targetName="test_suite_asn1parse" />
+      <config projectName="funbox" targetName="test_suite_bignum_core.generated" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_se_driver_hal" />
+      <config projectName="funbox" targetName="test_suite_pkcs12" />
+      <config projectName="funbox" targetName="test_suite_alignment" />
+      <config projectName="funbox" targetName="test_suite_pkcs5" />
+      <config projectName="funbox" targetName="test_suite_config.psa_boolean" />
+      <config projectName="funbox" targetName="test_suite_x509parse" />
+      <config projectName="funbox" targetName="test_suite_pkcs7" />
+      <config projectName="funbox" targetName="everest" />
+      <config projectName="funbox" targetName="heynds" />
+      <config projectName="funbox" targetName="test_suite_pkparse" />
+      <config projectName="funbox" targetName="mbedx509" />
+      <config projectName="funbox" targetName="mbedtls_test_helpers" />
+      <config projectName="funbox" targetName="test_suite_base64" />
+      <config projectName="funbox" targetName="test_suite_platform_printf" />
+      <config projectName="funbox" targetName="autoclose-archive" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_persistent_key" />
+      <config projectName="funbox" targetName="nextps" />
+      <config projectName="funbox" targetName="test_suite_cipher.aria" />
+      <config projectName="funbox" targetName="test_suite_hmac_drbg.no_reseed" />
+      <config projectName="funbox" targetName="test_suite_psa_generated_data" />
+      <config projectName="funbox" targetName="test_suite_test_helpers" />
+      <config projectName="funbox" targetName="test_suite_lmots" />
+      <config projectName="funbox" targetName="lcov" />
+      <config projectName="funbox" targetName="test_suite_rsa" />
+      <config projectName="funbox" targetName="test_suite_ssl_decrypt.misc" />
+      <config projectName="funbox" targetName="test_suite_pkwrite" />
+      <config projectName="funbox" targetName="test_suite_timing" />
+      <config projectName="funbox" targetName="test_suite_config.mbedtls_boolean" />
+      <config projectName="funbox" targetName="test_suite_platform_util" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_attributes" />
+      <config projectName="funbox" targetName="dist" />
+      <config projectName="funbox" targetName="xmlcatalog" />
+      <config projectName="funbox" targetName="test_suite_asn1write" />
+      <config projectName="funbox" targetName="test_suite_camellia" />
+      <config projectName="funbox" targetName="core" />
+      <config projectName="funbox" targetName="test_suite_ecdsa" />
+      <config projectName="funbox" targetName="test_suite_gcm.misc" />
+      <config projectName="funbox" targetName="test_suite_memory_buffer_alloc" />
+      <config projectName="funbox" targetName="test_suite_pkcs1_v15" />
+      <config projectName="funbox" targetName="test_suite_config.crypto_combinations" />
+      <config projectName="funbox" targetName="testapi" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_pake" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_slot_management" />
+      <config projectName="funbox" targetName="zip" />
+      <config projectName="funbox" targetName="test_suite_aes.cbc" />
+      <config projectName="funbox" targetName="test_suite_pkcs1_v21" />
+      <config projectName="funbox" targetName="supernx" />
+      <config projectName="funbox" targetName="test_suite_ctr_drbg" />
+      <config projectName="funbox" targetName="memcheck" />
+      <config projectName="funbox" targetName="runtest" />
+      <config projectName="funbox" targetName="test_suite_constant_time" />
+      <config projectName="funbox" targetName="testModule" />
+      <config projectName="funbox" targetName="ziptool" />
+      <config projectName="funbox" targetName="test_suite_cmac" />
+      <config projectName="funbox" targetName="test_suite_lms" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_init" />
+      <config projectName="funbox" targetName="test_suite_block_cipher.psa" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_se_driver_hal_mocks" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_hash" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto" />
+      <config projectName="funbox" targetName="testchar" />
+      <config projectName="funbox" targetName="test_suite_pem" />
+      <config projectName="funbox" targetName="test_suite_cipher.gcm" />
+      <config projectName="funbox" targetName="test_suite_poly1305" />
+      <config projectName="funbox" targetName="man" />
+      <config projectName="funbox" targetName="test_suite_aes.ctr" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_storage_format.misc" />
+      <config projectName="funbox" targetName="add-compressed-data" />
+      <config projectName="funbox" targetName="zip_write_encrypt_aes256_file_fuzzer" />
+      <config projectName="funbox" targetName="list-fuzzers" />
+      <config projectName="funbox" targetName="test_suite_bignum_mod.misc" />
+      <config projectName="funbox" targetName="test_suite_chacha20" />
+      <config projectName="funbox" targetName="zip_write_encrypt_pkware_file_fuzzer" />
+      <config projectName="funbox" targetName="smallgba" />
+      <config projectName="funbox" targetName="update-html" />
+      <config projectName="funbox" targetName="zip_read_file_fuzzer" />
+      <config projectName="funbox" targetName="test_suite_cipher.padding" />
+      <config projectName="funbox" targetName="test_suite_bignum_mod.generated" />
+      <config projectName="funbox" targetName="test_suite_ecp.generated" />
+      <config projectName="funbox" targetName="test_suite_cipher.aes" />
+      <config projectName="funbox" targetName="xmllint" />
+      <config projectName="funbox" targetName="mbedtls" />
+      <config projectName="funbox" targetName="mbedtls_test" />
+      <config projectName="funbox" targetName="neszinho" />
+      <config projectName="funbox" targetName="test_suite_ssl.records" />
+      <config projectName="funbox" targetName="test_suite_ecjpake" />
+      <config projectName="funbox" targetName="test_suite_hmac_drbg.nopr" />
+      <config projectName="funbox" targetName="nop_test_arm64" />
+      <config projectName="funbox" targetName="test_suite_gcm.aes256_de" />
+      <config projectName="funbox" targetName="test_suite_bignum_random" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_entropy" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_storage_format.v0" />
+      <config projectName="funbox" targetName="SDL3_ttf-shared" />
+      <config projectName="funbox" targetName="testdict" />
+      <config projectName="funbox" targetName="test_suite_aes.ofb" />
+      <config projectName="funbox" targetName="test_suite_version" />
+      <config projectName="funbox" targetName="p256m" />
+      <config projectName="funbox" targetName="test_suite_ssl.tls-defrag" />
+      <config projectName="funbox" targetName="test_robin" />
+      <config projectName="funbox" targetName="LibXml2Mod" />
+      <config projectName="funbox" targetName="test_suite_gcm.camellia" />
+      <config projectName="funbox" targetName="test_suite_random" />
+      <config projectName="funbox" targetName="test_suite_config.psa_combinations" />
+      <config projectName="funbox" targetName="test_suite_ecp" />
+      <config projectName="funbox" targetName="test_suite_block_cipher" />
+      <config projectName="funbox" targetName="test_suite_chachapoly" />
+      <config projectName="funbox" targetName="test_suite_cipher.chacha20" />
+      <config projectName="funbox" targetName="lib" />
+      <config projectName="funbox" targetName="playme" />
+      <config projectName="funbox" targetName="test_suite_net" />
+      <config projectName="funbox" targetName="runsuite" />
+      <config projectName="funbox" targetName="test_suite_config_generated_data" />
+      <config projectName="funbox" targetName="testparser" />
+      <config projectName="funbox" targetName="test_suite_ecp_generated_data" />
+      <config projectName="funbox" targetName="funbox" />
+      <config projectName="funbox" targetName="zipcmp" />
+      <config projectName="funbox" targetName="test_suite_gcm.aes256_en" />
+      <config projectName="funbox" targetName="test_suite_mps" />
+      <config projectName="funbox" targetName="test_suite_gcm.aes128_en" />
+      <config projectName="funbox" targetName="reality64" />
+      <config projectName="funbox" targetName="test_suite_pk" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto.persistent" />
+      <config projectName="funbox" targetName="test_suite_nist_kw" />
+      <config projectName="funbox" targetName="redos" />
+      <config projectName="funbox" targetName="zipmerge" />
+      <config projectName="funbox" targetName="test_suite_platform" />
+      <config projectName="funbox" targetName="test_suite_config.tls_combinations" />
+      <config projectName="funbox" targetName="userfs_files" />
+      <config projectName="funbox" targetName="update_zip_errors" />
+      <config projectName="funbox" targetName="test_suite_bignum_generated_data" />
+      <config projectName="funbox" targetName="starsys2" />
+      <config projectName="funbox" targetName="apidoc" />
+      <config projectName="funbox" targetName="test_suite_aes.ecb" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_not_supported.generated" />
+      <config projectName="funbox" targetName="test_suite_common" />
+      <config projectName="funbox" targetName="test_suite_psa_crypto_driver_wrappers" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9a842efa-7754-447f-bdb8-79aa94f31d5f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/funbox.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2025" />
+    <option name="minorVersion" value="2.1" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="32FlF1jaXyPIa0DmHl2hbeUPcWt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/gabriel_vault/projects/funbox",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="CMake Application.supernx">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="core" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="core" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dynrec" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="dynrec" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="finesh" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="finesh" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="finesh">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="funbox" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="funbox" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="funbox">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="heynds" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="heynds" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="neszinho" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="neszinho" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="neszinho">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="nextps" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="nextps" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="nop_test_arm64" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="nop_test_arm64" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="nop_test_arm64">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="playme" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="playme" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="playme">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="psever" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="psever" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="psever">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="reality64" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="reality64" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="reality64">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="redos" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="redos" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="redos">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="smallgba" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="smallgba" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="smallgba">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="starsys2" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="starsys2" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="starsys2">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="supernx" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="supernx" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="supernx">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test_robin" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="test_robin" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="test_robin">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="userfs_files" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="userfs_files" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="funbox" RUN_TARGET_NAME="userfs_files">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.core" />
+      <item itemvalue="CMake Application.dynrec" />
+      <item itemvalue="CMake Application.nop_test_arm64" />
+      <item itemvalue="CMake Application.test_robin" />
+      <item itemvalue="CMake Application.userfs_files" />
+      <item itemvalue="CMake Application.finesh" />
+      <item itemvalue="CMake Application.funbox" />
+      <item itemvalue="CMake Application.heynds" />
+      <item itemvalue="CMake Application.neszinho" />
+      <item itemvalue="CMake Application.nextps" />
+      <item itemvalue="CMake Application.playme" />
+      <item itemvalue="CMake Application.psever" />
+      <item itemvalue="CMake Application.reality64" />
+      <item itemvalue="CMake Application.redos" />
+      <item itemvalue="CMake Application.smallgba" />
+      <item itemvalue="CMake Application.starsys2" />
+      <item itemvalue="CMake Application.supernx" />
+    </list>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9a842efa-7754-447f-bdb8-79aa94f31d5f" name="Changes" comment="" />
+      <created>1757024093529</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1757024093529</updated>
+      <workItem from="1757024095362" duration="158000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
