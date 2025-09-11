@@ -1,4 +1,5 @@
 #pragma once
+#include <loader/types.h>
 #include <horizon/keys_db.h>
 
 typedef struct hos {
@@ -8,3 +9,10 @@ typedef struct hos {
 hos_t *hos_create(const char*);
 
 void hos_destroy(hos_t *);
+
+void hos_enable(hos_t*, loader_base_t*); // enable everything, services, processes, the kernel and others stuffs
+void hos_disable(hos_t*);
+
+
+size_t hos_getprocess_count(hos_t*);
+void * hos_continue(hos_t*);

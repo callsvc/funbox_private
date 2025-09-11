@@ -82,7 +82,7 @@ void file_flush(const file_t *file) {
         return;
     const struct iovec *iolist = vector_begin(file->write_stall);
     const uint64_t offset = ftell(file->handle);
-    const uint64_t result = pwritev(fileno(file->handle), iolist, vector_size(file->write_stall), offset);
+    const int64_t result = pwritev(fileno(file->handle), iolist, (int)vector_size(file->write_stall), (off_t)offset);
 
     fseek(file->handle, result, SEEK_CUR);
     vector_setsize(file->write_stall, 0);

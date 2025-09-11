@@ -65,7 +65,7 @@ void ht_grow(ht_t *ht) {
 
 void ht_insert_2(ht_t * ht, const char *key, const void *value, const bool reallocate) {
     ht_value_t * hv = ht_find(ht, key);
-    if (strlen(hv->key) && strcmp(key, hv->key)) {
+    if (strlen(hv->key) && strcmp(key, hv->key) != 0) {
         ht_grow(ht);
         ht_insert(ht, key, value);
         return;

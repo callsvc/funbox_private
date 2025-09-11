@@ -1,5 +1,4 @@
 #pragma once
-#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct vector {
@@ -7,6 +6,7 @@ typedef struct vector {
     size_t type;
     size_t capacity;
     void *data;
+
 } vector_t;
 
 vector_t * vector_create(size_t, size_t);

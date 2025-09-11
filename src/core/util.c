@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -8,6 +9,7 @@
 
 #include <types.h>
 #include <algo/ht.h>
+#include <mimalloc.h>
 ht_t *ht_mm = nullptr;
 pthread_mutex_t ht_mutex;
 
@@ -17,9 +19,14 @@ void fb_destroy();
 void fb_exit() {
     fb_destroy();
     pthread_mutex_destroy(&ht_mutex);
+
+    // mi_collect(true);
 }
 
 __attribute__((constructor)) void fb_entry() {
+#if NDEBUG
+    mi_option_set(mi_option_verbose, 0);
+#endif
     atexit(fb_exit);
 
     pthread_mutexattr_t attr;
@@ -63,7 +70,23 @@ void * exchange(void **val, void *eval) {
     return old;
 }
 
+bool sum_heap(__attribute__((unused)) const mi_heap_t *heap, __attribute__((unused)) const mi_heap_area_t *area, __attribute__((unused)) void *block, const size_t block_size, void *arg) {
+    size_t *heap_usage = arg;
+    (*heap_usage)++;
+    *(heap_usage + 1) += block_size;
+    return true;
+}
+size_t fb_get_heap_usage(size_t *allocs_count) {
+    size_t heap_usage[2] = {};
+    mi_heap_visit_blocks(mi_heap_get_default(), true, sum_heap, heap_usage);
+    if (allocs_count)
+        *allocs_count = *heap_usage;
+    return *(heap_usage + 1);
+}
+
 void fb_free(void *ptr) {
+    if (ptr)
+        assert(mi_check_owned(ptr));
 
     pthread_mutex_lock(&ht_mutex);
     char buffer[45];
@@ -147,7 +170,7 @@ void * strtobytes(const char *str, void * output, const size_t size) {
 #define NS_MAX_VALUE 999999999
 void sleep_for(const size_t ns) {
     if (ns < NS_MAX_VALUE) {
-        const struct timespec rtime = { 0, ns };
+        const struct timespec rtime = { 0, (long)ns };
         if (nanosleep(&rtime, nullptr))
             quit("can't sleep");
     } else {

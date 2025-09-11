@@ -1,10 +1,14 @@
 #pragma once
 
 #include <stddef.h>
+#include <mimalloc.h>
+
 typedef struct list {
     struct list *next;
     size_t size;
     void *data;
+
+    mi_heap_t *heap;
 } list_t;
 
 list_t *list_create(size_t);

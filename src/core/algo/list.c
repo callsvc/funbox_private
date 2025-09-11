@@ -1,11 +1,13 @@
 
-#include <strings.h>
+// #include <string.h>
+
 #include <types.h>
 #include <algo/list.h>
 
 list_t *list_create(const size_t typesize) {
     list_t * list = fb_malloc(sizeof(list_t));
     list->size = typesize;
+    list->heap = mi_heap_new();
     return list;
 }
 
@@ -19,13 +21,14 @@ static void insert(list_t *begin, list_t *listnode) {
 void * list_emplace(list_t *list) {
     if (!list->size)
         return nullptr;
-    list_t *listnode = fb_malloc(sizeof(list_t));
-    listnode->data = fb_malloc(list->size);
+    list_t *listnode = mi_heap_zalloc(list->heap, sizeof(list_t) + list->size);
+    listnode->data = (uint8_t*)listnode + sizeof(list_t);
+
     insert(list, listnode);
     return listnode->data;
 }
 void list_push(list_t *list, void *data) {
-    list_t *listnode = fb_malloc(sizeof(list_t));
+    list_t *listnode = mi_heap_zalloc(list->heap, sizeof(list_t));
     listnode->data = data;
     insert(list, listnode);
 }
@@ -50,7 +53,7 @@ void list_drop(list_t *list, const size_t index) {
     list_t *node = list->next;
     list_t *prev = list;
 
-    const bool allocated = list->size;
+    // const bool allocated = list->size;
     for (size_t i = 0; i < index; i++) {
         prev = node;
         node = node->next;
@@ -59,9 +62,11 @@ void list_drop(list_t *list, const size_t index) {
         prev->next = node->next;
     else prev->next = nullptr;
 
+#if 0
     if (allocated && node->data)
         fb_free(node->data);
     fb_free(node);
+#endif
 }
 
 void * list_get(const list_t *list, size_t index) {
@@ -71,13 +76,18 @@ void * list_get(const list_t *list, size_t index) {
     return node ? node->data : nullptr;
 }
 void list_destroy(list_t *list) {
+#if 0
     list_t *next = list;
     const bool isfreed = next->size == 0;
     do {
         list_t *save = next->next;
+
         if (!isfreed)
             fb_free(next->data);
         fb_free(next);
         next = save;
     } while (next);
+#endif
+    mi_heap_destroy(list->heap);
+    fb_free(list);
 }

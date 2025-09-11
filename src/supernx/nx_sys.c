@@ -46,10 +46,15 @@ void nx_load_first_one(nx_sys_t *nx) {
     if (!nx_get_games_count(nx))
         return;
     const game_file_t *roimage = list_get(nx->games, 0);
-
-    if (roimage->type == loader_nsp_type) {
+    if (roimage->type == loader_nsp_type)
         nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb);
+    else return;
+
+    hos_enable(nx->hos, nx->loader);
+    while (hos_getprocess_count(nx->hos)) {
+        hos_continue(nx->hos);
     }
+    hos_disable(nx->hos);
 }
 size_t nx_get_games_count(const nx_sys_t *nx) {
     return list_size(nx->games);

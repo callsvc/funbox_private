@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="BackendCodeEditorMiscSettings">
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="14" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="9" type="long" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
   </component>
-  <component name="CMakePresetLoader"><![CDATA[{
-  "useNewFormat": true
-}]]></component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
   <component name="CMakeProjectFlavorService">
     <option name="flavorId" value="CMakePlainProjectFlavor" />
   </component>
@@ -84,6 +85,7 @@
       <config projectName="funbox" targetName="test_suite_psa_crypto_se_driver_hal" />
       <config projectName="funbox" targetName="test_suite_pkcs12" />
       <config projectName="funbox" targetName="test_suite_alignment" />
+      <config projectName="funbox" targetName="mimalloc-obj" />
       <config projectName="funbox" targetName="test_suite_pkcs5" />
       <config projectName="funbox" targetName="test_suite_config.psa_boolean" />
       <config projectName="funbox" targetName="test_suite_x509parse" />
@@ -110,6 +112,7 @@
       <config projectName="funbox" targetName="test_suite_timing" />
       <config projectName="funbox" targetName="test_suite_config.mbedtls_boolean" />
       <config projectName="funbox" targetName="test_suite_platform_util" />
+      <config projectName="funbox" targetName="mimalloc-static" />
       <config projectName="funbox" targetName="test_suite_psa_crypto_attributes" />
       <config projectName="funbox" targetName="dist" />
       <config projectName="funbox" targetName="xmlcatalog" />
@@ -123,6 +126,7 @@
       <config projectName="funbox" targetName="test_suite_config.crypto_combinations" />
       <config projectName="funbox" targetName="testapi" />
       <config projectName="funbox" targetName="test_suite_psa_crypto_pake" />
+      <config projectName="funbox" targetName="mimalloc-obj-target" />
       <config projectName="funbox" targetName="test_suite_psa_crypto_slot_management" />
       <config projectName="funbox" targetName="zip" />
       <config projectName="funbox" targetName="test_suite_aes.cbc" />
@@ -159,6 +163,7 @@
       <config projectName="funbox" targetName="zip_read_file_fuzzer" />
       <config projectName="funbox" targetName="test_suite_cipher.padding" />
       <config projectName="funbox" targetName="test_suite_bignum_mod.generated" />
+      <config projectName="funbox" targetName="mimalloc" />
       <config projectName="funbox" targetName="test_suite_ecp.generated" />
       <config projectName="funbox" targetName="test_suite_cipher.aes" />
       <config projectName="funbox" targetName="xmllint" />
@@ -226,13 +231,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a842efa-7754-447f-bdb8-79aa94f31d5f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/funbox.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/libraries/mimalloc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notes/DESIGN_CHOICES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/supernx/horizon/hos_ld.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libraries/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/algo/ht.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/algo/ht.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/algo/list.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/algo/list.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/algo/list.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/algo/list.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/algo/vector.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/algo/vector.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/fs/file.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/fs/file.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/types.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/util.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/util.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/supernx/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/supernx/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/supernx/horizon/hos.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/supernx/horizon/hos.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/supernx/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/supernx/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/supernx/nx_sys.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/supernx/nx_sys.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,15 +264,65 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/libraries/mimalloc/include/mimalloc/internal.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/libraries/mimalloc/src/free.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/algo/ht.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/algo/list.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/algo/list.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/algo/set.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/algo/vector.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/algo/vector.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/error.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/fb.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/fs/dir.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/fs/dirrec.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/fs/file.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/strings.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/types.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/core/util.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/fs_fmt/content_archive.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/horizon/hos.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/horizon/hos.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/horizon/hos_ld.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/horizon/keys_db.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/main.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/nx_sys.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/supernx/nx_sys.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
     <option name="majorVersion" value="2025" />
     <option name="minorVersion" value="2.1" />
     <option name="productBranch" value="Classic" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="32FlF1jaXyPIa0DmHl2hbeUPcWt" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -262,6 +330,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "CMake Application.supernx.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.RadMigrateCodeStyle": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -273,6 +342,11 @@
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "/gabriel_vault/projects/funbox",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "editor.preferences.fonts.default",
     "vue.rearranger.settings.migration": "true"
   }
@@ -304,6 +378,26 @@
       </method>
     </configuration>
     <configuration name="heynds" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="heynds" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mimalloc-obj-target" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="mimalloc-obj-target" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mimalloc-obj" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="mimalloc-obj" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mimalloc-static" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="mimalloc-static" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mimalloc" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="funbox" TARGET_NAME="mimalloc" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -369,6 +463,10 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="CMake Application.mimalloc" />
+      <item itemvalue="CMake Application.mimalloc-obj" />
+      <item itemvalue="CMake Application.mimalloc-obj-target" />
+      <item itemvalue="CMake Application.mimalloc-static" />
       <item itemvalue="CMake Application.core" />
       <item itemvalue="CMake Application.dynrec" />
       <item itemvalue="CMake Application.nop_test_arm64" />
@@ -396,6 +494,9 @@
       <option name="presentableId" value="Default" />
       <updated>1757024093529</updated>
       <workItem from="1757024095362" duration="158000" />
+      <workItem from="1757450666928" duration="31943000" />
+      <workItem from="1757617287384" duration="506000" />
+      <workItem from="1757617831350" duration="1388000" />
     </task>
     <servers />
   </component>
@@ -406,6 +507,17 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/supernx/main.c</url>
+          <line>14</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
