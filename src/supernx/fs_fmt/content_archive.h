@@ -1,6 +1,5 @@
 #pragma once
 #include <horizon/keys_db.h>
-#include <fs_fmt/pfs.h>
 #include <fs_fmt/romfs.h>
 #include <fs/types.h>
 
@@ -114,7 +113,7 @@ _Static_assert(sizeof(nca_type_header_t) == 1024);
 #pragma pack(pop)
 
 typedef struct content_archive {
-    fsdir_t *parent_pfs;
+    fsdir_t *parent_dir;
     fsfile_t *ncafile;
     keys_db_t *keys;
     key128_t rights_id;
@@ -127,5 +126,5 @@ typedef struct content_archive {
 
 
 content_archive_t * content_archive_create(keys_db_t*, fsdir_t *, const char *);
-pfs_t * content_archive_get_pfs(const content_archive_t*, size_t);
+void * content_archive_get_fs(const content_archive_t*, size_t, bool);
 void content_archive_destroy(content_archive_t *);

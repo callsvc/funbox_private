@@ -114,15 +114,36 @@ void rfs_getreaddir(romfs_t *rfs, uint32_t dir_offset) {
 
 typedef struct file_override {
     const char *path; // path to override
-    fsfile_t * romfs_file; // file to be override
+    fsfile_t * romfs_file; // file to be overridden
     fsfile_t *file; // actual file, could be anything
 } file_override_t;
+
+offset_file_t * romfs_open_file(const romfs_t *rfs, const char * path, const char *mode) {
+    assert(mode && *mode == 'r');
+
+    for (size_t i = 0; i < list_size(rfs->override_files); i++) {
+        const file_override_t * file_over = list_get(rfs->override_files, i);
+        if (strcmp(file_over->path, path) == 0)
+            return (offset_file_t*)file_over->file;
+    }
+
+    for (size_t i = 0; i < list_size(rfs->files); i++) {
+        if (strcmp(fs_getpath(list_get(rfs->files, i)), path) == 0)
+            return list_get(rfs->files, i);
+    }
+    return nullptr;
+}
+fsfile_t * fs_romfs_open_file(struct fsdir *dir, const char *path, const char *mode) {
+    return (fsfile_t*)romfs_open_file((romfs_t*)dir, path, mode);
+}
 
 romfs_t *romfs_create(fsfile_t *file) {
     romfs_t *rfs = fb_malloc(sizeof(romfs_t));
     rfs->basefile = file;
     rfs->files = list_create(0);
     rfs->override_files = list_create(sizeof(file_override_t));
+
+    rfs->vdir.open_file = fs_romfs_open_file;
 
     fprintf(stderr, "files in this romfs: \n");
     level3_header_t header;
@@ -139,6 +160,8 @@ romfs_t *romfs_create(fsfile_t *file) {
     *rfs->pathbuild = '?';
     rfs_getreaddir(rfs, 0);
     fb_free(rfs->metadirs); fb_free(rfs->metafiles);
+    rfs->metadirs = nullptr;
+    rfs->metafiles = nullptr;
 
     return rfs;
 }

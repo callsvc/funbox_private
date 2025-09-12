@@ -111,7 +111,7 @@ void fs_print_tree(const vector_t *files) {
     printf("files in this folder: \n");
     for (size_t i = 0; i < vector_size(files); i++) {
         const char *path = vector_get(files, i);
-        const int32_t depth = fs_path_depth(path);
+        const int32_t depth = (int32_t)fs_path_depth(path);
         printf("%*s%s\n", depth * 4, "", path);
     }
 }

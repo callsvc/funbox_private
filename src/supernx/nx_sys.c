@@ -50,7 +50,7 @@ void nx_load_first_one(nx_sys_t *nx) {
         nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb);
     else return;
 
-    hos_enable(nx->hos, nx->loader);
+    hos_enable(nx->procinfo->current_dir, nx->hos, nx->loader);
     while (hos_getprocess_count(nx->hos)) {
         hos_continue(nx->hos);
     }

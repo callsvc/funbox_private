@@ -12,7 +12,7 @@ zipfile_t * zipdir_open_file(zipdir_t *dir, const char *name, const char *mode) 
     zip_stat_t info;
     zip_stat_index(dir->zipfile, index, 0, &info);
 
-    if (index)
+    if (index != -1)
         return zipfile_open(dir->zipfile, index, info.size);
     return nullptr;
 }
@@ -41,15 +41,25 @@ vector_t* fs_zipdir_list_all_files(const struct fsdir *dir) {
     return zipdir_list_all_files((zipdir_t*)dir);
 }
 
+#define ZIPDIR_SET_VIO(_zip)\
+    _zip->vdir.open_file = fs_zipdir_open_file;\
+    _zip->vdir.close_file = fs_zipdir_close_file;\
+    _zip->vdir.fs_list_all_files = fs_zipdir_list_all_files;
+
 zipdir_t * zipdir_open(const char *path) {
     zipdir_t *dir = fb_malloc(sizeof(zipdir_t));
     dir->zipfile = zip_open(path, ZIP_RDONLY, nullptr);
     if (!dir->zipfile)
         quit("can't open zip filename %s", path);
-
-    dir->vdir.open_file = fs_zipdir_open_file;
-    dir->vdir.close_file = fs_zipdir_close_file;
-    dir->vdir.fs_list_all_files = fs_zipdir_list_all_files;
+    ZIPDIR_SET_VIO(dir);
+    return dir;
+}
+zipdir_t * zipdir_open_2(file_t *file) {
+    zipdir_t *dir = fb_malloc(sizeof(zipdir_t));
+    dir->zipfile = zip_fdopen(fileno(file->handle), ZIP_RDONLY, nullptr);
+    if (!dir->zipfile)
+        quit("can't open zip filename %s", fs_getpath((fsfile_t*)file));
+    ZIPDIR_SET_VIO(dir);
     return dir;
 }
 void zipdir_close(zipdir_t *dir) {

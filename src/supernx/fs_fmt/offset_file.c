@@ -38,7 +38,7 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
     return setfile;
 }
 void offset_file_close(const fsfile_t *base, offset_file_t *file) {
-    if (file->file != base)
+    if (base && file->file != base)
         quit("unable to close file");
     fb_free(file->buffer);
     fb_free(file);

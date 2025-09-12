@@ -19,6 +19,7 @@ typedef struct zipfile {
 } zipfile_t;
 
 zipdir_t * zipdir_open(const char *);
+zipdir_t * zipdir_open_2(file_t *);
 void zipdir_close(zipdir_t *);
 
 zipfile_t * zipfile_open(zip_t *, size_t index, size_t);

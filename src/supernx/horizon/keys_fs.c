@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
 
 #include <mbedtls/cipher.h>
 
@@ -65,7 +64,7 @@ void keys_getkey_fornca(const keys_db_t *kdb, void *dest, const size_t size, con
     }
 
 
-    sprintf(keyarea_name, "key_area_key_%s_%02u", key_name, get_generation(nca_info));
+    sprintf(keyarea_name, "key_area_key_%s_%02x", key_name, get_generation(nca_info));
     if (!ht_contains(kdb->tag_keysmap, keyarea_name))
         return;
 

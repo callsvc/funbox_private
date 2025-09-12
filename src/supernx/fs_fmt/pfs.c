@@ -7,7 +7,7 @@
 #include <fs_fmt/offset_file.h>
 bool pfs_is_pfs(fsfile_t *file) {
     constexpr char pfsmagic[] = "PFS0";
-    uint8_t buffer[strlen(pfsmagic) + sizeof(int)];
+    uint8_t buffer[sizeof(pfsmagic) + sizeof(int)];
     fs_read(file, buffer, sizeof(buffer), 0);
 
     if (memcmp(pfsmagic, buffer, strlen(pfsmagic)) == 0)

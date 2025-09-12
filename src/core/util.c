@@ -20,7 +20,7 @@ void fb_exit() {
     fb_destroy();
     pthread_mutex_destroy(&ht_mutex);
 
-    // mi_collect(true);
+    mi_collect(true);
 }
 
 __attribute__((constructor)) void fb_entry() {

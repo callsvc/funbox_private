@@ -3,10 +3,20 @@
 
 
 void zipfile_read(zipfile_t *file, void *out, const size_t size, const size_t offset) {
-    if (offset) {
+    if (zip_file_is_seekable(file->zipentry) && offset) {
+        zip_fseek(file->zipentry, (zip_int64_t)offset, SEEK_SET);
+
+    } else if (offset) {
         if (zip_ftell(file->zipentry) > offset) {
             zip_fclose(file->zipentry);
             file->zipentry = zip_fopen_index(file->zip, file->index, 0);
+        }
+        uint8_t buffer[128];
+        for (size_t i = 0; i < offset && offset - i > 128;) {
+            const size_t zr = zip_fread(file->zipentry, buffer, sizeof(buffer));
+            if (zr < sizeof(buffer))
+                break;
+            i += zr;
         }
         while (zip_ftell(file->zipentry) != offset)
             zip_fread(file->zipentry, out, 1);

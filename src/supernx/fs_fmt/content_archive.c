@@ -190,14 +190,14 @@ void content_archive_get_all_files(const content_archive_t *nca, const nca_type_
     fb_free(nca_fs_info);
 }
 
-content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *pfs, const char *path) {
+content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *parent, const char *path) {
     content_archive_t *nca = fb_malloc(sizeof(content_archive_t));
-    nca->parent_pfs = pfs;
+    nca->parent_dir = parent;
     nca->keys = keys;
     nca->pfs_list = list_create(0);
     nca->romfs_list = list_create(0);
 
-    nca->ncafile = fs_open_file(pfs, path, "r");
+    nca->ncafile = fs_open_file(nca->parent_dir, path, "r");
 
     nca_type_header_t *nca_info = fb_malloc(sizeof(nca_type_header_t));
     fs_read(nca->ncafile, nca_info, sizeof(*nca_info), 0);
@@ -227,10 +227,12 @@ content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *pfs, const 
     return nca;
 }
 
-pfs_t * content_archive_get_pfs(const content_archive_t * nca, const size_t index) {
-    if (index > list_size(nca->pfs_list))
+void * content_archive_get_fs(const content_archive_t * nca, const size_t index, const bool pfs) {
+    const list_t * items_list = pfs ? nca->pfs_list : nca->romfs_list;
+    if (index > list_size(items_list))
         return nullptr;
-    const file_list_item_t *list_item = list_get(nca->pfs_list, index);
+    const file_list_item_t *list_item = list_get(items_list, index);
+    assert(list_item->ispfs == pfs);
     return list_item->pfs;
 }
 
@@ -257,11 +259,11 @@ void content_archive_destroy(content_archive_t *nca) {
 
     if (nca->encrypted) {
         const auto aes_file = (aes_file_t*)nca->ncafile;
-        fs_close_file(nca->parent_pfs, aes_file->parent);
+        fs_close_file(nca->parent_dir, aes_file->parent);
 
         aes_file_close(aes_file);
     } else {
-        fs_close_file(nca->parent_pfs, nca->ncafile);
+        fs_close_file(nca->parent_dir, nca->ncafile);
     }
     fb_free(nca);
 }

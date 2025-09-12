@@ -146,7 +146,7 @@ void aes_file_setkey(aes_file_t *aes_file, const uint8_t *key, const size_t keyl
         quit("invalid key size");
     const mbedtls_operation_t mbedtls_op = *aes_file->mode == 'r' ? MBEDTLS_DECRYPT : MBEDTLS_ENCRYPT;
 
-    if (mbedtls_cipher_setkey(&aes_file->context, key, len, mbedtls_op))
+    if (mbedtls_cipher_setkey(&aes_file->context, key, (int)len, mbedtls_op))
         quit("can't set key");
 }
 
