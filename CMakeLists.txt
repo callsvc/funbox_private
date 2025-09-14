@@ -9,6 +9,9 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g -DNDEBUG")
 option(FUNBOX_COMPILE_ALL_SUBSYSTEMS "Compile each available subsystem." ON)
 option(FUNBOX_ENABLE_GUI "Enables the GUI (SDL3 for now)." ON)
 
+find_package(zstd 1.4.0)
+if(zstd_FOUND)
+endif()
 find_package(SDL3 REQUIRED)
 
 add_subdirectory(libraries)

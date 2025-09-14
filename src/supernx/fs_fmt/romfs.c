@@ -137,6 +137,16 @@ fsfile_t * fs_romfs_open_file(struct fsdir *dir, const char *path, const char *m
     return (fsfile_t*)romfs_open_file((romfs_t*)dir, path, mode);
 }
 
+romfs_t * romfs_create_2() {
+    romfs_t *rfs = fb_malloc(sizeof(romfs_t));
+    rfs->files = list_create(0);
+
+    rfs->files = list_create(0);
+    rfs->override_files = list_create(sizeof(file_override_t));
+    rfs->vdir.open_file = fs_romfs_open_file;
+    return rfs;
+}
+
 romfs_t *romfs_create(fsfile_t *file) {
     romfs_t *rfs = fb_malloc(sizeof(romfs_t));
     rfs->basefile = file;

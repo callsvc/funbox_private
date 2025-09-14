@@ -30,7 +30,8 @@ void aes_file_update(aes_file_t *aes_file, void *output, const size_t size, cons
         vector_setsize(aes_file->buffer, roundto(size, block_size));
 
     uint8_t *dest_buffer = vector_begin(aes_file->buffer);
-    fs_read(aes_file->parent, output, size, offset);
+    if (strchr(aes_file->mode, 'r'))
+        fs_read(aes_file->parent, output, size, offset);
     mbedtls_cipher_reset(&aes_file->context);
 
     size_t result = 0;
@@ -110,6 +111,20 @@ void fs_aes_file_read(fsfile_t *file, void *output, const size_t size, const siz
         aes_file_read_xts((aes_file_t*)file, output, size, offset_block);
     else aes_file_read_ctr((aes_file_t*)file, output, size, offset_block);
 }
+void fs_aes_file_write(fsfile_t *file, const void *input, const size_t size, const size_t offset) {
+    const auto aes_file = (aes_file_t*)file;
+
+    assert(size % ctr_block_size == 0 && offset % ctr_block_size == 0);
+    if (input == nullptr) {
+        if (size > vector_size(aes_file->enc_buffer))
+            vector_setsize(aes_file->enc_buffer, roundto(size, ctr_block_size));
+        input = vector_begin(aes_file->enc_buffer);
+        fs_read(aes_file->parent, (void*)input, size, offset);
+    }
+    aes_file_updatectr(aes_file, offset);
+    aes_file_update(aes_file, (void*)input, size, offset);
+    fs_write(aes_file->parent, input, size, offset);
+}
 
 size_t fs_aes_file_getsize(const fsfile_t *file) {
     const aes_file_t * aes_file = (aes_file_t*)file;
@@ -125,7 +140,11 @@ aes_file_t * aes_file_open(fsfile_t * file, const aes_type_e type, const char *m
     aes_file->vfile.type = file_type_aes;
     aes_file->buffer = vector_create(0, sizeof(uint8_t));
 
+    if (strchr(mode, 'w'))
+        aes_file->enc_buffer = vector_create(0, sizeof(uint8_t));
+
     aes_file->vfile.fs_read = fs_aes_file_read;
+    aes_file->vfile.fs_write = fs_aes_file_write;
     aes_file->vfile.fs_getsize = fs_aes_file_getsize;
 
     mbedtls_cipher_init(&aes_file->context);
@@ -171,5 +190,7 @@ void aes_file_close(aes_file_t *aes_file) {
     mbedtls_cipher_free(&aes_file->context);
     if (aes_file->buffer)
         vector_destroy(aes_file->buffer);
+    if (aes_file->enc_buffer)
+        vector_destroy(aes_file->enc_buffer);
     fb_free(aes_file);
 }

@@ -11,7 +11,7 @@ bool nsp_is_nsp(fsfile_t *file) {
 }
 
 vector_t * nsp_get_logo(const nsp_t * nsp) {
-    pfs_t * logo = submission_package_pfs_byfile(nsp->next_loader, "NintendoLogo.png");
+    pfs_t * logo = submission_package_pfs_byfile(nsp->nsp_main, "NintendoLogo.png");
     fsfile_t * logo_file = fs_open_file((fsdir_t*)logo, "NintendoLogo.png", "r");
 
     if (!logo_file)
@@ -22,7 +22,7 @@ vector_t * nsp_get_logo(const nsp_t * nsp) {
     return logo_content;
 }
 uint64_t nsp_get_program_id(const nsp_t * nsp) {
-    const content_archive_t *nca = submission_package_nca_bytype(nsp->next_loader, content_type_program);
+    const content_archive_t *nca = submission_package_nca_bytype(nsp->nsp_main, content_type_program);
     if (nca && nca->program_id > 0)
         return nca->program_id;
     return 0;
@@ -36,13 +36,13 @@ uint64_t loader_nsp_get_program_id(loader_base_t *base) {
 
 nsp_t *nsp_create(fsfile_t *file, keys_db_t *keys) {
     nsp_t *nsp = fb_malloc(sizeof(nsp_t));
-    nsp->next_loader = submission_package_create(file, keys);
+    nsp->nsp_main = submission_package_create(file, keys);
 
     nsp->vloader.loader_get_logo = loader_nsp_get_logo;
     nsp->vloader.loader_get_program_id = loader_nsp_get_program_id;
     return nsp;
 }
 void nsp_destroy(nsp_t *nsp) {
-    submission_package_destroy(nsp->next_loader);
+    submission_package_destroy(nsp->nsp_main);
     fb_free(nsp);
 }

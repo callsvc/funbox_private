@@ -146,7 +146,7 @@ file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_f
     file_item->file = (fsfile_t*)aes_file;
 #if 1
     uint8_t buffer[4096] = {};
-    fs_read(file_item->file, buffer, 16, 0);
+    fs_read(file_item->file, buffer, 4096, 0);
 #endif
 
     return file_item;

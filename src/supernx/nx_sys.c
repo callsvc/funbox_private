@@ -5,6 +5,7 @@
 #include <fs/dir.h>
 
 #include <loader/nsp.h>
+#include <loader/nsz.h>
 
 
 nx_sys_t *nx_sys_create() {
@@ -42,14 +43,29 @@ void nx_get_all_loaders(const nx_sys_t *nx) {
     fb_free(gamesdir);
 }
 
+constexpr loader_type_e dedicated_type = loader_nsz_type;
+
 void nx_load_first_one(nx_sys_t *nx) {
     if (!nx_get_games_count(nx))
         return;
-    const game_file_t *roimage = list_get(nx->games, 0);
-    if (roimage->type == loader_nsp_type)
-        nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb);
-    else return;
+    const game_file_t *roimage = nullptr;
+    for (size_t i = 0; i < list_size(nx->games); i++) {
+        const game_file_t * game = list_get(nx->games, i);
+        if (game->type != dedicated_type)
+            continue;
+        roimage = game;
+    }
+    if (!roimage)
+        roimage = list_get(nx->games, 0);
 
+    switch (roimage->type) {
+        case loader_nsp_type:
+            nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb); break;
+        case loader_nsz_type:
+            nx->loader = (loader_base_t*)nsz_create(roimage->file, nx->hos->kdb); break;
+        default:
+            return;
+    }
     hos_enable(nx->procinfo->current_dir, nx->hos, nx->loader);
     while (hos_getprocess_count(nx->hos)) {
         hos_continue(nx->hos);

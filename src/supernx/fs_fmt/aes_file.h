@@ -21,6 +21,7 @@ typedef struct aes_file {
     mbedtls_cipher_context_t context;
     uint8_t iv_ctr[16];
     vector_t *buffer;
+    vector_t *enc_buffer;
 } aes_file_t;
 
 aes_file_t * aes_file_open(fsfile_t*, aes_type_e, const char*);

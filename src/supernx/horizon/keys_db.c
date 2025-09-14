@@ -101,7 +101,7 @@ void keys_db_load(keys_db_t *kdb, fsfile_t *file) {
     const char *line = vector_begin(content);
     const char *end = line + vector_size(content);
     do {
-        static char keypair[1000] = {};
+        static char keypair[1 << 11] = {};
         const char *last = strchr(line, '\n');
         fb_strcopy(keypair, line, last ? last - line : strlen(line));
 

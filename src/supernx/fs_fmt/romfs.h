@@ -16,6 +16,7 @@ typedef struct romfs {
     char pathbuild[0x1000];
 } romfs_t;
 
+romfs_t * romfs_create_2();
 romfs_t *romfs_create(fsfile_t *);
 void romfs_addfile(const romfs_t *rfs, fsfile_t *file);
 size_t romfs_override(const romfs_t *, fsfile_t *, const char*);

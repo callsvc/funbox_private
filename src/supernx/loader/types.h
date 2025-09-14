@@ -5,6 +5,8 @@
 typedef enum loader_type {
     loader_unknown_type,
     loader_nsp_type,
+    loader_nsz_type,
+
 } loader_type_e;
 
 

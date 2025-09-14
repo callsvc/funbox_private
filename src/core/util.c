@@ -85,8 +85,6 @@ size_t fb_get_heap_usage(size_t *allocs_count) {
 }
 
 void fb_free(void *ptr) {
-    if (ptr)
-        assert(mi_check_owned(ptr));
 
     pthread_mutex_lock(&ht_mutex);
     char buffer[45];
@@ -96,6 +94,7 @@ void fb_free(void *ptr) {
             quit("ptr %p is invalid", ptr);
         ht_erase(ht_mm, to_str64((uint64_t)ptr, buffer, 16));
     } else if (ptr) {
+        assert(mi_check_owned(ptr));
         free(ptr);
     }
 

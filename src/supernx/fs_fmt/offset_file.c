@@ -5,12 +5,21 @@
 
 void fs_offset_file_read(struct fsfile *file, void *output, const size_t size, const size_t offset) {
     const offset_file_t *setfile = (offset_file_t*)file;
-    if (offset >= fs_getsize((fsfile_t*)setfile))
+    if (offset + size > fs_getsize(file))
         quit("invalid offset file");
 
     if (!setfile->buffer)
         fs_read(setfile->file, output, size, setfile->start + offset);
     else memcpy(output, &setfile->buffer[offset], size);
+}
+void fs_offset_file_write(struct fsfile *file, const void *input, const size_t size, const size_t offset) {
+    const offset_file_t *setfile = (offset_file_t*)file;
+    if (offset + size > fs_getsize(file))
+        quit("invalid offset file");
+
+    if (!setfile->buffer)
+        fs_write(setfile->file, input, size, setfile->start + offset);
+    else memcpy(&setfile->buffer[offset], input, size);
 }
 size_t fs_offset_file_getsize(const fsfile_t *file) {
     const offset_file_t *setfile = (const offset_file_t*)file;
@@ -24,6 +33,7 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
     setfile->vfile.type = file_type_offsetfile;
     setfile->vfile.fs_getsize = fs_offset_file_getsize;
     setfile->vfile.fs_read = fs_offset_file_read;
+    setfile->vfile.fs_write = fs_offset_file_write;
 
     setfile->file = base;
     setfile->size = size;
