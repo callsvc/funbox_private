@@ -11,14 +11,13 @@ bool nsp_is_nsp(fsfile_t *file) {
 }
 
 vector_t * nsp_get_logo(const nsp_t * nsp) {
-    pfs_t * logo = submission_package_pfs_byfile(nsp->nsp_main, "NintendoLogo.png");
-    fsfile_t * logo_file = fs_open_file((fsdir_t*)logo, "NintendoLogo.png", "r");
+    const romfs_t * logo = (romfs_t*)submission_package_byfile(nsp->nsp_main, "icon_AmericanEnglish.dat", false);
+    fsfile_t * logo_file = fs_open_file((fsdir_t*)logo, "icon_AmericanEnglish.dat", "r");
 
     if (!logo_file)
         return nullptr;
-
     vector_t *logo_content = fs_getbytes(logo_file, fs_getsize(logo_file), 0);
-    fs_close_file((fsdir_t*)logo, logo_file);
+    // fs_close_file((fsdir_t*)logo, logo_file);
     return logo_content;
 }
 uint64_t nsp_get_program_id(const nsp_t * nsp) {

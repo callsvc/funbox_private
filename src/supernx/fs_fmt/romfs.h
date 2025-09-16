@@ -7,7 +7,7 @@ typedef struct romfs {
     fsdir_t vdir;
 
     fsfile_t *basefile;
-    list_t *files;
+    vector_t *files;
     list_t *override_files;
 
     uint8_t *metafiles, *metadirs;

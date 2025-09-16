@@ -56,6 +56,8 @@ vector_t * fs_list_all_files(const fsdir_t*);
 vector_t * list_all_files(const char*);
 char * fs_build_path(int32_t depth, ...);
 
+bool fs_rm(const char *path);
+
 typedef struct procinfo procinfo_t;
 const char * fs_get_cache(procinfo_t*);
 

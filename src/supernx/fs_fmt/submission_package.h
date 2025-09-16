@@ -15,6 +15,6 @@ typedef struct submission_package {
 submission_package_t * submission_package_create(fsfile_t *file, keys_db_t *);
 
 content_archive_t * submission_package_nca_bytype(const submission_package_t*, content_type_e);
-pfs_t * submission_package_pfs_byfile(const submission_package_t *, const char*);
+fsdir_t * submission_package_byfile(const submission_package_t *, const char*, bool);
 
 void submission_package_destroy(submission_package_t *);

@@ -69,12 +69,13 @@ void rfs_cleanpath(romfs_t *rfs, const bool dir) {
 }
 
 void romfs_addfile(const romfs_t *rfs, fsfile_t *file) {
-    for (size_t i = 0; i < list_size(rfs->files); i++)
-        if (strcmp(fs_getpath(list_get(rfs->files, i)), fs_getpath(file)) == 0)
+    const size_t size = vector_size(rfs->files);
+    for (size_t i = 0; i < size; i++)
+        if (strcmp(fs_getpath(*(fsfile_t**)vector_get(rfs->files, i)), fs_getpath(file)) == 0)
             quit("file %s already exists inside this romfs", fs_getpath(file));
 
-    fprintf(stderr, "\t- %s\n", fs_getpath(file));
-    list_push(rfs->files, file);
+    // fprintf(stderr, "\t- %s\n", fs_getpath(file));
+    vector_emplace(rfs->files, &file);
 }
 
 void rfs_getallfiles(romfs_t *rfs, uint32_t file_offset) {
@@ -127,9 +128,9 @@ offset_file_t * romfs_open_file(const romfs_t *rfs, const char * path, const cha
             return (offset_file_t*)file_over->file;
     }
 
-    for (size_t i = 0; i < list_size(rfs->files); i++) {
-        if (strcmp(fs_getpath(list_get(rfs->files, i)), path) == 0)
-            return list_get(rfs->files, i);
+    for (size_t i = 0; i < vector_size(rfs->files); i++) {
+        if (strcmp(fs_getpath(*(fsfile_t**)vector_get(rfs->files, i)), path) == 0)
+            return *(offset_file_t**)vector_get(rfs->files, i);
     }
     return nullptr;
 }
@@ -139,21 +140,31 @@ fsfile_t * fs_romfs_open_file(struct fsdir *dir, const char *path, const char *m
 
 romfs_t * romfs_create_2() {
     romfs_t *rfs = fb_malloc(sizeof(romfs_t));
-    rfs->files = list_create(0);
+    rfs->files = vector_create(0, sizeof(fsfile_t*));
 
-    rfs->files = list_create(0);
     rfs->override_files = list_create(sizeof(file_override_t));
     rfs->vdir.open_file = fs_romfs_open_file;
     return rfs;
 }
 
+vector_t * fs_romfs_list_all_files(const struct fsdir *dir) {
+    const romfs_t * rfs = (romfs_t*)dir;
+    vector_t * files = vector_create(0, 0);
+
+    for (size_t i = 0; i < vector_size(rfs->files); i++)
+        vector_emplace(files, fs_getpath(*(offset_file_t**)vector_get(rfs->files, i)));
+
+    return files;
+}
+
 romfs_t *romfs_create(fsfile_t *file) {
     romfs_t *rfs = fb_malloc(sizeof(romfs_t));
     rfs->basefile = file;
-    rfs->files = list_create(0);
+    rfs->files = vector_create(0, sizeof(fsfile_t*));
     rfs->override_files = list_create(sizeof(file_override_t));
 
     rfs->vdir.open_file = fs_romfs_open_file;
+    rfs->vdir.fs_list_all_files = fs_romfs_list_all_files;
 
     fprintf(stderr, "files in this romfs: \n");
     level3_header_t header;
@@ -177,8 +188,8 @@ romfs_t *romfs_create(fsfile_t *file) {
 }
 
 size_t romfs_override(const romfs_t *rfs, fsfile_t *file, const char *path) {
-    for (size_t i = 0; i < list_size(rfs->files); i++) {
-        fsfile_t *romfs_file = list_get(rfs->files, i);
+    for (size_t i = 0; i < vector_size(rfs->files); i++) {
+        fsfile_t *romfs_file = *(fsfile_t**)vector_get(rfs->files, i);
         if (strcmp(fs_getpath(romfs_file), path) != 0)
             continue;
 
@@ -193,10 +204,10 @@ size_t romfs_override(const romfs_t *rfs, fsfile_t *file, const char *path) {
 
 void romfs_destroy(romfs_t *rfs) {
 
-    for (size_t i = 0; i < list_size(rfs->files); i++) {
-        offset_file_t *file = list_get(rfs->files, i);
+    for (size_t i = 0; i < vector_size(rfs->files); i++) {
+        offset_file_t *file = *(offset_file_t**)vector_get(rfs->files, i);
         offset_file_close(rfs->basefile, file);
     }
-    list_destroy(rfs->files); list_destroy(rfs->override_files);
+    vector_destroy(rfs->files); list_destroy(rfs->override_files);
     fb_free(rfs);
 }

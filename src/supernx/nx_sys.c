@@ -17,6 +17,18 @@ nx_sys_t *nx_sys_create() {
     return nx;
 }
 
+loader_base_t * nx_load(const loader_type_e type, fsfile_t *file, keys_db_t * keys) {
+    switch (type) {
+        case loader_nsp_type:
+            return (loader_base_t*)nsp_create(file, keys);
+        case loader_nsz_type:
+            return (loader_base_t*)nsz_create(file, keys);
+        default:
+
+    }
+    return nullptr;
+}
+
 void nx_get_all_loaders(const nx_sys_t *nx) {
     char * gamesdir = fs_build_path(2, nx->procinfo->current_dir, "games_files");
 
@@ -34,6 +46,7 @@ void nx_get_all_loaders(const nx_sys_t *nx) {
         game_file_t *typed = list_emplace(nx->games);
         typed->file = (fsfile_t*)mapfile_open((const fsfile_t*)file);
         typed->type = rom_type;
+        typed->loader = nx_load(typed->type, typed->file, nx->hos->kdb);
 
         dir_close_file(dir, file);
     }
@@ -58,30 +71,35 @@ void nx_load_first_one(nx_sys_t *nx) {
     if (!roimage)
         roimage = list_get(nx->games, 0);
 
-    switch (roimage->type) {
-        case loader_nsp_type:
-            nx->loader = (loader_base_t*)nsp_create(roimage->file, nx->hos->kdb); break;
-        case loader_nsz_type:
-            nx->loader = (loader_base_t*)nsz_create(roimage->file, nx->hos->kdb); break;
-        default:
-            return;
-    }
+    nx->loader = roimage->loader;
     hos_enable(nx->procinfo->current_dir, nx->hos, nx->loader);
     while (hos_getprocess_count(nx->hos)) {
         hos_continue(nx->hos);
     }
     hos_disable(nx->hos);
 }
+
+loader_base_t * nx_getgame(const nx_sys_t *nx, const size_t index) {
+    const game_file_t *typed = list_get(nx->games, index);
+    if (typed) return typed->loader;
+    return nullptr;
+}
+
 size_t nx_get_games_count(const nx_sys_t *nx) {
     return list_size(nx->games);
 }
 
 void nx_sys_destroy(nx_sys_t *nx) {
     if (nx->loader)
-        nsp_destroy((nsp_t*)nx->loader);
+        nx->loader = nullptr;
 
     for (size_t i = 0; i < list_size(nx->games); i++) {
         const game_file_t *file = list_get(nx->games, i);
+        if (file->type == loader_nsp_type)
+            nsp_destroy((nsp_t*)file->loader);
+        else if (file->type == loader_nsz_type)
+            nsz_destroy((nsz_t*)file->loader);
+
         mapfile_close((mapfile_t*)file->file);
     }
     list_destroy(nx->games);

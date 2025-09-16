@@ -5,6 +5,7 @@
 #include <mbedtls/sha256.h>
 
 #include <types.h>
+#include <fs_fmt/offset_file.h>
 #include <fs_fmt/content_archive.h>
 #include <fs_fmt/aes_file.h>
 #include <fs_fmt/pfs.h>
@@ -14,13 +15,14 @@
 #include <loader/nsz.h>
 
 
+
 bool is_ncz(fsfile_t *file) {
     uint8_t magic[8];
     fs_read(file, magic, 8, 0x4000);
     return memcmp(magic, "NCZSECTN", 8) == 0;
 }
 
-ncz_t * ncz_create(fsfile_t *file, fsfile_t **ncafile) {
+ncz_t * ncz_create(fsfile_t *file, fsfile_t **ncafile, const bool verify) {
     if (!is_ncz(file))
         return nullptr;
 
@@ -78,21 +80,42 @@ ncz_t * ncz_create(fsfile_t *file, fsfile_t **ncafile) {
     fb_free(zcnt);
 
     *ncafile = (fsfile_t*)backing;
-    mbedtls_sha256_context hash;
-    mbedtls_sha256_init(&hash);
+    if (verify) {
+        uint8_t result[32];
+        char str[64];
 
-    mbedtls_sha256_update(&hash, file_content, ncz->nca_size + 0x4000);
-    uint8_t result[256 / 8];
-    mbedtls_sha256_finish(&hash, result);
-    mbedtls_sha256_free(&hash);
-
-    char str[64];
-    to_str(str, result, sizeof(result));
-    assert(strstr(fs_getpath(*ncafile), str) != nullptr && encrypted == ncz->nca_size + 0x4000);
+        fs_sha256(*ncafile, result);
+        to_str(str, result, sizeof(result));
+        strcpy(str + 32, ".ncz");
+        if (encrypted != ncz->nca_size + 0x4000 || strcmp(fs_getpath(file), str) != 0)
+            quit("data corruption detected");
+    }
 
     ZSTD_freeDCtx(dctx);
     return ncz;
 }
+
+vector_t * loader_nsz_get_logo(loader_base_t *base) {
+    const auto nsz = (nsz_t*)base;
+    for (size_t i = 0; i < list_size(nsz->nca_list); i++) {
+        for (size_t j = 0; content_archive_get_fs(list_get(nsz->nca_list, i), j, false); j++) {
+            romfs_t * ctrlfs = content_archive_get_fs(list_get(nsz->nca_list, i), j, false);
+            fsfile_t *title_icon = fs_open_file((fsdir_t*)ctrlfs, "icon_AmericanEnglish.dat", "r");
+            if (!title_icon)
+                continue;
+            vector_t * logo = fs_getfile(title_icon);
+            return logo;
+        }
+    }
+    return nullptr;
+}
+uint64_t loader_nsz_get_program_id(loader_base_t *base) {
+    const content_archive_t *nca = list_get(((nsz_t*)base)->nca_list, 0);
+    if (nca && nca->program_id > 0)
+        return nca->program_id;
+    return 0;
+}
+
 void ncz_destroy(ncz_t *ncz) {
     fb_free(ncz->sections);
     fb_free(ncz);
@@ -105,14 +128,19 @@ void nsz_addfile(const nsz_t *nsz, keys_db_t *keys, fsfile_t *file) {
         keys_db_add_ticket(keys, tik);
         return;
     }
-    if (strcmp(ext, ".ncz") != 0)
+    if (strcmp(ext, ".ncz") == 0) {
+        fsfile_t * parent = nullptr;
+        ncz_t * this_ncz = ncz_create(file, &parent, false);
+
+        romfs_addfile(nsz->nca_files, parent);
+        ncz_destroy(this_ncz);
+
+    } else if (strcmp(ext, ".nca") == 0 && memcmp(ext - 5, ".cnmt", 5) != 0) {
+        romfs_addfile(nsz->nca_files, file);
+    } else {
         return;
+    }
 
-    fsfile_t * parent = nullptr;
-    ncz_t * this_ncz = ncz_create(file, &parent);
-
-    romfs_addfile(nsz->nca_files, parent);
-    ncz_destroy(this_ncz);
     list_push(nsz->nca_list, content_archive_create(keys, (fsdir_t*)nsz->nca_files, fs_getpath(file)));
 }
 
@@ -128,6 +156,10 @@ nsz_t * nsz_create(fsfile_t *file, keys_db_t *keys) {
         nsz_addfile(nsz, keys, fs_open_file((fsdir_t*)nsz->main_pfs, vector_get(files, i), "r"));
 
     vector_destroy(files);
+
+    nsz->vloader.loader_get_program_id = loader_nsz_get_program_id;
+    nsz->vloader.loader_get_logo = loader_nsz_get_logo;
+
     return nsz;
 }
 

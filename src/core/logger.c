@@ -18,7 +18,7 @@ void logger_init() {
     logs->threshold = sizeof(logs->logm) / max_length;
     *logs->logm = '?';
 
-    remove("logs.txt");
+    fs_rm("logs.txt");
     logs->file = file_open("logs.txt", "w");
 }
 void logger_flush(logger_t *logger, bool lock);

@@ -25,6 +25,26 @@ void fs_write(fsfile_t *file, const void *input, const size_t size, const size_t
     file->fs_write(file, input, size, offset);
 }
 
+bool fs_rm(const char *path) {
+    struct stat st;
+    stat(path, &st);
+    if (st.st_mode & S_IFDIR) {
+        vector_t * files = list_all_files(path);
+        for (size_t i = 0; i < vector_size(files); i++) {
+            unlink(vector_get(files, i));
+        }
+        vector_destroy(files);
+        if (unlink(path))
+            if (errno == EPERM)
+                rmdir(path);
+    } else {
+        // if (strcmp(path + strlen(path) - 4, ".tik"))
+        //    fs_shred(path);
+        unlink(path);
+    }
+    return access(path, F_OK) != 0;
+}
+
 void create_directories(const char *path, const bool parent) {
     constexpr mode_t mkmode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
     char dirstep[sizeof(int)*0x10 * 3] = {0};

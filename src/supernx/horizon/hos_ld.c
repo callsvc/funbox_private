@@ -22,8 +22,6 @@ void hos_firmware_load(hos_t *hos, file_t *file) {
         return;
     vector_t *files = fs_list_all_files((const fsdir_t*)zipfirm);
     for (size_t i = 0; i < vector_size(files); i++) {
-        if (i == 159)
-            continue;
         content_archive_t * nca = content_archive_create(hos->kdb, (fsdir_t*)zipfirm, vector_get(files, i));
         if (nca->type != content_type_meta) {
             for (size_t j = 0; j < count_of(services_list); j++)

@@ -145,8 +145,8 @@ file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_f
 
     file_item->file = (fsfile_t*)aes_file;
 #if 1
-    uint8_t buffer[4096] = {};
-    fs_read(file_item->file, buffer, 4096, 0);
+    uint8_t buffer[16] = {};
+    fs_read(file_item->file, buffer, 16, 0);
 #endif
 
     return file_item;
@@ -232,6 +232,8 @@ void * content_archive_get_fs(const content_archive_t * nca, const size_t index,
     if (index > list_size(items_list))
         return nullptr;
     const file_list_item_t *list_item = list_get(items_list, index);
+    if (!list_item)
+        return nullptr;
     assert(list_item->ispfs == pfs);
     return list_item->pfs;
 }
@@ -259,7 +261,8 @@ void content_archive_destroy(content_archive_t *nca) {
 
     if (nca->encrypted) {
         const auto aes_file = (aes_file_t*)nca->ncafile;
-        fs_close_file(nca->parent_dir, aes_file->parent);
+        if (nca->parent_dir->close_file) // work around for romfs backing
+            fs_close_file(nca->parent_dir, aes_file->parent);
 
         aes_file_close(aes_file);
     } else {

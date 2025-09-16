@@ -49,6 +49,8 @@ char * fb_strdup(const char *str);
 
 void sleep_for(size_t);
 bool cmpsha(const uint8_t *, size_t, const char *);
+typedef struct fsfile fsfile_t;
+void fs_sha256(fsfile_t *file, uint8_t out[256 / 8]);
 
 #define to_little64(b) __builtin_bswap64(*(const uint64_t*)(b))
 #define to_little32(b) __builtin_bswap32(*(const uint32_t*)(b))
