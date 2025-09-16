@@ -1,7 +1,6 @@
 #pragma once
 #include <regex.h>
 
-#include <fs/types.h>
 #include <algo/list.h>
 #include <algo/set.h>
 #include <algo/ht.h>

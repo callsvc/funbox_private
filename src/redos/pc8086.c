@@ -17,7 +17,7 @@ void pc8086_reset(pc8086_t *cpu) {
 }
 
 void jmp(pc8086_t *cpu, const uint8_t *m_ptr) {
-    const int8_t rel = m_ptr[(cpu->cs << 4) + cpu->ip + 1];
+    const int8_t rel = (int8_t)m_ptr[(cpu->cs << 4) + cpu->ip + 1];
     fprintf(stderr, "jmp %x (unk)\n", rel);
     cpu->ip += 2;
     cpu->ip += rel;
@@ -82,7 +82,7 @@ uint16_t * pc_cpu_getreg(pc8086_t *cpu, const uint8_t id) {
         case 7: return &cpu->di;
         default:
     }
-    return NULL;
+    return nullptr;
 }
 
 void mov16(pc8086_t *cpu, const uint8_t *mptr) {

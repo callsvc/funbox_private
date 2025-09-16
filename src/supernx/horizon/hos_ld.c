@@ -59,5 +59,5 @@ size_t hos_getprocess_count(hos_t*) {
     return 0;
 }
 void * hos_continue(hos_t*) {
-    return NULL;
+    return nullptr;
 }

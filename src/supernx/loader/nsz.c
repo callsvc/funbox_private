@@ -1,11 +1,9 @@
-#include <assert.h>
 #include <string.h>
 
 #include <zstd.h>
 #include <mbedtls/sha256.h>
 
 #include <types.h>
-#include <fs_fmt/offset_file.h>
 #include <fs_fmt/content_archive.h>
 #include <fs_fmt/aes_file.h>
 #include <fs_fmt/pfs.h>
@@ -79,6 +77,7 @@ ncz_t * ncz_create(fsfile_t *file, fsfile_t **ncafile, const bool verify) {
     aes_file_close((aes_file_t*)*ncafile);
     fb_free(zcnt);
 
+    strcpy(strstr(fs_getpath(backing), ".ncz"), ".nca");
     *ncafile = (fsfile_t*)backing;
     if (verify) {
         uint8_t result[32];
@@ -128,20 +127,19 @@ void nsz_addfile(const nsz_t *nsz, keys_db_t *keys, fsfile_t *file) {
         keys_db_add_ticket(keys, tik);
         return;
     }
-    if (strcmp(ext, ".ncz") == 0) {
-        fsfile_t * parent = nullptr;
-        ncz_t * this_ncz = ncz_create(file, &parent, false);
 
-        romfs_addfile(nsz->nca_files, parent);
+    fsfile_t * decnca = nullptr;
+    if (strcmp(ext, ".ncz") == 0) {
+        ncz_t * this_ncz = ncz_create(file, &decnca, false);
+        romfs_addfile(nsz->nca_files, decnca);
         ncz_destroy(this_ncz);
 
     } else if (strcmp(ext, ".nca") == 0 && memcmp(ext - 5, ".cnmt", 5) != 0) {
+        decnca = file;
         romfs_addfile(nsz->nca_files, file);
-    } else {
-        return;
     }
-
-    list_push(nsz->nca_list, content_archive_create(keys, (fsdir_t*)nsz->nca_files, fs_getpath(file)));
+    if (decnca)
+        list_push(nsz->nca_list, content_archive_create(keys, (fsdir_t*)nsz->nca_files, fs_getpath(decnca)));
 }
 
 nsz_t * nsz_create(fsfile_t *file, keys_db_t *keys) {

@@ -1,6 +1,3 @@
-
-// #include <string.h>
-
 #include <types.h>
 #include <algo/list.h>
 
@@ -11,37 +8,45 @@ list_t *list_create(const size_t typesize) {
     return list;
 }
 
-static void insert(list_t *begin, list_t *listnode) {
+static void insert(list_t *list, list_node_t *listnode) {
+#if 0
     for (list_t *node = begin; node; node = node->next)
         if (node->next == nullptr)
             if ((node->next = listnode))
                 break;
+#else
+    if (!list->tail)
+        list->tail = listnode;
+    if (list->head)
+        list->head->next = listnode;
+    list->head = listnode;
+#endif
 }
 
 void * list_emplace(list_t *list) {
     if (!list->size)
         return nullptr;
-    list_t *listnode = mi_heap_zalloc(list->heap, sizeof(list_t) + list->size);
-    listnode->data = (uint8_t*)listnode + sizeof(list_t);
+    list_node_t *listnode = mi_heap_zalloc(list->heap, sizeof(list_node_t) + list->size);
+    listnode->data = (uint8_t*)listnode + sizeof(list_node_t);
 
     insert(list, listnode);
     return listnode->data;
 }
 void list_push(list_t *list, void *data) {
-    list_t *listnode = mi_heap_zalloc(list->heap, sizeof(list_t));
+    list_node_t *listnode = mi_heap_zalloc(list->heap, sizeof(list_node_t));
     listnode->data = data;
     insert(list, listnode);
 }
 size_t list_size(const list_t * list) {
     size_t size = 0;
-    for (; list; list = list->next)
-        if (list->data)
+    for (const list_node_t *ln = list->tail; ln; ln = ln->next)
+        if (ln->data)
             size++;
     return size;
 }
 
 size_t list_locate(const list_t *list, const void *data) {
-    const list_t *node = list->next;
+    const list_node_t *node = list->tail;
     for (size_t index = 0; node; index++)
         if (node->data != data)
             node = node->next;
@@ -50,44 +55,30 @@ size_t list_locate(const list_t *list, const void *data) {
 }
 
 void list_drop(list_t *list, const size_t index) {
-    list_t *node = list->next;
-    list_t *prev = list;
+    list_node_t *node = list->tail;
+    list_node_t *prev = nullptr;
 
-    // const bool allocated = list->size;
-    for (size_t i = 0; i < index; i++) {
+    for (size_t i = 0; i < index && node; i++) {
         prev = node;
         node = node->next;
     }
-    if (node->next)
+    if (node && node->next)
         prev->next = node->next;
-    else prev->next = nullptr;
+    else if (prev) prev->next = nullptr;
 
-#if 0
-    if (allocated && node->data)
-        fb_free(node->data);
-    fb_free(node);
-#endif
+    if (list->head == node)
+        list->head = prev;
+    if (list->tail == node)
+        list->tail = list->tail->next ? list->tail->next : nullptr;
 }
 
 void * list_get(const list_t *list, size_t index) {
-    const list_t *node = list->next;
+    const list_node_t *node = list->tail;
     for (; node && index; index--)
         node = node->next;
     return node ? node->data : nullptr;
 }
 void list_destroy(list_t *list) {
-#if 0
-    list_t *next = list;
-    const bool isfreed = next->size == 0;
-    do {
-        list_t *save = next->next;
-
-        if (!isfreed)
-            fb_free(next->data);
-        fb_free(next);
-        next = save;
-    } while (next);
-#endif
     mi_heap_destroy(list->heap);
     fb_free(list);
 }

@@ -2,10 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <fs/mapfile.h>
 #include <fs_fmt/offset_file.h>
 #include <fs_fmt/romfs.h>
 
 #include <types.h>
+
 #pragma pack(push, 1)
 typedef struct type_header_info {
     uint64_t ht_offset;
@@ -205,8 +207,11 @@ size_t romfs_override(const romfs_t *rfs, fsfile_t *file, const char *path) {
 void romfs_destroy(romfs_t *rfs) {
 
     for (size_t i = 0; i < vector_size(rfs->files); i++) {
-        offset_file_t *file = *(offset_file_t**)vector_get(rfs->files, i);
-        offset_file_close(rfs->basefile, file);
+        fsfile_t *file = *(fsfile_t**)vector_get(rfs->files, i);
+        if (file->type == file_type_offsetfile)
+            offset_file_close(rfs->basefile, (offset_file_t*)file);
+        else if (file->type == file_type_mapfile)
+            mapfile_close((mapfile_t*)file);
     }
     vector_destroy(rfs->files); list_destroy(rfs->override_files);
     fb_free(rfs);

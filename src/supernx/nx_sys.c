@@ -61,17 +61,15 @@ constexpr loader_type_e dedicated_type = loader_nsz_type;
 void nx_load_first_one(nx_sys_t *nx) {
     if (!nx_get_games_count(nx))
         return;
-    const game_file_t *roimage = nullptr;
     for (size_t i = 0; i < list_size(nx->games); i++) {
         const game_file_t * game = list_get(nx->games, i);
         if (game->type != dedicated_type)
             continue;
-        roimage = game;
+        nx->loader = game->loader;
     }
-    if (!roimage)
-        roimage = list_get(nx->games, 0);
+    if (!nx->loader)
+        nx->loader = ((game_file_t*)list_get(nx->games, 0))->loader;
 
-    nx->loader = roimage->loader;
     hos_enable(nx->procinfo->current_dir, nx->hos, nx->loader);
     while (hos_getprocess_count(nx->hos)) {
         hos_continue(nx->hos);

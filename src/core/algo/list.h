@@ -3,12 +3,17 @@
 #include <stddef.h>
 #include <mimalloc.h>
 
-typedef struct list {
-    struct list *next;
-    size_t size;
+typedef struct list_node {
     void *data;
+    struct list_node * next;
+} list_node_t;
+
+typedef struct list {
+    size_t size;
 
     mi_heap_t *heap;
+    list_node_t * tail;
+    list_node_t *head;
 } list_t;
 
 list_t *list_create(size_t);
