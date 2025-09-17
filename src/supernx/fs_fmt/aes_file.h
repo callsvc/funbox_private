@@ -26,7 +26,7 @@ typedef struct aes_file {
 
 aes_file_t * aes_file_open(fsfile_t*, aes_type_e, const char*);
 void aes_file_setkey(aes_file_t *, const uint8_t *, size_t);
-void aes_file_setiv(aes_file_t *, uint8_t[0x10]);
+void aes_file_setiv(aes_file_t *, const uint8_t[0x10]);
 void aes_file_setconstraints(aes_file_t *, uint64_t, uint64_t, uint64_t, uint64_t);
 
 void aes_file_close(aes_file_t *);

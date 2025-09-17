@@ -76,7 +76,7 @@ void romfs_addfile(const romfs_t *rfs, fsfile_t *file) {
         if (strcmp(fs_getpath(*(fsfile_t**)vector_get(rfs->files, i)), fs_getpath(file)) == 0)
             quit("file %s already exists inside this romfs", fs_getpath(file));
 
-    // fprintf(stderr, "\t- %s\n", fs_getpath(file));
+    // printf("\t- %s\n", fs_getpath(file));
     vector_emplace(rfs->files, &file);
 }
 

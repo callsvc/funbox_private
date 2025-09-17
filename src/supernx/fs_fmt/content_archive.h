@@ -126,5 +126,5 @@ typedef struct content_archive {
 
 
 content_archive_t * content_archive_create(keys_db_t*, fsdir_t *, const char *);
-void * content_archive_get_fs(const content_archive_t*, size_t, bool);
+fsdir_t * content_archive_get_fs(const content_archive_t*, size_t, bool);
 void content_archive_destroy(content_archive_t *);

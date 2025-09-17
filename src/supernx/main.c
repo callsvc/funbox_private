@@ -19,9 +19,11 @@ int main() {
 
         char buffer[20];
         char * output_logo = fs_build_path(3, "/tmp", to_str64(loader_get_program_id(nx_getgame(nx_sys, i)), buffer, 16), "icon_AmericanEnglish.jpeg");
-        file_t * logo_file = file_open(output_logo, "w");
+        file_t * logo_file = file_open(output_logo, "rw");
 
         fs_write((fsfile_t*)logo_file, vector_begin(logo), vector_size(logo), 0);
+        if (!hos_is_titleicon((fsfile_t*)logo_file))
+            quit("WTF!!!!");
 
         vector_destroy(logo);
         fb_free(output_logo);

@@ -4,7 +4,8 @@
 
 procinfo_t * procinfo_create() {
     procinfo_t *procinfo = fb_malloc(sizeof(procinfo_t));
-    getcwd(procinfo->current_dir, sizeof(procinfo->current_dir));
+    if (getcwd(procinfo->current_dir, sizeof(procinfo->current_dir)) == nullptr)
+        quit("size of destination buffer");
 
     procinfo->start = time(nullptr);
     return procinfo;

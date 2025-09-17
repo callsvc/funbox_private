@@ -1,6 +1,5 @@
 
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 #include <types.h>
 #include <fs_fmt/pfs.h>
@@ -9,26 +8,12 @@
 #include <fs_fmt/content_archive.h>
 
 bool nca_is(const uint32_t magic) {
-    // ReSharper disable once CppVariableCanBeMadeConstexpr
-    const uint32_t nca_versions[] = {*(uint32_t*)"NCA0", *(uint32_t*)"NCA1", *(uint32_t*)"NCA2", *(uint32_t*)"NCA3"};
+    const char * nca_versions[] = {"NCA0", "NCA1", "NCA2", "NCA3"};
     for (size_t i = 0; i < 3; i++)
-        if (magic == nca_versions[i])
+        if (magic == *(uint32_t *)nca_versions[i])
             return true;
     return false;
 }
-
-bool is_empty(const uint8_t *data, size_t size) {
-    for (constexpr size_t len64 = sizeof(size_t); size > len64; size -= len64) {
-        if (*(uint64_t*)data)
-            return false;
-        data += len64;
-    }
-    while (size--)
-        if (*data++)
-            return false;
-    return true;
-}
-
 typedef struct file_list_item {
     content_type_e type;
     fsfile_t *file;
@@ -121,17 +106,17 @@ size_t* content_archive_fix_offsets_for_file(const nca_fs_header_t *file_info) {
 }
 
 file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_fs_entry_t *this_fs, const nca_fs_header_t * fs_info, const nca_type_header_t *nca_info, const size_t *file_details) {
-    uint64_t ctr_values[2] = {};
-    ((uint32_t*)&ctr_values)[0] = to_little32(&fs_info->secure_value);
-    ((uint32_t*)&ctr_values)[1] = to_little32(&fs_info->generation);
+    uint32_t ctr_values[4] = {};
+    ctr_values[0] = to_little32(&fs_info->secure_value);
+    ctr_values[1] = to_little32(&fs_info->generation);
 
     file_list_item_t * file_item = fb_malloc(sizeof(file_list_item_t));
     file_item->aes_encrypted = true;
     file_item->type = nca->type;
 
     aes_file_t *aes_file = aes_file_open(((const aes_file_t*)nca->ncafile)->parent, aes_type_ctr128, "r");
-    aes_file_setiv(aes_file, (uint8_t*)ctr_values);
-    if (is_empty((const uint8_t*)&nca->rights_id, sizeof(nca->rights_id))) {
+    aes_file_setiv(aes_file, (const uint8_t*)ctr_values);
+    if (isempty((const uint8_t*)&nca->rights_id, sizeof(nca->rights_id))) {
         key128_t dec_key = {};
         keys_getkey_fornca(nca->keys, &dec_key, sizeof(dec_key), fs_info, nca_info);
 
@@ -145,8 +130,10 @@ file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_f
 
     file_item->file = (fsfile_t*)aes_file;
 #if 1
-    uint8_t buffer[16] = {};
-    fs_read(file_item->file, buffer, 16, 0);
+    uint8_t buffer[256] = {};
+    fs_read(file_item->file, buffer, 256, 0);
+    if (isempty(buffer, sizeof(buffer)))
+        quit("file is empty?!");
 #endif
 
     return file_item;
@@ -155,7 +142,7 @@ file_list_item_t * open_encrypted_file(const content_archive_t *nca, const nca_f
 void content_archive_get_all_files(const content_archive_t *nca, const nca_type_header_t *nca_fs) {
     nca_fs_header_t *nca_fs_info = fb_malloc(sizeof(nca_fs_header_t));
     for (size_t i = 0; i < NCA_FS_ENTRIES_COUNT; i++) {
-        if (is_empty((uint8_t*)&nca_fs->files_entries[i], sizeof(nca_fs_entry_t)))
+        if (isempty((uint8_t*)&nca_fs->files_entries[i], sizeof(nca_fs_entry_t)))
             continue;
 
         const nca_fs_entry_t * this_fs = &nca_fs->files_entries[i];
@@ -227,15 +214,16 @@ content_archive_t * content_archive_create(keys_db_t *keys, fsdir_t *parent, con
     return nca;
 }
 
-void * content_archive_get_fs(const content_archive_t * nca, const size_t index, const bool pfs) {
+fsdir_t *content_archive_get_fs(const content_archive_t * nca, const size_t index, const bool pfs) {
     const list_t * items_list = pfs ? nca->pfs_list : nca->romfs_list;
     if (index > list_size(items_list))
         return nullptr;
     const file_list_item_t *list_item = list_get(items_list, index);
     if (!list_item)
         return nullptr;
-    assert(list_item->ispfs == pfs);
-    return list_item->pfs;
+    if (list_item->ispfs != pfs)
+        quit("backing type mismatch");
+    return (fsdir_t *) list_item->pfs;
 }
 
 void nca_destroy_files(const content_archive_t *nca, const list_t *files) {

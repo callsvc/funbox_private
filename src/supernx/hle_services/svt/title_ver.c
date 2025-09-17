@@ -18,7 +18,7 @@ void svt_display(const struct svt_format *title) {
 void svt_load(content_archive_t *nca, hos_t *hos) {
     svt_service_t *service = fb_malloc(sizeof(svt_service_t));
 
-    const romfs_t * main_fs = content_archive_get_fs(nca, 0, false);
+    const auto main_fs = (romfs_t*)content_archive_get_fs(nca, 0, false);
     fsfile_t * file = fs_open_file((fsdir_t*)main_fs, "file", "r");
 
     fs_read(file, &service->content, sizeof(service->content), 0);

@@ -18,3 +18,5 @@ void hos_disable(hos_t*);
 
 size_t hos_getprocess_count(hos_t*);
 void * hos_continue(hos_t*);
+
+bool hos_is_titleicon(fsfile_t *);

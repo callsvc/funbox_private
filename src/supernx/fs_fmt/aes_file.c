@@ -169,7 +169,7 @@ void aes_file_setkey(aes_file_t *aes_file, const uint8_t *key, const size_t keyl
         quit("can't set key");
 }
 
-void aes_file_setiv(aes_file_t *aes_file, uint8_t iv[16]) {
+void aes_file_setiv(aes_file_t *aes_file, const uint8_t iv[16]) {
     assert(mbedtls_cipher_set_iv(&aes_file->context, iv, 0x10) == 0);
     memmove(aes_file->iv_ctr, iv, 16);
 }

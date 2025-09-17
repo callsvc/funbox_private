@@ -98,7 +98,7 @@ vector_t * loader_nsz_get_logo(loader_base_t *base) {
     const auto nsz = (nsz_t*)base;
     for (size_t i = 0; i < list_size(nsz->nca_list); i++) {
         for (size_t j = 0; content_archive_get_fs(list_get(nsz->nca_list, i), j, false); j++) {
-            romfs_t * ctrlfs = content_archive_get_fs(list_get(nsz->nca_list, i), j, false);
+            const auto ctrlfs = (romfs_t*)content_archive_get_fs(list_get(nsz->nca_list, i), j, false);
             fsfile_t *title_icon = fs_open_file((fsdir_t*)ctrlfs, "icon_AmericanEnglish.dat", "r");
             if (!title_icon)
                 continue;

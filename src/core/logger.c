@@ -43,10 +43,10 @@ void logger_flush(logger_t *logger, const bool lock) {
             break;
         const size_t len = strchr(logm, '\n') - logm + 1;
         if (!logger->file) {
-            snprintf(logger->scratch, len + 1, "%s", logger->logm);
+            snprintf(logger->scratch, len + 1, "%1024s", logger->logm);
             fputs(logger->scratch, stderr);
         } else {
-            file_lazywrite(logger->file, logger->logm, len);
+            file_swrite(logger->file, logger->logm, len);
             logger->filepos += len;
         }
 

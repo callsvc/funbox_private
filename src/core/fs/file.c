@@ -22,8 +22,7 @@ void fs_file_write(fsfile_t *file, const void *input, const size_t size, const s
 }
 
 file_t * file_open(const char* path, const char* mode) {
-    constexpr size_t buffer_len = 8 * 1024;
-
+    constexpr size_t buffer_len = 32 * 1024;
     if (access(path, F_OK)) {
         if (*mode == 'r')
             return nullptr;
@@ -31,14 +30,20 @@ file_t * file_open(const char* path, const char* mode) {
     }
 
     file_t *file = fb_malloc(sizeof(file_t));
-    file->buffer = fb_malloc(sizeof(char) * buffer_len);
 
     strcpy(file->vfile.path, path);
     file->vfile.type = file_type_file;
 
     file->handle = fopen(path, mode);
-    setbuffer(file->handle, file->buffer, buffer_len);
+    if (!file->handle)
+        quit("? maybe you suck!");
 
+    if (!(strchr(mode, 'r') && strchr(mode, 'w'))) {
+        file->buffer = fb_malloc(sizeof(char) * buffer_len);
+        setbuffer(file->handle, file->buffer, buffer_len);
+    } else {
+        setbuf(file->handle, nullptr);
+    }
     file->vfile.fs_getsize = fs_file_get_size;
     file->vfile.fs_write = fs_file_write;
     file->vfile.fs_read = fs_file_read;
@@ -59,12 +64,15 @@ size_t file_getsize(const file_t *file) {
 void file_write(const file_t *file, const void *input, const size_t size, const size_t offset) {
     if (!vector_empty(file->write_stall))
         file_flush(file);
-    if (ftell(file->handle) != offset)
+    size_t roff = 0;
+    if ((roff = ftell(file->handle)) != offset)
         fseek(file->handle, (int64_t)offset, SEEK_SET);
     fwrite(input, size, 1, file->handle);
+    if (roff != offset)
+        fseek(file->handle, roff, SEEK_SET);
 }
 
-void file_lazywrite(const file_t *file, const void *src, const size_t size) {
+void file_swrite(const file_t *file, const void *src, const size_t size) {
     if (!size && !src)
         return;
     const struct {
@@ -89,9 +97,13 @@ void file_flush(const file_t *file) {
 }
 
 void file_read(const file_t *file, void *output, const size_t size, const size_t offset) {
-    if (ftell(file->handle) != offset)
-        fseek(file->handle, (int64_t)offset, SEEK_SET);
-    fread(output, size, 1, file->handle);
+    size_t woff = 0;
+    if ((woff = ftell(file->handle)) != offset)
+        fseek(file->handle, offset, SEEK_SET);
+    if (fread(output, size, 1, file->handle) != 1)
+        quit("can't read %ld bytes at offset %ld, file path: %s", fs_getpath(file));
+    if (woff != offset)
+        fseek(file->handle, woff, SEEK_SET);
 }
 
 const char * file_errorpath(const char *path) {
@@ -116,6 +128,7 @@ void file_close(file_t *file) {
     if (file->handle)
         fclose(file->handle);
 
-    fb_free(file->buffer);
+    if (file->buffer)
+        fb_free(file->buffer);
     fb_free(file);
 }
