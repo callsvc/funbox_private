@@ -103,6 +103,7 @@ vector_t * loader_nsz_get_logo(loader_base_t *base) {
             if (!title_icon)
                 continue;
             vector_t * logo = fs_getfile(title_icon);
+            fs_close_file((fsdir_t*)ctrlfs, title_icon);
             return logo;
         }
     }
@@ -120,15 +121,16 @@ void ncz_destroy(ncz_t *ncz) {
     fb_free(ncz);
 }
 
-void nsz_addfile(const nsz_t *nsz, keys_db_t *keys, fsfile_t *file) {
+void nsz_addfile(const nsz_t *nsz, keys_db_t *keys, fsfile_t *file, bool *closefile) {
     const char *ext = fs_getpath(file) + strlen(fs_getpath(file)) - 4;
+    *closefile = true;
     if (strcmp(ext, ".tik") == 0) {
         const tik_t *tik = tik_create(file);
         keys_db_add_ticket(keys, tik);
         return;
     }
 
-    fsfile_t * decnca = nullptr;
+    fsfile_t * decnca = {};
     if (strcmp(ext, ".ncz") == 0) {
         ncz_t * this_ncz = ncz_create(file, &decnca, false);
         romfs_addfile(nsz->nca_files, decnca);
@@ -140,6 +142,7 @@ void nsz_addfile(const nsz_t *nsz, keys_db_t *keys, fsfile_t *file) {
     }
     if (decnca)
         list_push(nsz->nca_list, content_archive_create(keys, (fsdir_t*)nsz->nca_files, fs_getpath(decnca)));
+    *closefile = decnca != file;
 }
 
 nsz_t * nsz_create(fsfile_t *file, keys_db_t *keys) {
@@ -150,8 +153,13 @@ nsz_t * nsz_create(fsfile_t *file, keys_db_t *keys) {
     nsz->nca_files = romfs_create_2();
 
     vector_t *files = fs_list_all_files((fsdir_t*)nsz->main_pfs);
-    for (size_t i = 0; i < vector_size(files); i++)
-        nsz_addfile(nsz, keys, fs_open_file((fsdir_t*)nsz->main_pfs, vector_get(files, i), "r"));
+    for (size_t i = 0; i < vector_size(files); i++) {
+        fsfile_t * nca_file = fs_open_file((fsdir_t*)nsz->main_pfs, vector_get(files, i), "r");
+        bool close;
+        nsz_addfile(nsz, keys, nca_file, &close);
+        if (close)
+            fs_close_file((fsdir_t*)nsz->main_pfs, nca_file);
+    }
 
     vector_destroy(files);
 

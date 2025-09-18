@@ -62,7 +62,7 @@ void list_drop(list_t *list, const size_t index) {
         prev = node;
         node = node->next;
     }
-    if (node && node->next)
+    if (node && prev)
         prev->next = node->next;
     else if (prev) prev->next = nullptr;
 

@@ -10,13 +10,13 @@
 
 struct service_descriptor {
     service_load_func_t callback;
-    char* program_id;
+    const char *program_id;
 };
 struct service_descriptor services_list[] = {
     {svt_load, "0100000000000809ULL"},
 };
 
-void hos_firmware_load(hos_t *hos, file_t *file) {
+void hos_firmware_load(const hos_t *hos, file_t *file) {
     zipdir_t * zipfirm = zipdir_open_2(file);
     if (!zipfirm)
         return;
@@ -35,11 +35,10 @@ void hos_firmware_load(hos_t *hos, file_t *file) {
     zipdir_close(zipfirm);
 }
 
-void hos_enable(const char *workdir, hos_t *hos, loader_base_t*) {
-
+void hos_enable(const char *wdir, hos_t *hos, loader_base_t*) {
     hos->services = list_create(0);
 
-    dir_t * dir = dir_open(workdir, "r");
+    dir_t * dir = dir_open(wdir, "r");
     file_t * firm = dir_open_file(dir, "nx/firmware.zip", "r");
     if (firm) {
         hos_firmware_load(hos, firm);
@@ -49,8 +48,10 @@ void hos_enable(const char *workdir, hos_t *hos, loader_base_t*) {
 
 }
 void hos_disable(hos_t *hos) {
-    if (hos->services)
-        list_destroy(hos->services);
+    for (size_t i = 0; i < list_size(hos->services); ++i) {
+        fb_free(list_get(hos->services, i));
+    }
+    list_destroy(hos->services);
     hos->services = nullptr;
 }
 

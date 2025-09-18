@@ -39,8 +39,8 @@ offset_file_t * offset_file_open(fsfile_t *base, const char *name, const size_t 
     setfile->size = size;
     setfile->start = offset;
 
-    static constexpr size_t mim_buffer_size = 2 * 1024 * 1024;
-    if (!fs_is_mapfile(setfile->file) && size < mim_buffer_size && allocate) {
+    static constexpr size_t buffer_minsize = 2 * 1024 * 1024;
+    if (!fs_is_mapfile(setfile->file) && size < buffer_minsize && allocate) {
         setfile->buffer = fb_malloc(size);
         fs_read(setfile->file, setfile->buffer, size, setfile->start);
     }

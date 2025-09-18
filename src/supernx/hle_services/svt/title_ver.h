@@ -24,4 +24,4 @@ typedef struct svt_servive {
     struct svt_format content;
 } svt_service_t;
 
-void svt_load(content_archive_t*, hos_t*);
+void svt_load(const content_archive_t*, const hos_t*);

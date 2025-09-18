@@ -183,7 +183,7 @@ uint64_t fb_rand() {
     static _Thread_local uint64_t bidx;
 
     if (unlikely(!bidx)) {
-        const int32_t rfd = open("/dev/random", O_RDONLY);
+        const int32_t rfd = open("/dev/urandom", O_RDONLY);
         bidx = read(rfd, buffer, sizeof(buffer)) / sizeof(uint64_t);
         close(rfd);
     }

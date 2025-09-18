@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <fs_fmt/offset_file.h>
 #include <fs_fmt/content_archive.h>
 
 #include <types.h>
@@ -15,7 +14,7 @@ void svt_display(const struct svt_format *title) {
     fprintf(stdout, "display title: %s\n", title->display_title);
 }
 
-void svt_load(content_archive_t *nca, hos_t *hos) {
+void svt_load(const content_archive_t *nca, const hos_t *hos) {
     svt_service_t *service = fb_malloc(sizeof(svt_service_t));
 
     const auto main_fs = (romfs_t*)content_archive_get_fs(nca, 0, false);
@@ -30,6 +29,6 @@ void svt_load(content_archive_t *nca, hos_t *hos) {
         if (strcmp(title->version_hash, "12dd67abcd6e05f44dc8a526e5af9c1f14202c8b") != 0)
             quit("firmware hash incorrect, possible data corruption");
 
-    offset_file_close(nullptr, (offset_file_t*)file);
+    fs_close_file((fsdir_t*)main_fs, file);
     list_push(hos->services, service);
 }

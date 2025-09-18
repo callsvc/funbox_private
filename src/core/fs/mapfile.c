@@ -64,7 +64,7 @@ mapfile_t * mapfile_open_2(const char *path, uint8_t *buffer, const size_t len) 
 void mapfile_close(mapfile_t *mapfile) {
     const size_t len = mapfile_getsize(mapfile);
 
-    if (mapfile->fd && mapfile->buffer)
+    if (mapfile->fd != -1 && mapfile->buffer)
         munmap(mapfile->buffer, len);
     else if (mapfile->buffer)
         fb_free(mapfile->buffer);

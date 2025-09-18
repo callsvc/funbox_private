@@ -17,7 +17,7 @@ vector_t * nsp_get_logo(const nsp_t * nsp) {
     if (!logo_file)
         return nullptr;
     vector_t *logo_content = fs_getbytes(logo_file, fs_getsize(logo_file), 0);
-    // fs_close_file((fsdir_t*)logo, logo_file);
+    fs_close_file((fsdir_t*)logo, logo_file);
     return logo_content;
 }
 uint64_t nsp_get_program_id(const nsp_t * nsp) {

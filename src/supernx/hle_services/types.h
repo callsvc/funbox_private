@@ -7,4 +7,4 @@ typedef struct hle_service {
 
 typedef struct content_archive content_archive_t;
 typedef struct hos hos_t;
-typedef void (*service_load_func_t)(content_archive_t*, hos_t*);
+typedef void (*service_load_func_t)(const content_archive_t*, const hos_t*);
