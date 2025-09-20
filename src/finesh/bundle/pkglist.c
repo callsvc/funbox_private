@@ -13,7 +13,7 @@ void pkg_list_all(const config_t *config) {
         if (strcmp(path + strlen(path) - 4, ".ipa"))
             continue;
 
-        file_t *file = file_open(path, "r");
+        file_t *file = file_open(path, "r", false);
         uint32_t buffer;
         file_read(file, &buffer, 4, 0);
 

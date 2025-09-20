@@ -50,7 +50,7 @@ file_t *dir_open_file(const dir_t *dir, const char *filepath, const char *mode) 
         fb_free(real_path);
         return nullptr;
     }
-    file_t *file = file_open(real_path, "r");
+    file_t *file = file_open(real_path, "r", false);
     fb_free(real_path);
     list_push(dir->cached_files, file);
 

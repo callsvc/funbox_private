@@ -15,7 +15,7 @@ void sdl_app_printf(sdl_app_t *app, const int32_t text_x, const int32_t text_y, 
         if (!TTF_Init())
             quit("can't initialize the TTF library");
 
-        file_t * libfont = file_open("fonts/LiberationSans-Regular.ttf", "r");
+        file_t * libfont = file_open("fonts/LiberationSans-Regular.ttf", "r", false);
         if (libfont)
             app->font = TTF_OpenFont("fonts/LiberationSans-Regular.ttf", 16);
         file_close(libfont);

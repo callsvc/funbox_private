@@ -11,8 +11,7 @@ bridge_t * bridge_create(sony_t *sony) {
 
     if (!sony->firmpath)
         quit("a firmware is needed to continue");
-
-    file_t *file = file_open(sony->firmpath, "r");
+    file_t *file = file_open(sony->firmpath, "r", false);
     if (!file)
         quit("can't open the firmware file: %s", file_errorpath(sony->firmpath));
 

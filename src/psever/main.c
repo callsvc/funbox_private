@@ -3,7 +3,7 @@
 #include <pkg_loader.h>
 
 int main() {
-    file_t *pkgfile = file_open("GAME.pkg", "r");
+    file_t *pkgfile = file_open("GAME.pkg", "r", false);
     if (!pkgfile)
         return -1;
 

@@ -180,14 +180,26 @@ void sleep_for(const size_t ns) {
 
 uint64_t fb_rand() {
     static _Thread_local uint64_t buffer[0x100];
-    static _Thread_local uint64_t bidx;
+    static _Thread_local uint64_t index = 0;
 
-    if (unlikely(!bidx)) {
-        const int32_t rfd = open("/dev/urandom", O_RDONLY);
-        bidx = read(rfd, buffer, sizeof(buffer)) / sizeof(uint64_t);
-        close(rfd);
-    }
-    const uint64_t result = buffer[bidx - 1];
-    bidx -= 1;
+    const int32_t rngfd = open("/dev/urandom", O_RDONLY);
+    do {
+        if (index)
+            continue;
+        index = read(rngfd, buffer, sizeof(buffer));
+        if (unlikely(index == -1)) {
+            for (index = 0; index < 0x100; index++) {
+                __asm(".retry:\n"
+                      "rdseed %%r8\n"
+                      "jnc .retry\n"
+                      "movq %%r8, %0" : "=r" (buffer[index]) : : "r8");
+            }
+        } else {
+            index /= sizeof(uint64_t);
+        }
+    } while (!index);
+    close(rngfd);
+    const uint64_t result = buffer[index - 1];
+    index -= 1;
     return result;
 }

@@ -19,7 +19,7 @@ void logger_init() {
     *logs->logm = '?';
 
     fs_rm("logs.txt");
-    logs->file = file_open("logs.txt", "w");
+    logs->file = file_open("logs.txt", "w", true);
 }
 void logger_flush(logger_t *logger, bool lock);
 void logger_destroy() {
@@ -46,7 +46,7 @@ void logger_flush(logger_t *logger, const bool lock) {
             snprintf(logger->scratch, len + 1, "%1024s", logger->logm);
             fputs(logger->scratch, stderr);
         } else {
-            file_swrite(logger->file, logger->logm, len);
+            file_write(logger->file, logger->logm, len, -1);
             logger->filepos += len;
         }
 

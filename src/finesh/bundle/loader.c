@@ -5,7 +5,7 @@
 #include <bundle/loader.h>
 
 size_t filesize(const char *path) {
-    file_t *file = file_open(path, "r");
+    file_t *file = file_open(path, "r", false);
     if (!file) return 0;
     const size_t size = fs_getsize((fsfile_t*)file);
     file_close(file);

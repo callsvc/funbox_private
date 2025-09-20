@@ -19,7 +19,7 @@ struct svt_format {
     char display_title[0x80];
 };
 
-typedef struct svt_servive {
+typedef struct svt_service {
     hle_service_t service_base;
     struct svt_format content;
 } svt_service_t;

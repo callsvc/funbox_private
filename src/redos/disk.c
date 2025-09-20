@@ -8,7 +8,7 @@ disk_t * disk_create() {
 void disk_reset(disk_t *disk, const char *filepath) {
     if (disk->file && filepath)
         file_close(disk->file);
-    disk->file = file_open(filepath, "r");
+    disk->file = file_open(filepath, "r", false);
     if (!disk->file)
         quit("bootable file not found");
 }

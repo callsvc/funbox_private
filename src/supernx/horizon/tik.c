@@ -36,7 +36,7 @@ tik_t * tik_create(fsfile_t *file) {
 }
 
 void tik_export(const tik_t *tik, const char *filepath) {
-    file_t *file = file_open(filepath, "w");
+    file_t *file = file_open(filepath, "w", false);
     fs_write((fsfile_t*)file, &tik->type, 4, 0);
     fs_write((fsfile_t*)file, vector_begin(tik->signature), vector_size(tik->signature), 4);
 

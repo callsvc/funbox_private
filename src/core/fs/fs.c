@@ -24,10 +24,14 @@ void fs_read(fsfile_t *file, void *output, const size_t size, const size_t offse
 void fs_write(fsfile_t *file, const void *input, const size_t size, const size_t offset) {
     file->fs_write(file, input, size, offset);
 }
+bool fs_isro(const char *mode) {
+    return strchr(mode, 'r') != nullptr && strchr(mode, 'w') == nullptr;
+}
 
 bool fs_rm(const char *path) {
-    struct stat st;
-    stat(path, &st);
+    struct stat st = {};
+    if (stat(path, &st))
+        return errno == ENOENT;
     if (st.st_mode & S_IFDIR) {
         vector_t * files = list_all_files(path);
         for (size_t i = 0; i < vector_size(files); i++) {
