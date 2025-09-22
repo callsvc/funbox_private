@@ -1,3 +1,3 @@
-add_executable(nop_test_arm64 nop_test_arm64.c)
+add_executable(arm64nop_test arm64nop_test.c)
 
-target_link_libraries(nop_test_arm64 PUBLIC dynrec)
+target_link_libraries(arm64nop_test PUBLIC dynrec)

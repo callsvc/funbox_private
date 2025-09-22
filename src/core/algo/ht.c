@@ -21,11 +21,9 @@ ht_t * ht_create(const size_t bucket, const size_t item_size, const char **keys_
 
     ht->bucket = vector_create(bucket, sizeof(ht_value_t));
     vector_setsize(ht->bucket, bucket);
-
     for (size_t i = 0; i < bucket; i++) {
         ht_insert(ht, keys_list[i], nullptr);
     }
-
     return ht;
 }
 

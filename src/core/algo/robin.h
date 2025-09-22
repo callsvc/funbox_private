@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <algo/vector.h>
 
-#define KEY_TYPE_NAME_SIZE 0x50
+#define KEY_TYPE_NAME_SIZE 0x64 - sizeof(size_t) - sizeof(bool)
 #define KEY_TYPE_VALUE_SIZE sizeof(uint64_t)
 #define KEY_TYPE_POINTER_SIZE sizeof(void *)
 
