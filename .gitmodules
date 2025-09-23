@@ -13,3 +13,6 @@
 [submodule "libraries/mimalloc"]
 	path = libraries/mimalloc
 	url = https://github.com/microsoft/mimalloc
+[submodule "demos/ps2demos"]
+	path = demos/ps2demos
+	url = https://github.com/PSI-Rockin/ps2demos.git

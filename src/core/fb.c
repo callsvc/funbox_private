@@ -1,12 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #if NDEBUG
 #include <seccomp.h>
 #endif
 
 #include <types.h>
 #include <logger.h>
+#include <storage.h>
 char username[30] = {};
 
 void fb_create() {
@@ -15,6 +17,7 @@ void fb_create() {
         quit("You can't run as a root user!");
     strcpy(username, getenv("HOME"));
     logger_init();
+    storage_init();
 
 #if NDEBUG
     const scmp_filter_ctx filter = seccomp_init(SCMP_ACT_KILL);
@@ -32,4 +35,5 @@ void fb_create() {
 
 void fb_destroy() {
     logger_destroy();
+    storage_destroy();
 }

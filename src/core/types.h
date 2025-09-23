@@ -30,7 +30,7 @@ void * fb_malloc(size_t);
 void fb_free(void *);
 size_t fb_get_heap_usage(size_t *);
 
-char * fb_strcopy(char *, const char *, size_t);
+char * fb_strcpy(char *, const char *, size_t);
 
 char* fb_strmk(size_t, ...);
 

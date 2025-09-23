@@ -26,7 +26,7 @@ char * fb_strmk(const size_t count, ...) {
 }
 char * fb_strndup(const char *str, const size_t n) {
     char * buffer = fb_malloc(n + 1);
-    fb_strcopy(buffer, str, n);
+    fb_strcpy(buffer, str, n);
     return buffer;
 }
 char * fb_strdup(const char *str) {
@@ -53,7 +53,7 @@ char *trim(char *s) {
     return rtrim(ltrim(s)); 
 }
 
-char *fb_strcopy(char * dest, const char * src, const size_t size) {
+char *fb_strcpy(char * dest, const char * src, const size_t size) {
     strncpy(dest, src, size);
     dest[size] = '\0';
     return dest;

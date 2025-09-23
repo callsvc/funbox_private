@@ -16,7 +16,7 @@ char* fb_getrom(const char *rom_path, applet_type_e *type) {
         strcat(userpath, user_list[i] + 1);
 
         if (!fs_exists(userpath))
-            create_directories(userpath, false);
+            fs_mkdir(userpath, false);
 
         if (strstr(userpath, rom_path) == nullptr)
             continue;

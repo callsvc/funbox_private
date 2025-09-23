@@ -257,7 +257,7 @@ char * fs_lastpath(const char *path) {
     last += 1;
     const char * middle = strchr(path, '/');
     const char * sub = middle + 1 == last ? path : middle + 1;
-    fb_strcopy(buffer, sub, last - sub - 1);
+    fb_strcpy(buffer, sub, last - sub - 1);
 
     return buffer;
 }

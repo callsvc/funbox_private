@@ -32,7 +32,7 @@ keys_db_t *keys_db_create() {
 
 static char* get_keyline(char *output, const char * line) {
     char *key_val = strchr(line, '=') + 2;
-    fb_strcopy(output, line, strchr(line, '=') - line - 1);
+    fb_strcpy(output, line, strchr(line, '=') - line - 1);
     return key_val;
 }
 
@@ -103,7 +103,7 @@ void keys_db_load(keys_db_t *kdb, fsfile_t *file) {
     do {
         static char keypair[1 << 11] = {};
         const char *last = strchr(line, '\n');
-        fb_strcopy(keypair, line, last ? last - line : strlen(line));
+        fb_strcpy(keypair, line, last ? last - line : strlen(line));
 
         if (regexec(&kdb->title_regex, keypair, 0, nullptr, 0) == 0)
             keys_add_title(kdb, keypair);

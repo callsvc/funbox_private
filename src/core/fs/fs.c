@@ -49,13 +49,14 @@ bool fs_rm(const char *path) {
     return access(path, F_OK) != 0;
 }
 
-void create_directories(const char *path, const bool parent) {
+void fs_mkdir(const char *path, const bool parent) {
     constexpr mode_t mkmode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
-    char dirstep[sizeof(int)*0x10 * 3] = {0};
-    for (const char *subpath = path; (subpath = strchr(*subpath == '/' ? subpath + 1 : subpath, '/')); ) {
-        fb_strcopy(dirstep, path, subpath - path);
+    char dirstep[sizeof(int)*0x10 * 3] = {};
+
+    for (const char *sub = path; (sub = strchr(*sub == '/' ? sub + 1 : sub, '/')); ) {
+        fb_strcpy(dirstep, path, sub - path);
         mkdir(dirstep, mkmode);
-        if (subpath == strrchr(path, '/'))
+        if (sub == strrchr(path, '/'))
             break;
     }
     if (!strlen(dirstep))
@@ -70,7 +71,7 @@ void create_directories(const char *path, const bool parent) {
 
 void touch(const char *path) {
     if (strchr(path, '/'))
-        create_directories(path, true);
+        fs_mkdir(path, true);
     close(open(path, O_RDWR | O_CREAT, 0644));
 }
 
